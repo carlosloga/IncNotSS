@@ -3,13 +3,13 @@
 <!-- config.xml reference: https://build.phonegap.com/docs/config-xml -->
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id        = "com.settingconsultoria.IncNotSS"
+        id        = "com.settingconsultoria.incidenciesAdvisor"
         version   = "1.0.0">
 
-  <name>IncNotSS</name>
+  <name>Incidencies Advisor</name>
 
   <description>
-    Comunicador d'incidències con SS
+    Comunicador d'incidències
   </description>
 
   <author href="http://www.Settingconsultoria.com" email="carlosloga@gmail.com">

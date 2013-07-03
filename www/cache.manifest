@@ -1,0 +1,14 @@
+CACHE MANIFEST
+/negocio/negoci.js
+/negocio/baseDades.js
+/negocio/webService.js
+/negocio/utilitats.js
+/negocio/pageNuevaIncidencia.js
+/negocio/pageConsultaIncidencias.js
+/negocio/index.js
+/negocio/usuari.js
+/js/ssdb-jquery-plugin.js
+/js/SequelSphereDB.js
+/css/themes/AjParets/Tema_AjParets.min.css
+/js/jquery-1.9.0.min.js
+/js/jquery.mobile-1.3.1.min.js

@@ -1,4 +1,21 @@
 ﻿
+function localStorageRun() {
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+        return false;
+    }
+}
+
+function localStorageSupport()
+{
+    if ("localStorage" in window && window["localStorage"] != null) {
+        return true;
+    }
+    else
+        return false;
+}
+
 function phoneGapRun() {
     return(navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/));
 }

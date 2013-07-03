@@ -22,6 +22,11 @@ function deviceReady() {
     db.onready(function() {
         try
         {
+            if(!localStorageSupport())
+            {
+                alert("localStorage no soportat ");
+            }
+
             setTimeout("cargarBD()", 500);
         }
         catch(e)

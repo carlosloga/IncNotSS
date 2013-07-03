@@ -5,10 +5,15 @@ function cargarBD() {
             alert('Creant B.D.');
             var data = getEstructuraTablas();
             db.catalog.createTables(data);
-            db.catalog.setPersistenceScope(db.catalog.SCOPE_LOCAL);
+            db.catalog.setPersistenceScope(db.SCOPE_LOCAL);
             db.commit({
                 onsuccess: function() {
+                    db.catalog.getTable("CIUTADA").setPersistenceScope(db.SCOPE_LOCAL);
+                    db.catalog.getTable("COMUNICATS").setPersistenceScope(db.SCOPE_LOCAL);
+                    db.catalog.getTable("CARRERS").setPersistenceScope(db.SCOPE_LOCAL);
                     window.alert("B.D. OK");
+                    var sco = db.catalog.getPersistenceScope();
+                    alert('Scope = ' + sco);
                 },
                 onerror: function(errStr) {
                     window.alert("B.D. error : " + errStr);
