@@ -2,6 +2,7 @@
 var pictureSource;
 var destinationType;
 var sCambioPagina = '';
+var aGlobalCarrers = null;
 
 // -------- Al INICIAR -----------------------------------------------------------------------
 window.addEventListener('load', function () {
@@ -24,14 +25,15 @@ function deviceReady() {
         {
             if(!localStorageSupport())
             {
-                alert("localStorage no soportat ");
+                mensaje("localStorage no soportat ","atenció");
+                //return;
             }
 
             setTimeout("cargarBD()", 500);
         }
         catch(e)
         {
-            alert('error : ' + e);
+            mensaje('error : ' + e);
         }
     });
 }
@@ -49,11 +51,12 @@ function abrirPagina(sPag) {
     switch(sCambioPagina)
     {
         case 'pageNuevaIncidencia' :
+            //Abrir el acordeón para actualizar el plano
             $("#collapsibleLocalizacion").trigger("expand");
             break;
 
         case 'pageConsultaIncidencias' :
-            iniciaMapaConsulta();
+            inicioPaginaConsultaIncidencias();
             break;
     }
 
@@ -62,33 +65,14 @@ function abrirPagina(sPag) {
 }
 
 function inicializa(){
-    //alert('ya ' + sCambioPagina);
-
     switch(sCambioPagina)
     {
         case 'pageNuevaIncidencia' :
-
-            //cargar los datos del usuario (ciutadà)
-            var objUsu = getDatosUsuario();
-            if(objUsu == null)
-                alert("Error consultant dades de l'usuari");
-            else
-            {
-                $('#inputNOM').val(objUsu['NOM']) ;
-                $('#inputCOGNOM1').val(objUsu['COGNOM1']);
-                $('#inputCOGNOM2').val(objUsu['COGNOM2']);
-                $('#inputDNI').val(objUsu['DNI']);
-                $('#inputEMAIL').val(objUsu['EMAIL']);
-                $('#inputTELEFON').val(objUsu['TELEFON']);
-
-                $('#labelQUISOC').text(objUsu['NOM'] + ' ' + objUsu['COGNOM1'] + ' ' + objUsu['COGNOM2'] );
-            }
-
-            iniciaMapaAlta(true);
+            inicioPaginaNuevaIncidencia();
             break;
 
         case 'pageConsultaIncidencias' :
-            iniciaMapaConsulta();
+            mostrarEnPlano();
             break;
     }
     sCambioPagina = '';
@@ -115,6 +99,7 @@ function limpiaVariables(sPag){
 
     }
 }
+
 
 
 

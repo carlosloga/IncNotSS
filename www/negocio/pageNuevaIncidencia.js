@@ -2,15 +2,95 @@ var mapAlta = null;
 var posAlta = '';
 var sDireccionAlta = '';
 var sFoto = '';
+var sCoord_X = '';
+var sCoord_Y = '';
+var sComentario = '';
+
+// -------- INICIALIZAR PÁGINA -----------------------------------------------------------
+function inicioPaginaNuevaIncidencia(){
+    //cargar los datos del usuario (tabla CIUTADA si tiene datos)
+    cargaDatosCiudadano();
+
+    //cargar CARRERS en el combo
+    cargaCalles();
+
+    //iniciar el plano
+    iniciaMapaAlta(true);
+
+    setTimeout(cierraMapaAbreComentario,800);
+}
+
+function cargaDatosCiudadano(){
+    var objUsu = getDatosUsuario();
+    if(objUsu != null)
+    {
+        $('#inputNOM').val(objUsu['NOM']) ;
+        $('#inputCOGNOM1').val(objUsu['COGNOM1']);
+        $('#inputCOGNOM2').val(objUsu['COGNOM2']);
+        $('#inputDNI').val(objUsu['DNI']);
+        $('#inputEMAIL').val(objUsu['EMAIL']);
+        $('#inputTELEFON').val(objUsu['TELEFON']);
+
+        $('#labelQUISOC').text(objUsu['NOM'] + ' ' + objUsu['COGNOM1'] + ' ' + objUsu['COGNOM2'] );
+    }
+}
+
+function cargaCalles(){
+    var aCalles = getCarrers();
+    if(aCalles == null)
+        mensaje("No s'han trobat carrers","informació");
+    else
+    {
+        $('#selectCARRER').children().remove('li');
+        $('#selectCARRER').empty();
+        $('#selectCARRER').children().remove();
+
+        var calles = [];
+        calles.push("<option value='-1'>Seleccioni el carrer</option>");
+        for (var x = 0; x < aCalles.length; x++)
+        {
+            calles.push("<option value='" + aCalles[x].ID + "'>" + aCalles[x].CARRER + " (" +  aCalles[x].TIPUS + ")</option>");
+        }
+        $('#selectCARRER').append(calles.join('')).selectmenu('refresh');
+    }
+}
+
+function autoRellenoCalleNum(){
+    if(sDireccionAlta == '' || aGlobalCarrers == null || aGlobalCarrers.length < 1) return;
+
+    try{
+        var sTipusDetectat = sDireccionAlta.split(" ")[0];
+        var sCarrerDetectat = sDireccionAlta.split(",")[0].substr(sTipusDetectat.length);
+        var sIdCarrer = "";
+        for(var x=0 ; x<aGlobalCarrers.length; x++)
+        {
+            if(aGlobalCarrers[x].CARRER.trim().toUpperCase() == sCarrerDetectat.trim().toUpperCase())
+                if(aGlobalCarrers[x].TIPUS.trim().toUpperCase() == sTipusDetectat.trim().toUpperCase())
+                    sIdCarrer = aGlobalCarrers[x].ID;
+        }
+        if(sIdCarrer != "") {
+            $('#inputNUM').val(sDireccionAlta.split(",")[1].trim());
+            $('#selectCARRER').val(sIdCarrer)._refresh();
+        }
+    }
+    catch(e){}
+
+    //$('option[value=' + sIdCarrer + ']').attr('selected', 'selected');
+}
+
+function cierraMapaAbreComentario(){
+    $('#collapsibleLocalizacion').trigger('collapse');
+    $('#collapsibleComentario').trigger('expand');
+}
 
 // -------- FOTO -------------------------------------------------------------------------
 function hacerFoto() {
     iniciaMapaAlta(false);
     try {
-        navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 50, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.CAMERA, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
+        navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 20, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.CAMERA, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
     }
     catch (e) {
-        alert('Exception : ' + e.message);
+        mensaje('Exception : ' + e.message);
     }
 }
 
@@ -21,8 +101,11 @@ function hacerfotoOK(imageData) {
     imagen.src = "data:image/jpeg;base64," + sFoto;
 }
 
-function hacerFotoERROR(error) {
-    mensaje('Cap foto caprutada !  ' + error.code);
+function hacerFotoERROR(errorOcancel) {
+    sFoto = '';
+    if(errorOcancel != null && (errorOcancel.indexOf('cancelled') < 0 && errorOcancel.indexOf('selected') < 0)){
+        mensaje('Cap foto caprutada : ' + errorOcancel.code);
+    }
 }
 
 function zoomFoto(){
@@ -59,6 +142,8 @@ function iniciaMapaAlta(bAbrir) {
 
             sDireccionAlta = cogerDireccion(posAlta);
 
+            autoRellenoCalleNum();
+
             var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">reportar incidència en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
             nuevaInfoWindowSobrePlano(mapAlta, posAlta, sTxt, 300);
 
@@ -70,7 +155,8 @@ function iniciaMapaAlta(bAbrir) {
 
             $('#divMapaAlta').gmap('refresh');
 
-            if (!bAbrir) $('#collapsibleLocalizacion').trigger('collapse');
+            //Abrir el acordeón para actualizar el plano
+            //if (!bAbrir) $('#collapsibleLocalizacion').trigger('collapse');            ;
 
         }, function () { getCurrentPositionError(true); });
     } else {
@@ -79,19 +165,96 @@ function iniciaMapaAlta(bAbrir) {
     }
 }
 
-// -------- ENVIAR INCIDENCIA -----------------------------------------------------------------------
-function enviarIncidencia() {
-    var sObs = $('#textareaComentari').val();
-    var sCoord = posAlta.toString().replace(" ", "").replace("(","").replace(")","")
+// -------- NETEJAR CIUTADA -------------------------------------------------------------------
+function netejarDades(){
+    $('#inputNOM').val('');
+    $('#inputCOGNOM1').val('');
+    $('#inputCOGNOM2').val('');
+    $('#inputDNI').val('');
+    $('#inputEMAIL').val('');
+    $('#inputTELEFON').val('');
+    $('#collapsibleQuiSoc').trigger('collapse');
+}
 
+// -------- ENVIAR INCIDENCIA -----------------------------------------------------------------
+function enviarIncidencia() {
+    var sCoord = posAlta.toString().replace(" ", "").replace("(","").replace(")","");
+    sComentario = $('#textareaComentari').val();
+
+    if(sCoord != null && sCoord.trim() != '')
+    {
+        sCoord_X = sCoord.split(",")[0];
+        sCoord_Y = sCoord.split(",")[1];
+    }
+
+    guardaDatosCiudadano();
+
+    // La dirección correcta es la que ponga en el combo de calle y el numero de calle
+    // ( ya que puede pasar que la que ha detectado google maps no sea correcta)
+    if($('#selectCARRER').val() != '-1') //o sea, si han seleccionado una calle en el combo ...
+        sDireccionAlta = $('#selectCARRER').find(":selected").text() + ', ' + $('#inputNUM').val();
+
+    //Controlar datos obligatorios
+    if(!datosObligatorios(sComentario, sDireccionAlta)){
+        mensaje('Les dades marcades amb (*) són obligatòries','Atenció');
+        return;
+    }
+
+    var sParam  = "sObs=" + sComentario;
+    sParam += "&sCoord=" + sCoord;
+    sParam += "&sDir=" + sDireccionAlta;
+    sParam += "&sFoto=" + sFoto;
+    var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
+  //var llamaWS = "http://172.26.0.2:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
     try
     {
-        //BD local :
-        //[ "ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI", "FOTO1" , "FOTO2", "FOTO3" ]
-        var fila = [0,"REF000000","E","29/06/2013","C. ARIBAU","213", sCoord.split(",")[0] , sCoord.split(",")[1] ,sObs,sFoto,"","" ];
-        //alert(fila);
-        //var filaInsertada = db.catalog.getTable("COMUNICATS").insertRow(fila);
+        // function LlamaWebService(sTipoLlamada,sUrl,   sParametros,sContentType,                      bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion,        pasaParam, asincro, bProcesar, tag)
+        global_AjaxERROR = '';
+        var datos = LlamaWebService('POST',       llamaWS,sParam,    'application/x-www-form-urlencoded',true,      'xml',     false,     false,  10000,    resultadoEnvio, null,      false,    false,     null);
+    }
+    catch(e)
+    {
+        mensaje('ERROR (exception) en enviarIncidencia : \n' + e.code + '\n' + e.message);
+    }
+}
 
+function resultadoEnvio(resultado, param){
+    try{
+        if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
+            mensaje(global_AjaxERROR);
+
+            // Descapar para pruebas en PC  -----------------
+            var sReferen = 'EUDLC20130710885H';
+            guardaIncidencia(sReferen);
+
+            eliminarFoto();
+            limpiaVariables('pageNuevaIncidencia');
+            mensaje('Incidència notificada' + '\n' + 'Gràcies per la seva col·laboració');
+            abrirPagina('pageIndex');
+        }
+        else
+        {
+            //ATENCIÓN !!!!!!!!!!!!!!!! hay que recoger bien este valor devuelto por el WS  !!!!!!!!!!!!!!!!!!!!!!
+            //var sRef = global_AjaxRESULTADO[0];
+            sRef = "EUDLC000000000000";
+
+            guardaIncidencia(sRef);
+
+            eliminarFoto();
+            limpiaVariables('pageNuevaIncidencia');
+            mensaje('Incidència notificada' + '\n' + 'Gràcies per la seva col·laboració');
+            abrirPagina('pageIndex');
+        }
+    }
+    catch(e)
+    {
+        mensaje('ERROR (exception) en resultadoEnvio : \n' + e.code + '\n' + e.message);
+    }
+}
+
+function guardaDatosCiudadano(){
+    try
+    {
         // NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON
         var idCiutada = 0;
         var nom='';
@@ -101,10 +264,10 @@ function enviarIncidencia() {
         var email='';
         var telefon='';
 
+        //recojo los datos del usuario que ya están guardados en la tabla CIUTADA
         var objUsu = getDatosUsuario();
 
-        if(objUsu == null) alert("antes insert/upd : Error consultant dades de l'usuari");
-
+        //Si ha modificado algún dato lo recojo para actualizar , pero si lo ha dejado en blanco cojo lo que ya tenía en la tabla guardado
         if($('#inputNOM').val() != '')     nom =     $('#inputNOM').val();     else nom =     objUsu['NOM'] + '';
         if($('#inputCOGNOM1').val() != '') cognom1 = $('#inputCOGNOM1').val(); else cognom1 = objUsu['COGNOM1'] + '';
         if($('#inputCOGNOM2').val() != '') cognom2 = $('#inputCOGNOM2').val(); else cognom2 = objUsu['COGNOM2'] + '';
@@ -114,66 +277,68 @@ function enviarIncidencia() {
 
         fila = [idCiutada, nom , cognom1, cognom2,  dni, email , telefon];
 
-        var filaInsertada = null;
+        var filasAfectadas = 0;
 
+        //Si ya existia el registro con los datos del usuario : UPDATEAR, si no exisitia : INSERTAR
         if(objUsu != null) {
-            filaInsertada = db.catalog.getTable("CIUTADA").updateRow(fila);
+            filasAfectadas = db.catalog.getTable("CIUTADA").updateRow(fila);
         }
         else
         {
-            filaInsertada = db.catalog.getTable("CIUTADA").insertRow(fila);
+            filasAfectadas = db.catalog.getTable("CIUTADA").insertRow(fila);
         }
 
-        if(filaInsertada == 1)
-            db.commit();
+        if(filasAfectadas == 1)
+            db.commit({
+                onsuccess: function() {
+                },
+                onerror: function(errStr) {
+                    mensaje("Error dessant dades : " + errStr);
+                }
+            });
         else
-            alert('Actualització correcta');
-
-        objUsu = getDatosUsuario();
-        if(objUsu == null)
-            alert("despues insert/upd : Error consultant dades de l'usuari");
-
+            mensaje('Actualització incorrecta');
     }
     catch (e)
     {
-        alert('Error : ' + e);
+        mensaje('Error : ' + e , 'Atenció');
     }
+}
 
-    var sParam  = "sObs=" + sObs;
-    sParam += "&sCoord=" + sCoord;
-    sParam += "&sDir=" + sDireccionAlta;
-    sParam += "&sFoto=" + sFoto;
-    var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
+function datosObligatorios(sObs, sDir){
+    if(sObs == null || sObs.trim() == '') return false;
+    if(sDir == null || sDir.trim() == '') return false;
+    return true;
+}
 
+function guardaIncidencia(sReferen){
+    var sSel = "SELECT MAX(ID) FROM COMUNICATS";
     try
     {
-        // function LlamaWebService(sTipoLlamada,sUrl,   sParametros,sContentType,                      bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion,        pasaParam, asincro, bProcesar, tag)
-        var datos = LlamaWebService('GET',       llamaWS,sParam,    'application/x-www-form-urlencoded',true,      'xml',     false,     false,  10000,    resultadoEnvio, null,      false,   false,     null);
+        var sRes = db.queryValue(sSel);
+        if(sRes == null) sRes = "0";
+        var nId = parseInt(sRes) + 1;
+        var fecha = FechaHoy() + ' ' + HoraAhora();
+        var carrer = sDireccionAlta.split(",")[0];
+        var num = sDireccionAlta.split(",")[1];
+
+        // INSERT INTO COMUNICATS (ID, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI) VALUES (?,?,?,?,?,?,?,?,?);
+        var fila = [nId, sReferen, 'PENDENT', fecha,carrer , num, sCoord_X, sCoord_Y, sComentario, null, null, null];
+
+        var filasAfectadas = db.catalog.getTable("COMUNICATS").insertRow(fila);
+        if(filasAfectadas == 1)
+            db.commit({
+                onsuccess: function() {
+                },
+                onerror: function(errStr) {
+                    mensaje("Error dessant dades : " + errStr);
+                }
+            });
+        else
+            mensaje('Actualització incorrecta');
     }
-    catch (e)
+    catch(e)
     {
-        mensaje('ERROR (exception) en enviarIncidencia : \n' + e.code + '\n' + e.message);
+        mensaje('ERROR (exception) en guardaIncidencia : \n' + e.code + '\n' + e.message);
     }
 }
-
-function resultadoEnvio(resultado, param){
-    if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
-
-        //mensaje(global_AjaxERROR);
-
-// Descapar para pruebas en PC  -----------------
-        eliminarFoto();
-        limpiaVariables('pageNuevaIncidencia');
-        mensaje('Incidència notificada' + '\n' + 'Gràcies per la seva col·laboració');
-        abrirPagina('pageIndex');
-
-    }
-    else
-    {
-        eliminarFoto();
-        limpiaVariables('pageNuevaIncidencia');
-        mensaje('Incidència notificada' + '\n' + 'Gràcies per la seva col·laboració');
-        abrirPagina('pageIndex');
-    }
-}
-

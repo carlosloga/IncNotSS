@@ -10,6 +10,7 @@ function LlamaWebService(sTipoLlamada,sUrl, sParametros,sContentType, bCrossDom,
     $.ajax({
         type: sTipoLlamada,
         url: sUrl,
+        global: false,
         data: sParametros,
         contentType: sContentType,
         crossDomain: bCrossDom,
@@ -30,14 +31,13 @@ function LlamaWebService(sTipoLlamada,sUrl, sParametros,sContentType, bCrossDom,
         },
         error: function (e, f, g) {
             //global_AjaxERROR = 'ERROR en LlamaWebService \r\n' + e.message + ' ' + e.Description + ' ' + f + ' ' + g + ' en ' + ws + '  ' + sUrl + ' amb ' + sParametros;
-            global_AjaxERROR = 'ERROR en LlamaWebService \r\n' + e.message + ' ' + e.Description + ' ' + f + ' ' + g + ' en ' + sUrl + '    params: ' + sParametros;
+            global_AjaxERROR = 'ERROR en LlamaWebService : ' + e.message + ' ' + e.Description + ' ' + f + ' ' + g + ' en ' + sUrl + '    params: ' + sParametros;
             if (funcion != null) funcion(global_AjaxERROR, pasaParam);
         },
         async: asincro
     });
     return global_AjaxRESULTADO;
 }
-
 
 function procesaResultado(xml, tag) {
     var aCampo = new Array();

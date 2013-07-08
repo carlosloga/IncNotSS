@@ -1,0 +1,33 @@
+var objComunicat = new Object();
+
+objComunicat.ID = 0;
+objComunicat.REFERENCIA= '';
+objComunicat.ESTAT = '';
+objComunicat.DATA = '';
+objComunicat.CARRER = '';
+objComunicat.NUM = '';
+objComunicat.COORD_X = '';
+objComunicat.COORD_Y = '';
+objComunicat.COMENTARI = '';
+
+function comunicat() {
+    return objComunicat;
+}
+
+function comunicat(aDatos) {
+    try {
+        this.ID = aDatos['id'];
+        this.REFERENCIA = aDatos['referencia'] + '';
+        this.ESTAT = aDatos['estat'] + '';
+        this.DATA = aDatos['data'] + '';
+        this.CARRER = aDatos['carrer'] + '';
+        this.NUM = aDatos['num'] + '';
+        this.COORD_X = aDatos['coord_x'] + '';
+        this.COORD_Y = aDatos['coord_y'] + '';
+        this.COMENTARI = aDatos['comentari'] + '';
+
+        return this;
+    } catch (e) { alert('en creant objecte : comunicat  ERROR : ' + e.Message); }
+}
+
+//"ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI"
