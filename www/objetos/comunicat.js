@@ -27,7 +27,7 @@ function comunicat(aDatos) {
         this.COMENTARI = aDatos['comentari'] + '';
 
         return this;
-    } catch (e) { alert('en creant objecte : comunicat  ERROR : ' + e.Message); }
+    } catch (e) { alert('creant objecte : comunicat  ERROR : ' + e.message); return null; }
 }
 
 //"ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI"

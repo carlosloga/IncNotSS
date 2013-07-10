@@ -4,13 +4,14 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Incident notifier</title>
+    <title>comunicats</title>
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <meta name="author" content="" />
     <meta name="viewport" content="width=device-width; initial-scale=1" />
 
     <!-- !CSS -->
+    <!--<link href="css/jQMdialogFix.css" rel="stylesheet" type="text/css" />-->
     <link href="css/jquery.mobile-1.3.1.min.css" rel="stylesheet" type="text/css" />
     <link href="css/jquery.mobile.datebox-1.0.1.min.css" rel="stylesheet" type="text/css" />
     <link href="css/index.css" rel="stylesheet" type="text/css" />
@@ -19,10 +20,10 @@
     <script src="js/jquery-1.9.0.min.js" type="text/javascript"></script>
     <script src="js/jquery.mobile-1.3.1.min.js" type="text/javascript"></script>
     <script src="js/jquery.mobile.datebox-1.0.1.min.js" type="text/javascript"></script>
+    <!--<script src="js/jQMdialogFix.js" type="text/javascript"></script>-->
 
     <!-- Base de dades -->
     <script src="ssdb-jquery-plugin.js" type="text/javascript"></script>
-    <!-- <script type="text/javascript" src="http://www.SequelSphere.com/db/latest/txo28sxed9/SequelSphereDB.js"></script> -->
     <script src="SequelSphereDB.js" type="text/javascript"></script>
 
     <!-- Negocio  -->
@@ -47,202 +48,266 @@
 
 <body>
 <!-- Página Principal  -->
-    <div data-role="page" id="pageIndex">
+    <div data-role="page" id="pageIndex" >
         <div data-role="header" data-theme="c">
             <a href="http://www.parets.cat" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <h3>comunicats v.0.1</h3>
-            <a href="" onclick="abrirPopUp('pageInfo')" data-rel="popup" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
-            <!-- <a href="" onclick="sincroBD('CARRERS')" id="buttonSINCRO" data-mini="true" data-inline="true" data-role="button" data-theme="c">sincro carrers</a> -->
+            <a href="#pageInfo" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
+            <!-- <a href="" onclick="sincroBD('CARRERS')" id="buttonSINCRO" data-mini="false" data-inline="true" data-role="button" data-theme="c">sincro carrers</a> -->
         </div>
-
         <div data-role="content" data-theme="c">
              <p style="text-align: center;"><img src="images/LogoAjParets.jpg" width="80%;" /></p>
              <div data-role="controlgroup">
-                 <a href="" onclick="abrirPagina('pageNuevaIncidencia')" id="buttonALTA" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-r">Nou comunicat</a>
-                 <a href="" onclick="abrirPagina('pageConsultaIncidencias')" id="buttonCONSULTA" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-r">Els meus comunicats</a>
+                 <a href="" onclick="abrirPagina('pageNuevaIncidencia')" id="buttonALTA" data-mini="false" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-r">Nou comunicat</a>
+                 <a href="" onclick="abrirPagina('pageConsultaIncidencias')" id="buttonCONSULTA" data-mini="false" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-r">Els meus comunicats</a>
+            </div>
+        </div>
+        <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
+            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label id="labelPieIndex" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
+        </div>
+
+        <!-- PopUp INFO -->
+        <div data-role="popup" id="pageInfo" data-theme="c" data-overlay-theme="a" style="max-width:95%;" class="ui-corner-all">
+            <div data-role="header" data-theme="a" class="ui-corner-top">
+                <h1>quant a</h1>
+            </div>
+
+            <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
+                <p style="text-align: left;">
+                    L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+                </p>
+                <p style="text-align: center">
+                    Fem entre tots una ciutat més neta, sostenible i cívica.
+                </p>
+                <p style="text-align: center">
+                    Gràcies per fer-la servir.
+                </p>
+                <p style="text-align: center">
+                    <img src="images/LogoAjParets.jpg" width="50%;" /><br/>
+                </p>
             </div>
         </div>
 
-        <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
-            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label for="basic" id="labelPieIndex" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
-        </div>
     </div>
 
 <!-- Página NuevaIncidencia -->
     <div data-role="page" id="pageNuevaIncidencia">
+        <div data-role="header" data-theme="c">
+            <a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h3>nou comunicat</h3>
+            <a href="#pageInfo3" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
+        </div>
+        <div data-role="content" data-theme="c" data-mini="false">
+            <div id="acordeon" data-role="collapsible-set" data-mini="false" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-l" data-thene="b" data-content-theme="b">
 
-    <div data-role="header" data-theme="c">
-        <a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
-        <h3>nou comunicat</h3>
-        <a href="#pageInfo" data-rel="dialog" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
-    </div>
+                <!-- I N C I D E N C I A  -->
+                <div data-role="collapsible" data-mini="false" id="collapsibleComentario" data-collapsed="true">
+                    <h3><table style="width:100%;"><tr><td>què està passant (*)</td><td style="text-align:right;"><label id="labelComentari" style="font-size:x-small;"></label></td></tr></table></h3>
 
-    <div data-role="content" data-theme="c" data-mini="true">
-        <div id="acordeon" data-role="collapsible-set" data-mini="true" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-l" data-thene="b" data-content-theme="b">
-
-            <!-- I N C I D E N C I A  -->
-            <div data-role="collapsible" data-mini="true" id="collapsibleComentario" data-collapsed="true">
-                <h3><table style="width:100%;"><tr><td>què està passant (*)</td><td style="text-align:right;"><label id="labelComentari" style="font-size:x-small;"></label></td></tr></table></h3>
-                <input type="text" name="textareaComentari" id="textareaComentari" placeholder="la incidència, el suggeriment, la queixa, ..." data-clear-btn="true" />
-            </div>
-
-            <!-- M A P A -->
-            <div data-role="collapsible" data-mini="true" id="collapsibleLocalizacion">
-                <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
-                <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
-                    <div id="divMapaAlta" style="height:200px;"></div>
+                    <input type="text" name="textareaComentari" id="textareaComentari" placeholder="la incidència, el suggeriment, la queixa, ..." data-clear-btn="true" />
                 </div>
-                <div>
-                    <div data-role="fieldcontain">
-                    <!-- <label for="selectCARRER">carrer</label> -->
-                    <select name="selectCARRER" data-placeholder="true" id="selectCARRER" data-inline="true" data-mini="true" data-theme="c"></select>
+
+                <!-- M A P A -->
+                <div data-role="collapsible" data-mini="false" id="collapsibleLocalizacion">
+                    <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
+                    <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                        <div id="divMapaAlta" style="height:200px;"></div>
                     </div>
-                    <div data-role="fieldcontain">
-                    <!-- <label for="inputNUM">num.</label> -->
-                    <input type="text" placeholder="numero portal ..." maxlength="3" style="width:30%;" name="inputNUM" id="inputNUM" data-inline="true" data-mini="true" data-theme="c" />
+                    <div>
+                        <div data-role="fieldcontain">
+                        <!-- <label for="selectCARRER">carrer</label> -->
+                        <select name="selectCARRER" data-placeholder="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                        </div>
+                        <div data-role="fieldcontain">
+                        <!-- <label for="inputNUM">num.</label> -->
+                        <input type="text" placeholder="numero portal ..." maxlength="3" style="width:30%;" name="inputNUM" id="inputNUM" data-inline="true" data-mini="false" data-theme="c" />
+                        </div>
                     </div>
+                </div>
+
+                <!-- F O T O -->
+                <div data-role="collapsible" data-mini="false" id="collapsibleFoto">
+                    <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td><td style="text-align:right;"><a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a></td></tr></table></h3>
+
+                    <table style="width:100%;"><tr>
+                        <td style="text-align:left; width:100%;">
+                            <img id="imgFoto" src="" width="200px" border='1' onclick="zoomFoto()" />
+                        </td>
+                        <td style="text-align:right;">
+                            <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="false">el·liminar</a>
+                        </td>
+                    </tr></table>
                 </div>
             </div>
 
-            <!-- F O T O -->
-            <div data-role="collapsible" data-mini="true" id="collapsibleFoto">
-                <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td><td style="text-align:right;"><a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="true" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a></td></tr></table></h3>
+            <!-- U S U A R I O -->
+            <div data-role="collapsible" id="collapsibleQuiSoc" data-mini="false" data-theme="d" data-collapsed="true">
+                <h3><table style="width:100%;"><tr><td>qui sóc (opcional)</td><td style="text-align:right;"><label id="labelQUISOC" style="font-size:x-small;"></label></td></tr></table></h3>
+                <div data-role="fieldcontain">
+                    <!-- <label for="inputNOM">nom</label> -->
+                    <input type="text" name="inputNOM" id="inputNOM" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu nom ..." data-clear-btn="true" />
+                    <!-- <label for="inputCOGNOM1">primer cognom</label> -->
+                    <input type="text" name="inputCOGNOM1" id="inputCOGNOM1" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu primer cognom ..." data-clear-btn="true" />
+                    <!-- <label for="inputCOGNOM2">segon cognom</label> -->
+                    <input type="text" name="inputCOGNOM2" id="inputCOGNOM2" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu segon cognom ..." data-clear-btn="true" />
+                    <!-- <label for="inputDNI">dni</label> -->
+                    <input type="text" name="inputDNI" id="inputDNI" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu dni ..." data-clear-btn="true" />
+                    <!-- <label for="inputEMAIL">email</label> -->
+                    <input type="text" name="inputEMAIL" id="inputEMAIL" data-inline="true" data-mini="false" data-theme="d" placeholder="la meva adreça electrónica ..." data-clear-btn="true" />
+                    <!-- <label for="inputTEL">telèfon</label> -->
+                    <input type="text" name="inputTELEFON" id="inputTELEFON" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu telèfon mòbil ..." data-clear-btn="true" />
+                </div>
+                <a href="#" id="buttonNetejarDades" onclick="netejarDades()" data-mini="false" data-inline="true" data-role="button" data-theme="c" data-icon="delete">netejar aquestes dades</a>
+            </div>
+            <div style="text-align:right;">
+                <a href="#" id="buttonEnviar" onclick="enviarIncidencia()" data-mini="false" data-inline="false" data-role="button" data-theme="c" data-icon="grid">ENVIAR COMUNICAT</a>
+            </div>
+        </div>
+        <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
+            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label   id="labelPieNuevaIncidencia" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
+        </div>
 
-                <table style="width:100%;"><tr>
-                    <td style="text-align:left; width:100%;">
-                        <img id="imgFoto" src="" width="200px" border='1' onclick="zoomFoto()" />
-                    </td>
-                    <td style="text-align:right;">
-                        <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="dialog" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a>
-                    </td>
-                </tr></table>
+        <!-- PopUp ELIMINAR foto -->
+        <div data-role="popup" id="pageEliminarFoto"  data-theme="c" style="max-width:95%;" class="ui-corner-all">
+            <div data-role="header" data-theme="a" class="ui-corner-top">
+                <h1>El·liminar foto</h1>
+            </div>
+            <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+                <h3 class="ui-title">Està segur/a que vol el·liminar ?</h3>
+                <div data-role="controlgroup" data-type="horizontal">
+                    <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-theme="c">cancel·lar</a>
+                    <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" onclick="eliminarFoto()">el·liminar</a>
+                </div>
             </div>
         </div>
 
-        <!-- U S U A R I O -->
-        <div data-role="collapsible" id="collapsibleQuiSoc" data-mini="true" data-theme="d" data-collapsed="true">
-            <h3><table style="width:100%;"><tr><td>qui sóc (opcional)</td><td style="text-align:right;"><label id="labelQUISOC" name="labelQUISOC" style="font-size:x-small;"></label></td></tr></table></h3>
-            <div data-role="fieldcontain">
-                <!-- <label for="inputNOM">nom</label> -->
-                <input type="text" name="inputNOM" id="inputNOM" data-inline="true" data-mini="true" data-theme="d" placeholder="el meu nom ..." data-clear-btn="true" />
-                <!-- <label for="inputCOGNOM1">primer cognom</label> -->
-                <input type="text" name="inputCOGNOM1" id="inputCOGNOM1" data-inline="true" data-mini="true" data-theme="d" placeholder="el meu primer cognom ..." data-clear-btn="true" />
-                <!-- <label for="inputCOGNOM2">segon cognom</label> -->
-                <input type="text" name="inputCOGNOM2" id="inputCOGNOM2" data-inline="true" data-mini="true" data-theme="d" placeholder="el meu segon cognom ..." data-clear-btn="true" />
-                <!-- <label for="inputDNI">dni</label> -->
-                <input type="text" name="inputDNI" id="inputDNI" data-inline="true" data-mini="true" data-theme="d" placeholder="el meu dni ..." data-clear-btn="true" />
-                <!-- <label for="inputEMAIL">email</label> -->
-                <input type="text" name="inputEMAIL" id="inputEMAIL" data-inline="true" data-mini="true" data-theme="d" placeholder="la meva adreça electrónica ..." data-clear-btn="true" />
-                <!-- <label for="inputTEL">telèfon</label> -->
-                <input type="text" name="inputTELEFON" id="inputTELEFON" data-inline="true" data-mini="true" data-theme="d" placeholder="el meu telèfon mòbil ..." data-clear-btn="true" />
+        <!-- PopUp INFO3 -->
+        <div data-role="popup" id="pageInfo3" data-theme="c" data-overlay-theme="a" style="max-width:95%;" class="ui-corner-all">
+            <div data-role="header" data-theme="a" class="ui-corner-top">
+                <h1>quant a</h1>
             </div>
-            <a href="#" id="buttonNetejarDades" onclick="netejarDades()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="delete">netejar aquestes dades</a>
+
+            <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
+                <p style="text-align: left;">
+                    L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+                </p>
+                <p style="text-align: center">
+                    Fem entre tots una ciutat més neta, sostenible i cívica.
+                </p>
+                <p style="text-align: center">
+                    Gràcies per fer-la servir.
+                </p>
+                <p style="text-align: center">
+                    <img src="images/LogoAjParets.jpg" width="50%;" /><br/>
+                </p>
+            </div>
         </div>
 
-        <div style="text-align:right;">
-            <a href="#" id="buttonEnviar" onclick="enviarIncidencia()" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="grid">ENVIAR LA INCIDÈNCIA</a>
-        </div>
     </div>
-
-    <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
-        <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label for="basic" id="labelPieNuevaIncidencia" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
-    </div>
-</div>
 
 <!-- Página ConsultaIncidencias -->
     <div data-role="page" id="pageConsultaIncidencias">
+        <div data-role="panel" id="panelDadesComunicat" data-position="right" data-display="overlay" data-animate="true" style="max-height: 80%; background-color: yellow;">
+            <div data-role="content" data-theme="e" class="ui-corner-all">
+                <table>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">comunicat</td><td style="font-size: small"><label id="labelCOMUNICAT_ID"></label></td></tr>
+                    <tr><td colspan="2" style="font-weight: bold; font-size: small;"><label id="labelCOMUNICAT_COMENTARI"></label></td></tr>
+                    <tr><td colspan="2"></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">quan</td><td style="font-size: small"><label   id="labelCOMUNICAT_DATA"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">on</td><td style="font-size: small"><label   id="labelCOMUNICAT_CARRER"></label>,<label   id="labelCOMUNICAT_NUM"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">referència</td><td style="font-size: small"><label   id="labelCOMUNICAT_REFERENCIA"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">estat</td><td style="font-size: small"><label   id="labelCOMUNICAT_ESTAT"></label></td></tr>
+                </table>
+            </div>
+            <a href="#" id="buttonCerrarPanel" onclick="$('#panelDadesComunicat').panel('close')" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-l">tornar</a>
+        </div>
         <div data-role="header" data-theme="c">
             <a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
-            <h3>ja reportats</h3>
-            <a href="#pageInfo" data-rel="dialog" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
+            <h3>reportats</h3>
+            <a href="#pageInfo2" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
         </div>
         <div data-role="content" data-theme="a">
                 <div id="divListaIncidencias" style="margin-top:0; vertical-align:top;">
                     <ul data-role="listview" data-divider-theme="a" data-inset="true">
-                        <li data-role="list-divider" role="heading" id="cabeceraProblemesSalut">
-                            <table style="width: 100%;"><tr><td>comunicats</td><td style="text-align: right;"><a href="#" id="buttonMostrarEnPlano" onclick="estadoDelPlano()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="grid">mostrar plànol</a></td></tr></table>
+                        <li data-role="list-divider" role="heading" id="liComunicatsReportats">
+                            <table style="width: 100%;"><tr><td>comunicats</td><td style="text-align: right;"><a href="#" id="buttonMostrarEnPlano" onclick="estadoDelPlano()" data-mini="false" data-inline="true" data-role="button" data-theme="c" data-icon="grid">mostrar plànol</a></td></tr></table>
                         </li>
                         <li data-theme="b">
                             <table style='height:10px; width:100%;'><tr>
-                                <td style='text-align:left; font-size:small; width: 40%;'>referència</td>
-                                <td style='text-align:left; font-size:small; width: 40%;'>data</td>
-                                <td style='text-align:left; font-size:small; width: 20%;'>estat</td>
+                                <td style='text-align:left; font-size:small; width: 15%;'>id</td>
+                                <td style='text-align:left; font-size:small; width: 55%;'>referència</td>
+                                <td style='text-align:left; font-size:small; width: 30%;'>estat</td>
                             </tr></table>
                             <div class="content-primary" id="divLista">
                                 <ul data-role="listview" id="listviewLista" data-filter="false" data-inset="true"  data-theme="d" data-divider-theme="b">
-                                    <li></li>
                                 </ul>
                             </div>
                         </li>
                     </ul>
-                    <div id="divMapaConsulta" style="height:300px;"></div>
+                    <div id="divSobreMapaConsulta" data-theme="e" class="ui-corner-all">
+                        <div id="divMapaConsulta" class="ui-corner-all" style="height:300px;">
+                        </div>
+                        <a href="#" id="buttonSubirEnPlano" onclick="estadoDelPlano()" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-u">pujar</a>
+                    </div>
                 </div>
         </div>
-
         <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
-            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label for="basic" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
+            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label   style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
         </div>
+
+        <!-- PopUp INFO2 -->
+        <div data-role="popup" id="pageInfo2" data-theme="c" data-overlay-theme="a" style="max-width:95%;" class="ui-corner-all">
+            <div data-role="header" data-theme="a" class="ui-corner-top">
+                <h1>quant a</h1>
+            </div>
+
+            <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
+                <p style="text-align: left;">
+                    L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+                </p>
+                <p style="text-align: center">
+                    Fem entre tots una ciutat més neta, sostenible i cívica.
+                </p>
+                <p style="text-align: center">
+                    Gràcies per fer-la servir.
+                </p>
+                <p style="text-align: center">
+                    <img src="images/LogoAjParets.jpg" width="50%;" /><br/>
+                </p>
+            </div>
+        </div>
+
     </div>
+
+<!-- Página DATOS COMUNICAT -->
+<!--    <div data-role="page" id="pageDatosComunicat">
+        <div data-role="header" data-theme="a" class="ui-corner-top">
+            <h3>comunicat <label   id="labelCOMUNICAT_ID"></label></h3>
+        </div>
+        <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
+            <table>
+                <tr><td></td><td style="font-weight: bold; font-size: small;"><label   id="labelCOMUNICAT_COMENTARI"></label></td></tr>
+                <tr><td></td><td style="font-weight: bold; font-size: small;"></td></tr>
+                <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">referència</td><td style="font-size: small"><label   id="labelCOMUNICAT_REFERENCIA"></label></td></tr>
+                <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">quan</td><td style="font-size: small"><label   id="labelCOMUNICAT_DATA"></label></td></tr>
+                <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">on</td><td style="font-size: small"><label   id="labelCOMUNICAT_CARRER"></label>,<label   id="labelCOMUNICAT_NUM"></label></td></tr>
+                <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">estat</td><td style="font-size: small"><label   id="labelCOMUNICAT_ESTAT"></label></td></tr>
+            </table>
+        </div>
+        <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
+            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label   style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
+        </div>
+    </div>-->
 
 <!-- Página ZOOM foto -->
-    <div data-role="popup" id="pageZoomFoto" data-theme="c" style="max-width:95%;" class="ui-corner-all" data-add-back-btn="true" data-back-btn-text="Back">
-        <div data-role="content" data-theme="b">
-            <p>
-                <img id="imgZoomFoto" src="" border='1' width="100%" />
-                <a href="#pageNuevaIncidencia" data-rel="back" data-role="button" data-mini="true" >tornar</a>
-            </p>
-        </div>
+    <div data-role="popup" id="pageZoomFoto"  data-theme="c" style="max-width:95%;" class="ui-corner-all" data-add-back-btn="true" data-back-btn-text="Back">
+    <div data-role="content" data-theme="b">
+        <p>
+            <img id="imgZoomFoto" src="" border='1' width="100%" />
+            <a href="#pageNuevaIncidencia" data-rel="back" data-role="button" data-mini="false" >tornar</a>
+        </p>
     </div>
-
-<!-- PopUp ELIMINAR foto -->
-    <div data-role="popup" id="pageEliminarFoto" data-theme="c" style="max-width:95%;" class="ui-corner-all">
-        <div data-role="header" data-theme="a" class="ui-corner-top">
-            <h1>El·liminar foto</h1>
-        </div>
-        <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
-            <h3 class="ui-title">Està segur/a que vol el·liminar ?</h3>
-            <a href="#" data-role="button" data-mini="true" data-inline="true" data-rel="back" data-theme="c">cancel·lar</a>
-            <a href="#" data-role="button" data-mini="true" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" onclick="eliminarFoto()">el·liminar</a>
-        </div>
-    </div>
-
-<!-- PopUp DATOS COMUNICAT -->
-    <div data-role="popup" id="pageDatosComunicat" data-overlay-theme="a" data-theme="c" style="max-width:95%;" class="ui-corner-all">
-        <div data-role="header" data-theme="a" class="ui-corner-top">
-            <h1>comunicat <label for="basic" id="labelCOMUNICAT_ID"></label></h1>
-        </div>
-        <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
-             <table>
-                 <tr><td></td><td style="font-weight: bold; font-size: small;"><label for="basic" id="labelCOMUNICAT_COMENTARI"></td></tr>
-                 <tr><td></td><td style="font-weight: bold; font-size: small;"></td></tr>
-                 <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">referència</td><td style="font-size: small"><label for="basic" id="labelCOMUNICAT_REFERENCIA"></label></td></tr>
-                 <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">quan</td><td style="font-size: small"><label for="basic" id="labelCOMUNICAT_DATA"></label></td></tr>
-                 <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">on</td><td style="font-size: small"><label for="basic" id="labelCOMUNICAT_CARRER"></label>,<label for="basic" id="labelCOMUNICAT_NUM"></label></td></tr>
-                 <tr><td style="text-align:right; color:#6d051a; font-weight: bold; font-size: small">estat</td><td style="font-size: small"><label for="basic" id="labelCOMUNICAT_ESTAT"></label></td></tr>
-             </table>
-        </div>
-    </div>
-
-<!-- PopUp INFO -->
-    <div data-role="popup" id="pageInfo" data-overlay-theme="a" data-theme="c" style="max-width:95%;" class="ui-corner-all">
-        <div data-role="header" data-theme="a" class="ui-corner-top">
-            <h1>quant a</h1>
-        </div>
-        <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
-            <p style="text-align: left;">
-                L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament, les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
-            </p>
-            <p style="text-align: center">
-                Fem entre tots una ciutat més neta, sostenible i cívica.
-            </p>
-            <p style="text-align: center">
-                Gràcies per utilitzar-la.
-            </p>
-            <p style="text-align: center">
-               <img src="images/LogoAjParets.jpg" width="50%;" /><br/>
-            </p>
-        </div>
-    </div>
+</div>
 
 <!-- JAVASCRIPT -->
     <script type="text/javascript">

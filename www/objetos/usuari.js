@@ -22,6 +22,6 @@ function usuari(aDatos) {
         this.EMAIL  = aDatos['email'] + '';
         this.TELEFON = aDatos['telefon'] + '';
         return this;
-    } catch (e) { alert('en creant objecte : usuari  ERROR : ' + e.Message); }
+    } catch (e) { alert('creant objecte : usuari  ERROR : ' + e.message); return null; }
 }
 

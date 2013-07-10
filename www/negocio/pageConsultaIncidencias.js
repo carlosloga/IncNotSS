@@ -7,6 +7,7 @@ function inicioPaginaConsultaIncidencias(){
 
     //Ocultar el plano
     $("#divMapaConsulta").hide();
+    $("#divSobreMapaConsulta").hide();
     $("#buttonMostrarEnPlano").changeButtonText("mostrar plànol");
     $("#buttonMostrarEnPlano").button("refresh");
 }
@@ -14,22 +15,23 @@ function inicioPaginaConsultaIncidencias(){
 //aComs = array de objetos 'comunicat'
 function cargaListaComunicats(aComs){
     if(aComs == null || aComs.length < 1) {
-        mensaje("no s'han trobat comunicats","informació");
-        return "";
+        //mensaje("no s'han trobat comunicats","informació");
+        return ;
     }
-
-    $('#listviewLista').children().remove('li');
 
     var sFila = "";
     var sDatos = "";
     var separador = "#";
+
+    $('#listviewLista').children().remove('li');
+
     for(var x=0; x<aComs.length; x++)
     {
-        //sDatos = aComs[x].ID + "(/)" + aComs[x].CARRER + "(/)" + aComs[x].NUM + "(/)" + aComs[x].COMENTARI + "(/)" + aComs[x].REFERENCIA + "(/)" + aComs[x].DATA + "(/)" + aComs[x].ESTAT ;
         sDatos = getCadenaComunicat(aComs[x] , separador);
-        sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].DATA + "</td><td style='text-align:left; font-size:x-small; width: 20%;'>" + aComs[x].ESTAT + "</td></tr></table>";
+        //sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].DATA + "</td><td style='text-align:left; font-size:x-small; width: 20%;'>" + aComs[x].ESTAT + "</td></tr></table>";
+        sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 15%;'>" + aComs[x].ID + "</td><td style='text-align:left; font-size:x-small; width: 55%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].ESTAT + "</td></tr></table>";
         $('#listviewLista').append($('<li/>', {
-            'id': "fila_" + aComs[x].ID, 'data-icon': "false"
+            'id': "fila_" + aComs[x].ID, 'data-icon': "arrow-r"
         }).append($('<a/>', {
                 'href': '',
                 'onclick': "verDatosComunicat('" + sDatos + "','" + separador + "')",
@@ -37,6 +39,8 @@ function cargaListaComunicats(aComs){
                 'html': sFila
         })));
     }
+    $('#listviewLista').listview('refresh');
+
 }
 
 function verDatosComunicat(sDatos, separador){
@@ -66,7 +70,8 @@ function verDatosComunicat(sDatos, separador){
     $('#labelCOMUNICAT_NUM').text(aDatos[5]);
     $('#labelCOMUNICAT_COMENTARI').text(aDatos[8]);
 
-    abrirPopUp('pageDatosComunicat');
+    $("#panelDadesComunicat").panel("open");
+    //abrirPagina('pageDatosComunicat');
 
 }
 
@@ -75,12 +80,16 @@ function estadoDelPlano(){
     {
         $("#buttonMostrarEnPlano").changeButtonText("mostrar plànol");
         $("#divMapaConsulta").hide();
+        $("#divSobreMapaConsulta").hide();
+        $.mobile.silentScroll(0);
     }
     else
     {
+        $("#divSobreMapaConsulta").show();
         $('#divMapaConsulta').show();
         $("#buttonMostrarEnPlano").changeButtonText("ocultar plànol");
         mostrarEnPlano();
+        $.mobile.silentScroll(1000);
     }
 
     $("#buttonMostrarEnPlano").button("refresh");

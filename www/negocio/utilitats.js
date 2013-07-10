@@ -29,6 +29,11 @@ function mensaje(msg,titulo) {
 
 function abrirPopUp(pag){
     $.mobile.changePage("#" + pag, { transition: "pop", role: "dialog", reverse: true, changeHash: true });
+    //$(".ui-dialog a[data-icon='delete']").remove();
+}
+
+function cerrarPopUp(pag){
+    $("#" + pag).dialog("close");
 }
 
 function nuevaInfoWindowSobrePlano(mapa, pos,htmlText, nMaxAncho ){
@@ -66,7 +71,7 @@ function cogerDireccion(pos){
     try
     {
         //function LlamaWebService (sTipoLlamada,sUrl,   sParametros,sContentType,                        bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion, pasaParam, asincro, bProcesar, tag)
-        var datos = LlamaWebService('POST',      llamaWS,sParam,     'application/x-www-form-urlencoded', true,      'xml',     false,     false,  10000,    null,    null,      false,   false,     null);
+        var datos = LlamaWebService('GET',      llamaWS,sParam,     'application/x-www-form-urlencoded', true,      'xml',     false,     false,  10000,    null,    null,      false,   false,     null);
         if (global_AjaxERROR != '')
             mensaje(global_AjaxERROR);
         else

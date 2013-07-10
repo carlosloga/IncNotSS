@@ -70,6 +70,7 @@ function autoRellenoCalleNum(){
         }
         if(sIdCarrer != "") {
             $('#inputNUM').val(sDireccionAlta.split(",")[1].trim());
+            $('#selectCARRER').text(sCarrerDetectat);
             $('#selectCARRER').val(sIdCarrer)._refresh();
         }
     }
@@ -200,10 +201,18 @@ function enviarIncidencia() {
         return;
     }
 
-    var sParam  = "sObs=" + sComentario;
-    sParam += "&sCoord=" + sCoord;
-    sParam += "&sDir=" + sDireccionAlta;
-    sParam += "&sFoto=" + sFoto;
+    var sParam = "";
+    sParam += "sNom=" + $('#inputNOM').val() + '';
+    sParam += "&sCognom1=" + $('#inputCOGNOM1').val() + '';
+    sParam += "&sCognom2=" + $('#inputCOGNOM2').val() + '';
+    sParam += "&sDni=" + $('#inputDNI').val() + '';
+    sParam += "&sEmail=" + $('#inputEMAIL').val() + '';
+    sParam += "&sTelefon=" + $('#inputTELEFON').val() + '';
+    sParam += "&sObs=" + sComentario + '';
+    sParam += "&sCoord=" + sCoord + '';
+    sParam += "&sDir=" + sDireccionAlta + '';
+    sParam += "&sFoto=" + sFoto + '';
+
     var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
   //var llamaWS = "http://172.26.0.2:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
     try
