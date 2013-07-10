@@ -21,6 +21,7 @@ function deviceReady() {
 
     //Cargar/crear la B.D.
     db.onready(function() {
+        mensaje('db ready', 'info');
         try
         {
             if(!localStorageSupport())

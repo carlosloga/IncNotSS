@@ -2,6 +2,7 @@ function cargarBD() {
     try {
         //inicializar la BD
         if (db.catalog.getTable("CIUTADA") == null) {
+            mensaje('creant taules','info');
             var data = getEstructuraTablas("TOT_TABLAS");
             db.catalog.createTables(data);
             db.catalog.setPersistenceScope(db.SCOPE_LOCAL);
@@ -15,7 +16,7 @@ function cargarBD() {
                     mensaje("B.D. error : " + errStr);
                 }
             });
-        }
+        } else mensaje('la b.d. ja està creada','info');
     }
     catch(err) {
         if (err instanceof Exception) {
