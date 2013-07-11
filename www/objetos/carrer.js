@@ -5,10 +5,15 @@ objCarrer.TIPUS = '';
 objCarrer.CARRER = '';
 
 function carrer() {
+alert('carr');
     return objCarrer;
 }
 
 function carrer(aDatos) {
+    if (undefined === aDatos) return objCarrer;
+    if (void 0 === aDatos) return objCarrer;
+    if(aDatos == null) return objCarrer;
+
     try {
         this.ID = aDatos['id'];
         this.TIPUS = aDatos['tipus'] + '';

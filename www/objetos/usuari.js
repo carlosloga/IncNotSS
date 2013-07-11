@@ -13,6 +13,10 @@ function usuari() {
 }
 
 function usuari(aDatos) {
+    if (undefined === aDatos) return objUsuari;
+    if (void 0 === aDatos) return objUsuari;
+    if(aDatos == null) return objUsuari;
+
     try {
         this.ID = aDatos['id'];
         this.NOM = aDatos['nom'] + '';

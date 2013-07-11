@@ -17,21 +17,21 @@ function inicioPaginaNuevaIncidencia(){
     //iniciar el plano
     iniciaMapaAlta(true);
 
-    setTimeout(cierraMapaAbreComentario,800);
+    setTimeout(cierraMapaAbreComentario,1000);
 }
 
 function cargaDatosCiudadano(){
     var objUsu = getDatosUsuario();
     if(objUsu != null)
     {
-        $('#inputNOM').val(objUsu['NOM']) ;
-        $('#inputCOGNOM1').val(objUsu['COGNOM1']);
-        $('#inputCOGNOM2').val(objUsu['COGNOM2']);
-        $('#inputDNI').val(objUsu['DNI']);
-        $('#inputEMAIL').val(objUsu['EMAIL']);
-        $('#inputTELEFON').val(objUsu['TELEFON']);
+        $('#inputNOM').val(objUsu.NOM) ;
+        $('#inputCOGNOM1').val(objUsu.COGNOM1);
+        $('#inputCOGNOM2').val(objUsu.COGNOM2);
+        $('#inputDNI').val(objUsu.DNI);
+        $('#inputEMAIL').val(objUsu.EMAIL);
+        $('#inputTELEFON').val(objUsu.TELEFON);
 
-        $('#labelQUISOC').text(objUsu['NOM'] + ' ' + objUsu['COGNOM1'] + ' ' + objUsu['COGNOM2'] );
+        $('#labelQUISOC').text(objUsu.NOM + ' ' + objUsu.COGNOM1 + ' ' + objUsu.COGNOM2 );
     }
 }
 
@@ -62,6 +62,7 @@ function autoRellenoCalleNum(){
         var sTipusDetectat = sDireccionAlta.split(" ")[0];
         var sCarrerDetectat = sDireccionAlta.split(",")[0].substr(sTipusDetectat.length);
         var sIdCarrer = "";
+
         for(var x=0 ; x<aGlobalCarrers.length; x++)
         {
             if(aGlobalCarrers[x].CARRER.trim().toUpperCase() == sCarrerDetectat.trim().toUpperCase())
@@ -284,29 +285,16 @@ function guardaDatosCiudadano(){
         if($('#inputEMAIL').val() != '')   email=    $('#inputEMAIL').val();   else email =   objUsu['EMAIL'] + '';
         if($('#inputTELEFON').val() != '') telefon = $('#inputTELEFON').val(); else telefon = objUsu['TELEFON'] + '';
 
-        fila = [idCiutada, nom , cognom1, cognom2,  dni, email , telefon];
+        objUsu = new usuari();
+        objUsu.ID = 0;
+        objUsu.NOM = nom;
+        objUsu.COGNOM1 = cognom1;
+        objUsu.COGNOM2 = cognom2;
+        objUsu.DNI = dni;
+        objUsu.EMAIL = email;
+        objUsu.TELEFON = telefon;
 
-        var filasAfectadas = 0;
-
-        //Si ya existia el registro con los datos del usuario : UPDATEAR, si no exisitia : INSERTAR
-        if(objUsu != null) {
-            filasAfectadas = db.catalog.getTable("CIUTADA").updateRow(fila);
-        }
-        else
-        {
-            filasAfectadas = db.catalog.getTable("CIUTADA").insertRow(fila);
-        }
-
-        if(filasAfectadas == 1)
-            db.commit({
-                onsuccess: function() {
-                },
-                onerror: function(errStr) {
-                    mensaje("Error dessant dades : " + errStr);
-                }
-            });
-        else
-            mensaje('Actualització incorrecta');
+        guardaObjetoLocal('CIUTADA' , objUsu);
     }
     catch (e)
     {
@@ -321,30 +309,28 @@ function datosObligatorios(sObs, sDir){
 }
 
 function guardaIncidencia(sReferen){
-    var sSel = "SELECT MAX(ID) FROM COMUNICATS";
     try
     {
-        var sRes = db.queryValue(sSel);
-        if(sRes == null) sRes = "0";
-        var nId = parseInt(sRes) + 1;
+        var nId = leeObjetoLocal('COMUNICATS_NEXTVAL' , -1) + 1;
         var fecha = FechaHoy() + ' ' + HoraAhora();
         var carrer = sDireccionAlta.split(",")[0];
         var num = sDireccionAlta.split(",")[1];
 
         // INSERT INTO COMUNICATS (ID, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI) VALUES (?,?,?,?,?,?,?,?,?);
         var fila = [nId, sReferen, 'PENDENT', fecha,carrer , num, sCoord_X, sCoord_Y, sComentario, null, null, null];
+        var objComunicat = new comunicat();
+        objComunicat.ID = nId;
+        objComunicat.REFERENCIA = sReferen;
+        objComunicat.ESTAT = 'PENDENT';
+        objComunicat.DATA = fecha;
+        objComunicat.CARRER = carrer;
+        objComunicat.NUM = num;
+        objComunicat.COORD_X = sCoord_X;
+        objComunicat.COORD_Y = sCoord_Y;
+        objComunicat.COMENTARI = sComentario;
+        guardaObjetoLocal('COMUNICAT_' + nId.toString().trim() , objComunicat);
 
-        var filasAfectadas = db.catalog.getTable("COMUNICATS").insertRow(fila);
-        if(filasAfectadas == 1)
-            db.commit({
-                onsuccess: function() {
-                },
-                onerror: function(errStr) {
-                    mensaje("Error dessant dades : " + errStr);
-                }
-            });
-        else
-            mensaje('Actualització incorrecta');
+        guardaObjetoLocal('COMUNICATS_NEXTVAL', nId);
     }
     catch(e)
     {

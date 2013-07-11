@@ -15,6 +15,10 @@ function comunicat() {
 }
 
 function comunicat(aDatos) {
+    if (undefined === aDatos) return objComunicat;
+    if (void 0 === aDatos) return objComunicat;
+    if(aDatos == null) return objComunicat;
+
     try {
         this.ID = aDatos['id'];
         this.REFERENCIA = aDatos['referencia'] + '';

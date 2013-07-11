@@ -3,9 +3,6 @@ var pictureSource;
 var destinationType;
 var sCambioPagina = '';
 var aGlobalCarrers = null;
-var bSequelOK = false;
-var bWebSqlOK = false;
-var globalBD = null;
 
 // -------- Al INICIAR -----------------------------------------------------------------------
 window.addEventListener('load', function () {
@@ -26,113 +23,56 @@ function deviceReady() {
         $('#labelInfo').text($('#labelInfo').text() + '\nAtenció : Phonegap no soportat');
     }
 
-    bWebSqlOK = false;
-    bSequelOK = false;
-
-    //Cargar/crear la B.D.
-    var bSSready = false;
-    db.onready(function() {
-        bSSready = true;
-        try
-        {
-            if(!localStorageSupport())
-            {
-                $('#labelInfo').text($('#labelInfo').text() + '\nAtenció : localStorage no soportat');
-            }
-
-            //Si se crea/abre/carga correctamente Sequelsphere, esta function actualizará
-            //el boolean 'bSequelOK' a true ...
-            cargarBD();
-
-            $.doTimeout(1000, function () {
-                cargarBDwebSQL('1');
-            });
-        }
-        catch(e)
-        {
-            mensaje('error : ' + e);
-        }
-    });
-
-    $.doTimeout(1000, function () {
-        if(!bSSready)cargarBDwebSQL('2');
-    });
-}
-
-function cargarBDwebSQL(n){
-    if(bSequelOK) return;
-
-    globalBD = null;
-    cargarBDSql();
-    $.doTimeout(2000, function () {
-        cargarBDwebSQLresultado();
-    });
-}
-
-function cargarBDwebSQLresultado(){
-    if(globalBD == null || (bWebSqlOK == false && bSequelOK == false) ) {
+    //Hay localstorage ?
+    if( ! $.jStorage.storageAvailable() )
+    {
         estadoBoton('buttonALTA', false);
         estadoBoton('buttonCONSULTA', false);
-        $('#labelInfo').text($('#labelInfo').text() + '\nAtenció : Bases de dades no soportades');
+        $('#labelInfo').text($('#labelInfo').text() + '\nAtenció : localStorage no soportat');
         return;
     }
-
-    var sCreateTables = getEstructuraTablas("TOT_TABLAS");
-    if(sCreateTables != null && sCreateTables.trim() != '')
+    else
     {
-        var aCreateTables = new Array();
-        aCreateTables = sCreateTables.split(";");
-        if(aCreateTables.length > 0)
-        {
-            for(var x=0; x < aCreateTables.length ; x++)
-            {
-                BDsentenciaSql(aCreateTables[x] , [], true , null, null );
-            }
-
             //Para PROBAR las calles (en real deberian bajar de un WS)
             var aObjCarrers = new Array();
 
             var objCarrer = new carrer();
-
             objCarrer.ID = 0;
             objCarrer.TIPUS = 'Carrer';
             objCarrer.CARRER = 'Logistica';
-            aObjCarrers[0] = objCarrer;
+            guardaObjetoLocal('CARRER_0', objCarrer);
 
             objCarrer = new carrer();
             objCarrer.ID = 1;
             objCarrer.TIPUS = 'Carrer';
             objCarrer.CARRER = 'Ramón i Cajal';
-            aObjCarrers[1] = objCarrer;
+            guardaObjetoLocal('CARRER_1', objCarrer);
 
             objCarrer = new carrer();
             objCarrer.ID = 2;
             objCarrer.TIPUS = 'Avinguda';
             objCarrer.CARRER = 'Lluis Companys';
-            aObjCarrers[2] = objCarrer;
+            guardaObjetoLocal('CARRER_2', objCarrer);
 
             objCarrer = new carrer();
             objCarrer.ID = 3;
             objCarrer.TIPUS = 'Camí';
             objCarrer.CARRER = 'Riera';
-            aObjCarrers[3] = objCarrer;
+            guardaObjetoLocal('CARRER_3', objCarrer);
 
             objCarrer = new carrer();
             objCarrer.ID = 4;
             objCarrer.TIPUS = 'Carrer';
             objCarrer.CARRER = 'de Tuset';
-            aObjCarrers[4] = objCarrer;
+            guardaObjetoLocal('CARRER_4', objCarrer);
 
             objCarrer = new carrer();
             objCarrer.ID = 5;
             objCarrer.TIPUS = 'Passeig';
             objCarrer.CARRER = 'Fluvial';
-            aObjCarrers[5] = objCarrer;
+            guardaObjetoLocal('CARRER_5', objCarrer);
 
-            for(var x=0; x < aObsCarrers.length; x++)
-                guardaObjetoEnBD('CARRERS',aObjCarrers[x],null,null);
         }
-    }
 }
 
 // -------- COMUNES -----------------------------------------------------------------------
@@ -185,7 +125,9 @@ function limpiaVariables(sPag){
             mapAlta = null;
             $('#labelComentari').text('');
             $('#textareaComentari').val('');
-
+            $('#inputNUM').val('');
+            $('#labelDireccion').text('');
+            $('#selectCARRER').text('');
             break;
 
         case 'pageConsultaIncidencias' :
