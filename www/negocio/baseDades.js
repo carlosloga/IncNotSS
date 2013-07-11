@@ -3,6 +3,7 @@
 function cargarBD() {
     try {
         //inicializar la BD
+        bSequelOK = true;
         if (db.catalog.getTable("CIUTADA") == null) {
             var data = getEstructuraTablas("TOT_TABLAS");
             db.catalog.createTables(data);
@@ -19,7 +20,6 @@ function cargarBD() {
                 }
             });
         }
-        bSequelOK = true;
     }
     catch(err) {
         bSequelOK = false;
@@ -28,7 +28,7 @@ function cargarBD() {
         }
         else {*/
             //mensaje('ERROR en B.D.');
-            $('#labelInfo').text($('#labelInfo').text() + '\nB.D. ERROR : ' + err.code);
+            $('#labelInfo').text($('#labelInfo').text() + '\nB.D. ERROR : ' + err.message);
         /* } */
     }
 }
