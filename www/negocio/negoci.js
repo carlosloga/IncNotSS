@@ -1,8 +1,11 @@
+
 function getEstructuraTablas(tabla) {
     switch(tabla)
     {
         case "CARRERS" :
-            return {
+            if(bSequelOK)
+            {
+                return {
                     tableName: "CARRERS",
                     columns: [ "ID" , "TIPUS" , "CARRER" ],
                     primaryKey: ["ID"],
@@ -15,54 +18,80 @@ function getEstructuraTablas(tabla) {
                         [5,"Passeig", "Fluvial"]
                     ]
                 };
+            }
+            else
+            {
+                return "CREATE TABLE IF NOT EXISTS CARRER (ID unique, TIPUS , CARRER)";
+            }
             break;
 
         case "COMUNICATS" :
+            if(bSequelOK)
+            {
                   return {
                           tableName: "COMUNICATS",
                           columns: [ "ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI", "FOTO1" , "FOTO2", "FOTO3" ],
                           primaryKey: ["ID"],
                           data: []
                       };
+            }
+            else
+            {
+                return "CREATE TABLE IF NOT EXISTS COMUNICATS (ID unique, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI, FOTO1, FOTO2, FOTO3)";
+            }
             break;
 
         case "CIUTADA" :
+            if(bSequelOK)
+            {
                 return {
                         tableName: "CIUTADA",
                         columns: [ "ID", "NOM", "COGNOM1", "COGNOM2", "DNI", "EMAIL", "TELEFON" ],
                         primaryKey: ["ID"],
                         data: []
                     };
+            }
+            else
+            {
+                return "CREATE TABLE IF NOT EXISTS CIUTADA (ID unique, NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON)";
+            }
             break;
 
         case "TOT_TABLAS" :
-            return [
-                {
-                    tableName: "CARRERS",
-                    columns: [ "ID" , "TIPUS" , "CARRER" ],
-                    primaryKey: ["ID"],
-                    data: [
-                        [0,"Carrer","Logística"],
-                        [1,"Carrer","Ramon i Cajal"],
-                        [2,"Avinguda" ,"Lluis companys"],
-                        [3,"Camí","Riera"],
-                        [4,"Carrer" ,"de Tuset"],
-                        [5,"Passeig", "Fluvial"]
-                    ]
-                },
-                {
-                    tableName: "COMUNICATS",
-                    columns: [ "ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI", "FOTO1" , "FOTO2", "FOTO3" ],
-                    primaryKey: ["ID"],
-                    data: []
-                },
-                {
-                    tableName: "CIUTADA",
-                    columns: [ "ID", "NOM", "COGNOM1", "COGNOM2", "DNI", "EMAIL", "TELEFON" ],
-                    primaryKey: ["ID"],
-                    data: []
-                }
-            ];
+            if(bSequelOK)
+            {
+                return [
+                    {
+                        tableName: "CARRERS",
+                        columns: [ "ID" , "TIPUS" , "CARRER" ],
+                        primaryKey: ["ID"],
+                        data: [
+                            [0,"Carrer","Logística"],
+                            [1,"Carrer","Ramon i Cajal"],
+                            [2,"Avinguda" ,"Lluis companys"],
+                            [3,"Camí","Riera"],
+                            [4,"Carrer" ,"de Tuset"],
+                            [5,"Passeig", "Fluvial"]
+                        ]
+                    },
+                    {
+                        tableName: "COMUNICATS",
+                        columns: [ "ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI", "FOTO1" , "FOTO2", "FOTO3" ],
+                        primaryKey: ["ID"],
+                        data: []
+                    },
+                    {
+                        tableName: "CIUTADA",
+                        columns: [ "ID", "NOM", "COGNOM1", "COGNOM2", "DNI", "EMAIL", "TELEFON" ],
+                        primaryKey: ["ID"],
+                        data: []
+                    }
+                ];
+            }
+            else
+            {
+                return "CREATE TABLE IF NOT EXISTS CARRER (ID unique, TIPUS , CARRER); CREATE TABLE IF NOT EXISTS COMUNICATS (ID unique, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI, FOTO1, FOTO2, FOTO3); CREATE TABLE IF NOT EXISTS CIUTADA (ID unique, NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON)";
+            }
             break;
     }
 }
@@ -163,6 +192,48 @@ function getComunicats(){
     }
 
 
+}
+
+function guardaObjetoEnBD(tabla, objeto, funcion, param) {
+    var aParam = new Array();
+    var query = "";
+
+    switch (tabla) {
+        case 'CARRER':
+            query = "INSERT INTO CARRERS (ID, TIPUS, CARRER) values (? ,?, ?)";
+            aParam[0] = objeto.ID;
+            aParam[1] = objeto.TIPUS;
+            aParam[2] = objeto.CARRER;
+            break;
+
+        case 'CIUTADA':
+            query = "INSERT INTO CIUTADA (ID, NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON) values (?,?,?,?,?,?,?)";
+            aParam[0] = objeto.ID;
+            aParam[1] = objeto.NOM;
+            aParam[2] = objeto.COGNOM1;
+            aParam[3] = objeto.COGNOM2;
+            aParam[4] = objeto.DNI;
+            aParam[5] = objeto.EMAIL;
+            aParam[6] = objeto.TELEFON;
+            break;
+
+        case 'COMUNICAT':
+            query = "INSERT INTO COMUNICATS (ID, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI, FOTO1, FOTO2, FOTO3) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+            aParam[0] = objeto.ID;
+            aParam[1] = objeto.REFERENCIA;
+            aParam[2] = objeto.ESTAT;
+            aParam[3] = objeto.DATA;
+            aParam[4] = objeto.CARRER;
+            aParam[5] = objeto.NUM;
+            aParam[6] = objeto.COORD_X;
+            aParam[7] = objeto.COORD_Y;
+            aParam[8] = objeto.COMENTARI;
+            aParam[9] = '';
+            aParam[10] = '';
+            aParam[11] = '';
+            break;
+    }
+    BDsentencia(query, aParam, true, funcion, param);
 }
 
 //objComunicat = objeto comunicat

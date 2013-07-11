@@ -1,4 +1,14 @@
 ﻿
+var lista_ERROR_SQL = new Array();
+lista_ERROR_SQL[0] = 'ERROR desconegut';
+lista_ERROR_SQL[1] = 'ERROR de base de dades';
+lista_ERROR_SQL[2] = 'ERROR de versió';
+lista_ERROR_SQL[3] = 'ERROR : massa llarg';
+lista_ERROR_SQL[4] = 'ERROR : quota';
+lista_ERROR_SQL[5] = 'ERROR de sintaxi';
+lista_ERROR_SQL[6] = 'ERROR en constraint';
+lista_ERROR_SQL[7] = 'ERROR timeout';
+
 function localStorageRun() {
     try {
         return 'localStorage' in window && window['localStorage'] !== null;
@@ -111,6 +121,43 @@ function ReplicateString(pattern, count) {
     return result;
 }
 
+function estadoControl(control, bHabilitar){
+    if(bHabilitar)
+    {
+        try{ $('#' + control).removeAttr("disabled", "disabled"); } catch(e) {}
+        try{ $('#' + control).removeClass('ui-disabled'); } catch(e) {}
+        try{ $('#' + control).attr("enabled", "enabled"); } catch(e) {}
+        try{ $('#' + control).addClass('ui-enabled'); } catch(e) {}
+    }
+    else
+    {
+        try{ $('#' + control).removeAttr("enabled", "enabled"); } catch(e) {}
+        try{ $('#' + control).removeClass('ui-enabled'); } catch(e) {}
+        try{ $('#' + control).attr("disabled", "disabled"); } catch(e) {}
+        try{ $('#' + control).addClass('ui-disabled'); } catch(e) {}
+    }
+}
+
+function estadoBoton(boton, bHabilitar){
+    if(bHabilitar)
+    {
+        try{ $('#' + boton).button('enable'); } catch(e) { }
+        try{ $('#' + boton).attr("enabled", "enabled"); } catch(e) {}
+        try{ $('#' + boton).removeClass('ui-disabled'); } catch(e) {}
+    }
+    else
+    {
+        try{ $('#' + boton).button('disable'); } catch(e) { }
+        try{ $('#' + boton).addClass('ui-disabled'); } catch(e) { }
+        try{ $('#' + boton).attr("disabled", "disabled"); } catch(e) { }
+    }
+
+    try{ $('#' + boton).attr("onclick", ""); } catch(e) { }
+    try{ $('#' + boton).attr('href', '');  } catch(e) { }
+    try{ $('#' + boton).button('refresh');  } catch(e) { }
+}
+
+//cambiar el texto de un boton
 (function($) {
     /*
      * Changes the displayed text for a jquery mobile button.
