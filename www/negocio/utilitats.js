@@ -181,3 +181,10 @@ function estadoBoton(boton, bHabilitar){
         });
     };
 })(jQuery);
+
+function indefinidoOnullToVacio(algo){
+    if (undefined === algo) return '';
+    if (void 0 === algo) return '';
+    if(algo == null) return '';
+    return algo;
+}

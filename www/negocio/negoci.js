@@ -170,17 +170,20 @@ function getArrayComunicat(objComunicat){
 
 function getCadenaComunicat(objComunicat , separador){
     var sDev = "";
+
+    alert(objComunicat.ID + ' .... ' +  indefinidoOnullToVacio(objComunicat.ID) );
+
     try
     {
-        sDev += objComunicat.ID + separador;
-        sDev += objComunicat.REFERENCIA + separador;
-        sDev += objComunicat.ESTAT + separador;
-        sDev += objComunicat.DATA + separador;
-        sDev += objComunicat.CARRER + separador;
-        sDev += objComunicat.NUM + separador;
-        sDev += objComunicat.COORD_X + separador;
-        sDev += objComunicat.COORD_Y + separador;
-        sDev += objComunicat.COMENTARI + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.ID) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.REFERENCIA) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.ESTAT) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.DATA) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.CARRER) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.NUM) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.COORD_X) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.COORD_Y) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.COMENTARI) + separador;
     }
     catch(e){
         mensaje('ERROR (exception) en getCadenaComunicat : : \n' + e.code + '\n' + e.message);

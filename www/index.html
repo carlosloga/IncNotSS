@@ -108,19 +108,18 @@
                     <input type="text" name="textareaComentari" id="textareaComentari" placeholder="la incidència, el suggeriment, la queixa, ..." data-clear-btn="true" />
                 </div>
 
-                <!-- M A P A -->
+                <!-- L O C A L I T Z A C I Ó -->
                 <div data-role="collapsible" data-mini="false" id="collapsibleLocalizacion">
                     <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
                         <div id="divMapaAlta" style="height:200px;"></div>
                     </div>
-                    <div data-role="fieldcontain">
-                    <div data-role="controlgroup" data-type="horizontal">
-                        <!-- <label for="selectCARRER">carrer</label> -->
-                        <select name="selectCARRER" data-placeholder="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c">Seleccioni el carrer</select>
-                        <!-- <label for="inputNUM">num.</label> -->
+                    <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                        <!--<table style="width:100%;"><tr><td style="width: 80%;">-->
+                        <select name="selectCARRER" data-native-menu="false" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c">Seleccioni el carrer</select>
+                        <!--</td><td style="width: 20%;">-->
                         <input type="text" maxlength="9" placeholder="numero" name="inputNUM" id="inputNUM" data-inline="true" data-mini="false" data-theme="c" />
-                        </div>
+                        <!--</td></tr></table>-->
                     </div>
                 </div>
 
@@ -206,16 +205,16 @@
 
 <!-- Página ConsultaIncidencias -->
     <div data-role="page" id="pageConsultaIncidencias">
-        <div data-role="panel" id="panelDadesComunicat" data-position="right" data-display="overlay" data-animate="true" style="max-height: 80%;">
+        <div data-role="panel" id="panelDadesComunicat" data-position="right" data-display="overlay" data-animate="true">
             <div data-role="content" data-theme="e" class="ui-corner-all">
                 <table>
                     <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">comunicat</td><td style="font-size: small"><label id="labelCOMUNICAT_ID"></label></td></tr>
                     <tr><td colspan="2" style="font-weight: bold; font-size: small;"><label id="labelCOMUNICAT_COMENTARI"></label></td></tr>
                     <tr><td colspan="2"></td></tr>
-                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">quan</td><td style="font-size: small"><label   id="labelCOMUNICAT_DATA"></label></td></tr>
-                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">on</td><td style="font-size: small"><label   id="labelCOMUNICAT_CARRER"></label>,<label   id="labelCOMUNICAT_NUM"></label></td></tr>
-                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">referència</td><td style="font-size: small"><label   id="labelCOMUNICAT_REFERENCIA"></label></td></tr>
-                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">estat</td><td style="font-size: small"><label   id="labelCOMUNICAT_ESTAT"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">quan</td><td style="font-size: small"><label id="labelCOMUNICAT_DATA"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">on</td><td style="font-size: small"><label id="labelCOMUNICAT_CARRER"></label>,<label id="labelCOMUNICAT_NUM"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">referència</td><td style="font-size: small"><label id="labelCOMUNICAT_REFERENCIA"></label></td></tr>
+                    <tr><td style="text-align:right; color:#970824; font-weight: bold; font-size: small">estat</td><td style="font-size: small"><label id="labelCOMUNICAT_ESTAT"></label></td></tr>
                 </table>
             </div>
             <a href="#" id="buttonCerrarPanel" onclick="$('#panelDadesComunicat').panel('close')" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-l">tornar</a>

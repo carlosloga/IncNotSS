@@ -46,7 +46,7 @@ function cargaCalles(){
         $('#selectCARRER').children().remove();
 
         var calles = [];
-        calles.push("<option value='-1'>Seleccioni el carrer</option>");
+        calles.push("<option value='-1' data-placeholder='true'>Seleccioni el carrer</option>");
         for (var x = 0; x < aCalles.length; x++)
         {
             calles.push("<option value='" + aCalles[x].ID + "'>" + aCalles[x].CARRER + " (" +  aCalles[x].TIPUS + ")</option>");

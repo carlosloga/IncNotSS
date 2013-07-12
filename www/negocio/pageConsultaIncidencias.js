@@ -28,8 +28,13 @@ function cargaListaComunicats(aComs){
     for(var x=0; x<aComs.length; x++)
     {
         sDatos = getCadenaComunicat(aComs[x] , separador);
+
         //sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].DATA + "</td><td style='text-align:left; font-size:x-small; width: 20%;'>" + aComs[x].ESTAT + "</td></tr></table>";
-        sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 15%;'>" + aComs[x].ID + "</td><td style='text-align:left; font-size:x-small; width: 55%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].ESTAT + "</td></tr></table>";
+        sFila = "<table style='width: 100%;'><tr>";
+        sFila += "<td style='text-align:left; font-size:x-small; width: 15%;'>" + aComs[x].ID + "</td>";
+        sFila += "<td style='text-align:left; font-size:x-small; width: 55%;'>" + aComs[x].REFERENCIA + "</td>";
+        sFila += "<td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].ESTAT + "</td>";
+        sFila += "</tr></table>";
         $('#listviewLista').append($('<li/>', {
             'id': "fila_" + aComs[x].ID, 'data-icon': "arrow-r"
         }).append($('<a/>', {
@@ -56,20 +61,27 @@ function verDatosComunicat(sDatos, separador){
     var aDatos = new Array();
     aDatos = sDatos.split(separador);
 
-    var aDatos = new Array();
-    aDatos = sDatos.split(separador);
-
-    $('#labelCOMUNICAT_ID').text(aDatos[0]);
-    $('#labelCOMUNICAT_REFERENCIA').text(aDatos[1]);
-    $('#labelCOMUNICAT_ESTAT').text(aDatos[2]);
-    $('#labelCOMUNICAT_DATA').text(aDatos[3]);
-    var calle = aDatos[4];
-    var sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1));
-    var sCalle = calle.split("(")[0];
-    $('#labelCOMUNICAT_CARRER').text(sTipoVia + ' ' + sCalle);
-    $('#labelCOMUNICAT_NUM').text(aDatos[5]);
-    $('#labelCOMUNICAT_COMENTARI').text(aDatos[8]);
-
+    try
+    {
+        $('#labelCOMUNICAT_ID').text(aDatos[0]);
+        $('#labelCOMUNICAT_REFERENCIA').text(aDatos[1]);
+        $('#labelCOMUNICAT_ESTAT').text(aDatos[2]);
+        $('#labelCOMUNICAT_DATA').text(aDatos[3]);
+        var sTipoVia = "";
+        var sCalle = "";
+        var calle = aDatos[4];
+        if(calle.length > 3)
+        {
+            sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1));
+            sCalle = calle.split("(")[0];
+        }
+        $('#labelCOMUNICAT_CARRER').text(sTipoVia + ' ' + sCalle);
+        $('#labelCOMUNICAT_NUM').text(aDatos[5]);
+        $('#labelCOMUNICAT_COMENTARI').text(aDatos[8]);
+    }
+    catch(e) {
+        mensaje('exception en verDatosComunicat : ' + e.message , 'error');
+    }
     $("#panelDadesComunicat").panel("open");
     //abrirPagina('pageDatosComunicat');
 
@@ -103,7 +115,7 @@ function mostrarEnPlano() {
     aComs = getComunicats();
 
     if(aComs == null || aComs.length < 1) {
-        mensaje("no s'ha trobat cap comunicat","informació");
+        //mensaje("no s'ha trobat cap comunicat","informació");
         return false;
     }
 
