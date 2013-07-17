@@ -1,6 +1,7 @@
 var mapConsulta = null;
 var posConsulta = '';
 var sDireccionConsulta = '';
+var aMarcadoresSobrePlano = new Array();
 
 function inicioPaginaConsultaIncidencias(){
     cargaListaComunicats(getComunicats());
@@ -14,16 +15,16 @@ function inicioPaginaConsultaIncidencias(){
 
 //aComs = array de objetos 'comunicat'
 function cargaListaComunicats(aComs){
+    $('#listviewLista').children().remove('li');
+
     if(aComs == null || aComs.length < 1) {
-        //mensaje("no s'han trobat comunicats","informació");
+        $('#listviewLista').listview('refresh');
         return ;
     }
 
     var sFila = "";
     var sDatos = "";
     var separador = "#";
-
-    $('#listviewLista').children().remove('li');
 
     for(var x=0; x<aComs.length; x++)
     {
@@ -70,14 +71,20 @@ function verDatosComunicat(sDatos, separador){
         var sTipoVia = "";
         var sCalle = "";
         var calle = aDatos[4];
-        if(calle.length > 3)
-        {
-            sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1));
-            sCalle = calle.split("(")[0];
+        try{
+            if(calle.length > 3)
+            {
+                sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1));
+                sCalle = calle.split("(")[0];
+            }
+            $('#labelCOMUNICAT_CARRER').text(sTipoVia + ' ' + sCalle);
         }
-        $('#labelCOMUNICAT_CARRER').text(sTipoVia + ' ' + sCalle);
+        catch(e){
+            $('#labelCOMUNICAT_CARRER').text(calle);
+        }
         $('#labelCOMUNICAT_NUM').text(aDatos[5]);
         $('#labelCOMUNICAT_COMENTARI').text(aDatos[8]);
+        $('#labelCOMUNICAT_COORDENADES').text(aDatos[6] + " , " + aDatos[7]);
     }
     catch(e) {
         mensaje('exception en verDatosComunicat : ' + e.message , 'error');
@@ -115,9 +122,10 @@ function mostrarEnPlano() {
     aComs = getComunicats();
 
     if(aComs == null || aComs.length < 1) {
-        //mensaje("no s'ha trobat cap comunicat","informació");
         return false;
     }
+
+    aMarcadoresSobrePlano = new Array();
 
     var mapOptions = {
         zoom: 17,
@@ -158,8 +166,9 @@ function mostrarEnPlano() {
                 sCalle = aComs[x].CARRER.split("(")[0];
                 dir = sTipoVia + ' ' + sCalle + ', ' + aComs[x].NUM;
                 var sTxt = '<div><table><tr><td style="font-size:xx-small;"><b>comunicat </b>' + aComs[x].REFERENCIA + '</td></tr><tr><td style="font-size:xx-small;"><b>reportat el </b>' + aComs[x].DATA +'</td></tr><tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr></table></div>';
-                nuevaInfoWindowSobrePlano(mapConsulta, pos, sTxt, 100);
-                nuevoMarcadorSobrePlano(mapConsulta , pos, dir);
+
+                nuevoMarcadorSobrePlanoClickInfoWindow(mapConsulta, pos, sTxt, 300, false, false);
+                aMarcadoresSobrePlano[x] = globalMarcadorMapa;
             }
 
             mapConsulta.setCenter(paramPosInicial);
@@ -173,6 +182,35 @@ function mostrarEnPlano() {
         getCurrentPositionError(false);
     }
     return true;
+}
+
+function borrarHistoricoComunicados(){
+    var nComunicats = leeObjetoLocal('COMUNICATS_NEXTVAL', -1);
+    if(nComunicats != -1)
+    {
+        //Eliminar de la B.D.
+        nComunicats += 1;
+        var bBorrado = false;
+        for(var x=0; x<nComunicats; x++)
+        {
+            bBorrado = borraObjetoLocal('COMUNICAT_' + x.toString().trim());
+            if(!bBorrado) mensaje('El comunicat ' + x.toString().trim() + " no s'ha pogut esborrar","info");
+        }
+        //Actualizar la 'sequence'
+        guardaObjetoLocal('COMUNICATS_NEXTVAL', -1);
+
+        //limpiar el mapa :
+        if(aMarcadoresSobrePlano.length > 0)
+        {
+            for (var x = 0; x < aMarcadoresSobrePlano.length; x++) {
+                globalMarcadorMapa = aMarcadoresSobrePlano[x];
+                eliminarMarcadorMapa();
+            }
+        }
+
+        //limpiar la lista
+        inicioPaginaConsultaIncidencias();
+    }
 }
 
 //Prueba llamada al WS ...

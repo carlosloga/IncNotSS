@@ -140,25 +140,26 @@ function iniciaMapaAlta(bAbrir) {
     // Try HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
+
+            //Crear el evento click sobre el mapa
+            //si bActualizarControlesManualesCalleNum = true, se llama a autoRellenoCalleNum()
+            //crearMarcadorEventoClick(map,     bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum)
+            crearMarcadorEventoClick(mapAlta, true,'labelDireccion', true);
+
             posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
             sDireccionAlta = cogerDireccion(posAlta);
 
-            autoRellenoCalleNum();
-
             var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">reportar incidència en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
-            nuevaInfoWindowSobrePlano(mapAlta, posAlta, sTxt, 300);
 
-            nuevoMarcadorSobrePlano(mapAlta,posAlta,sDireccionAlta);
+          //nuevoMarcadorSobrePlanoClickInfoWindow(mapa,    pos,    htmlText, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa)
+            nuevoMarcadorSobrePlanoClickInfoWindow(mapAlta, posAlta,sTxt,     300,       true,                   true);
 
             mapAlta.setCenter(posAlta);
 
-            $('#labelDireccion').text(sDireccionAlta);
+            $('#labelDireccion').text(cogerCalleNumDeDireccion(sDireccionAlta));
 
             $('#divMapaAlta').gmap('refresh');
-
-            //Abrir el acordeón para actualizar el plano
-            //if (!bAbrir) $('#collapsibleLocalizacion').trigger('collapse');            ;
 
         }, function () { getCurrentPositionError(true); });
     } else {
@@ -193,8 +194,12 @@ function enviarIncidencia() {
 
     // La dirección correcta es la que ponga en el combo de calle y el numero de calle
     // ( ya que puede pasar que la que ha detectado google maps no sea correcta)
-    if($('#selectCARRER').val() != '-1') //o sea, si han seleccionado una calle en el combo ...
+    if( indefinidoOnullToVacio($('#selectCARRER').val()) != '' && $('#selectCARRER').val() != '-1') //o sea, si han seleccionado una calle en el combo ...
+    {
         sDireccionAlta = $('#selectCARRER').find(":selected").text() + ', ' + $('#inputNUM').val();
+    }
+
+
 
     //Controlar datos obligatorios
     if(!datosObligatorios(sComentario, sDireccionAlta)){
@@ -275,15 +280,16 @@ function guardaDatosCiudadano(){
         var telefon='';
 
         //recojo los datos del usuario que ya están guardados en la tabla CIUTADA
+        //si todavía no existe el usuario se devuelve un objeto usuari vacio
         var objUsu = getDatosUsuario();
 
         //Si ha modificado algún dato lo recojo para actualizar , pero si lo ha dejado en blanco cojo lo que ya tenía en la tabla guardado
-        if($('#inputNOM').val() != '')     nom =     $('#inputNOM').val();     else nom =     objUsu['NOM'] + '';
-        if($('#inputCOGNOM1').val() != '') cognom1 = $('#inputCOGNOM1').val(); else cognom1 = objUsu['COGNOM1'] + '';
-        if($('#inputCOGNOM2').val() != '') cognom2 = $('#inputCOGNOM2').val(); else cognom2 = objUsu['COGNOM2'] + '';
-        if($('#inputDNI').val() != '')     dni =     $('#inputDNI').val();     else dni =     objUsu['DNI'] + '';
-        if($('#inputEMAIL').val() != '')   email=    $('#inputEMAIL').val();   else email =   objUsu['EMAIL'] + '';
-        if($('#inputTELEFON').val() != '') telefon = $('#inputTELEFON').val(); else telefon = objUsu['TELEFON'] + '';
+        if($('#inputNOM').val() != '')     nom =     $('#inputNOM').val();     else nom =     objUsu.NOM;
+        if($('#inputCOGNOM1').val() != '') cognom1 = $('#inputCOGNOM1').val(); else cognom1 = objUsu.COGNOM1 ;
+        if($('#inputCOGNOM2').val() != '') cognom2 = $('#inputCOGNOM2').val(); else cognom2 = objUsu.COGNOM2 ;
+        if($('#inputDNI').val() != '')     dni =     $('#inputDNI').val();     else dni =     objUsu.DNI ;
+        if($('#inputEMAIL').val() != '')   email=    $('#inputEMAIL').val();   else email =   objUsu.EMAIL ;
+        if($('#inputTELEFON').val() != '') telefon = $('#inputTELEFON').val(); else telefon = objUsu.TELEFON ;
 
         objUsu = new usuari();
         objUsu.ID = 0;
@@ -298,7 +304,7 @@ function guardaDatosCiudadano(){
     }
     catch (e)
     {
-        mensaje('Error : ' + e , 'Atenció');
+        mensaje(e.message , 'error');
     }
 }
 

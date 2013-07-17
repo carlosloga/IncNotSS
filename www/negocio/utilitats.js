@@ -1,4 +1,6 @@
 ﻿
+var globalMarcadorMapa = null;
+
 var lista_ERROR_SQL = new Array();
 lista_ERROR_SQL[0] = 'ERROR desconegut';
 lista_ERROR_SQL[1] = 'ERROR de base de dades';
@@ -46,20 +48,95 @@ function cerrarPopUp(pag){
     $("#" + pag).dialog("close");
 }
 
-function nuevaInfoWindowSobrePlano(mapa, pos,htmlText, nMaxAncho ){
-    var infowindow = new google.maps.InfoWindow({
-        map: mapa,
+function nuevoMarcadorSobrePlanoClickInfoWindow(mapa, pos,htmlText, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa){
+    if(bSoloUnMarcadorSobreMapa) {
+        eliminarMarcadorMapa();
+    }
+
+    var marcador = new google.maps.Marker({
         position: pos,
-        content: htmlText,
-        maxWidth: nMaxAncho
+        map: mapa
+    });
+
+    posAlta = pos; //por si es una alta, que envie al WS las coordenadas correctas
+    globalMarcadorMapa = marcador;
+
+    if(indefinidoOnullToVacio(htmlText) != '' && indefinidoOnullToVacio(nMaxAncho) != '')
+    {
+        var bocata = new google.maps.InfoWindow({ content: htmlText, maxWidth: nMaxAncho});
+        google.maps.event.addListener(marcador, 'click', function() {
+            bocata.open(mapa,marcador);
+        });
+        if(bMostrarBocataDeInicio)bocata.open(mapa,marcador);
+    }
+}
+
+function eliminarMarcadorMapa(){
+    globalMarcadorMapa.setMap(null);
+}
+
+function crearMarcadorEventoClick(map, bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum){
+    google.maps.event.addListener(map, 'click', function(event) {
+
+        var bDirEsLatLon = false;
+
+        if(bSoloUnMarcadorSobreMapa) {
+            eliminarMarcadorMapa();
+        }
+
+        posAlta = event.latLng; //por si es una alta, que envie al WS las coordenadas correctas
+
+        var sDir = cogerDireccion(event.latLng);
+        if(sDir == '')
+        {
+            sDir  = event.latLng.lat() + " , " + event.latLng.lng();
+            bDirEsLatLon = true;
+        }
+        else
+        {
+            sDir = cogerCalleNumDeDireccion(sDir);
+            bDirEsLatLon = false;
+        }
+
+        if(indefinidoOnullToVacio(labelMostrarDir) != '') $('#' + labelMostrarDir).text(sDir);
+        sDireccionAlta = sDir;
+
+        var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">reportar incidència en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDir + '</td></tr></table></div>';
+        nuevoMarcadorSobrePlanoClickInfoWindow(map, event.latLng, sTxt, 300, true, true);
+
+        if(indefinidoOnullToVacio(bActualizarControlesManualesCalleNum) != '' && !bDirEsLatLon)
+        {
+            if(bActualizarControlesManualesCalleNum) autoRellenoCalleNum();
+        }
+
     });
 }
 
-function nuevoMarcadorSobrePlano(mapa, pos, texto){
-    var marker = new google.maps.Marker({
-        position: pos,
-        map: mapa,
-        title: texto
+function crearMarcadorDesdeCalleNum(){
+    if($('#selectCARRER').find(":selected").text().trim() == '' || $('#inputNUM').val().trim() == '' ) return;
+
+    var calle = $('#selectCARRER').find(":selected").text().trim();
+    var sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1)).trim();
+    var sCalle = calle.split("(")[0].trim();
+    var num = $('#inputNUM').val().trim();
+    var ciudad = "Barcelona";
+    var region = "Catalunya";
+    var pais = "Spain";
+
+    showAddress(mapAlta, sTipoVia,sCalle, num , ciudad ,region ,pais);
+}
+
+function showAddress(map, sTipoVia,sCalle,num,ciudad,region,pais) {
+    sDireccionAlta = sTipoVia + " " + sCalle + ", " + num;
+    var direccion = sDireccionAlta + ", " + ciudad + ", " + region + ", " + pais;
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode( { 'address': direccion}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            nuevoMarcadorSobrePlanoClickInfoWindow(map, results[0].geometry.location , sTipoVia + " " + sCalle + ", " + num  , 300 , true, true);
+        } else {
+            alert('La localització sobre plànol no ha estat posible per : ' + status);
+        }
     });
 }
 
@@ -73,7 +150,7 @@ function getCurrentPositionError(errorFlag) {
     mensaje(content);
 }
 
-function cogerDireccion(pos){
+function cogerDireccion(pos , bSoloCalleYnum){
     var llamaWS = "http://maps.googleapis.com/maps/api/geocode/xml";
     var sParam =  "latlng=" + pos.toString().replace(" ", "").replace("(","").replace(")","") + "&sensor=true";
     var sDireccion = '';
@@ -93,12 +170,26 @@ function cogerDireccion(pos){
                 n++;
             });
         }
+
+        if(indefinidoOnullToVacio(bSoloCalleYnum) != '')
+            if(bSoloCalleYnum) sDireccion = cogerCalleNumDeDireccion(sDireccion);
     }
     catch (e)
     {
         mensaje('ERROR (exception) en cogerDireccion : \n' + e.code + '\n' + e.message);
     }
     return sDireccion;
+}
+
+function cogerCalleNumDeDireccion(sDireccion){
+    var sDev = '';
+    try
+    {
+        if(indefinidoOnullToVacio(sDireccion) != '')
+                sDev = sDireccion.split(",")[0] + ", " + sDireccion.split(",")[1];
+    }
+    catch(e) {}
+    return sDev;
 }
 
 function FechaHoy() {

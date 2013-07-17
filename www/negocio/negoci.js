@@ -1,108 +1,10 @@
-
-function getEstructuraTablas(tabla) {
-    switch(tabla)
-    {
-        case "CARRERS" :
-            if(bSequelOK)
-            {
-                return {
-                    tableName: "CARRERS",
-                    columns: [ "ID" , "TIPUS" , "CARRER" ],
-                    primaryKey: ["ID"],
-                    data: [
-                        [0,"Carrer","Logística"],
-                        [1,"Carrer","Ramon i Cajal"],
-                        [2,"Avinguda" ,"Lluis companys"],
-                        [3,"Camí","Riera"],
-                        [4,"Carrer" ,"de Tuset"],
-                        [5,"Passeig", "Fluvial"]
-                    ]
-                };
-            }
-            else
-            {
-                return "CREATE TABLE IF NOT EXISTS CARRER (ID unique, TIPUS , CARRER)";
-            }
-            break;
-
-        case "COMUNICATS" :
-            if(bSequelOK)
-            {
-                  return {
-                          tableName: "COMUNICATS",
-                          columns: [ "ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI", "FOTO1" , "FOTO2", "FOTO3" ],
-                          primaryKey: ["ID"],
-                          data: []
-                      };
-            }
-            else
-            {
-                return "CREATE TABLE IF NOT EXISTS COMUNICATS (ID unique, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI, FOTO1, FOTO2, FOTO3)";
-            }
-            break;
-
-        case "CIUTADA" :
-            if(bSequelOK)
-            {
-                return {
-                        tableName: "CIUTADA",
-                        columns: [ "ID", "NOM", "COGNOM1", "COGNOM2", "DNI", "EMAIL", "TELEFON" ],
-                        primaryKey: ["ID"],
-                        data: []
-                    };
-            }
-            else
-            {
-                return "CREATE TABLE IF NOT EXISTS CIUTADA (ID unique, NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON)";
-            }
-            break;
-
-        case "TOT_TABLAS" :
-            if(bSequelOK)
-            {
-                return [
-                    {
-                        tableName: "CARRERS",
-                        columns: [ "ID" , "TIPUS" , "CARRER" ],
-                        primaryKey: ["ID"],
-                        data: [
-                            [0,"Carrer","Logística"],
-                            [1,"Carrer","Ramon i Cajal"],
-                            [2,"Avinguda" ,"Lluis companys"],
-                            [3,"Camí","Riera"],
-                            [4,"Carrer" ,"de Tuset"],
-                            [5,"Passeig", "Fluvial"]
-                        ]
-                    },
-                    {
-                        tableName: "COMUNICATS",
-                        columns: [ "ID", "REFERENCIA", "ESTAT", "DATA", "CARRER", "NUM", "COORD_X", "COORD_Y", "COMENTARI", "FOTO1" , "FOTO2", "FOTO3" ],
-                        primaryKey: ["ID"],
-                        data: []
-                    },
-                    {
-                        tableName: "CIUTADA",
-                        columns: [ "ID", "NOM", "COGNOM1", "COGNOM2", "DNI", "EMAIL", "TELEFON" ],
-                        primaryKey: ["ID"],
-                        data: []
-                    }
-                ];
-            }
-            else
-            {
-                return "CREATE TABLE IF NOT EXISTS CARRER (ID unique, TIPUS , CARRER); CREATE TABLE IF NOT EXISTS COMUNICATS (ID unique, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI, FOTO1, FOTO2, FOTO3); CREATE TABLE IF NOT EXISTS CIUTADA (ID unique, NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON)";
-            }
-            break;
-    }
-}
-
 function getDatosUsuario(){
     var objUsu = null;
     //var sSel = "SELECT ID, NOM, COGNOM1, COGNOM2, DNI, EMAIL, TELEFON FROM CIUTADA";  //Sólo hay un registro o ninguno
     try {
         objUsu = leeObjetoLocal('CIUTADA', 'NO_EXISTE');
         if(objUsu == 'NO_EXISTE')
-            return null;
+            return new usuari();
         else
             return objUsu;
     }
@@ -170,9 +72,6 @@ function getArrayComunicat(objComunicat){
 
 function getCadenaComunicat(objComunicat , separador){
     var sDev = "";
-
-    alert(objComunicat.ID + ' .... ' +  indefinidoOnullToVacio(objComunicat.ID) );
-
     try
     {
         sDev += indefinidoOnullToVacio(objComunicat.ID) + separador;
