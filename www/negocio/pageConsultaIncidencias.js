@@ -89,7 +89,10 @@ function verDatosComunicat(sDatos, separador){
     catch(e) {
         mensaje('exception en verDatosComunicat : ' + e.message , 'error');
     }
+
+    $.mobile.silentScroll(0);
     $("#panelDadesComunicat").panel("open");
+
     //abrirPagina('pageDatosComunicat');
 
 }
@@ -161,16 +164,14 @@ function mostrarEnPlano() {
             var sCalle = '';
             for (var x = 0; x < aComs.length; x++) {
                 pos = new google.maps.LatLng(aComs[x].COORD_X, aComs[x].COORD_Y);
-                //dir = aComs[x].CARRER + ', ' + aComs[x].NUM ;
-                sTipoVia = aComs[x].CARRER.split("(")[1].substr(0, (aComs[x].CARRER.split("(")[1].length -1));
-                sCalle = aComs[x].CARRER.split("(")[0];
-                dir = sTipoVia + ' ' + sCalle + ', ' + aComs[x].NUM;
+                try
+                {
+                    dir = aComs[x].CARRER + ', ' + aComs[x].NUM;
+                } catch(e) { dir = aComs[x].COORD_X + ' , ' +  aComs[x].COORD_Y; }
                 var sTxt = '<div><table><tr><td style="font-size:xx-small;"><b>comunicat </b>' + aComs[x].REFERENCIA + '</td></tr><tr><td style="font-size:xx-small;"><b>reportat el </b>' + aComs[x].DATA +'</td></tr><tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr></table></div>';
-
-                nuevoMarcadorSobrePlanoClickInfoWindow(mapConsulta, pos, sTxt, 300, false, false);
+                nuevoMarcadorSobrePlanoClickInfoWindow('CONSULTA', mapConsulta, pos, sTxt, 300, false, false);
                 aMarcadoresSobrePlano[x] = globalMarcadorMapa;
             }
-
             mapConsulta.setCenter(paramPosInicial);
             $('#divMapaConsulta').gmap('refresh');
 

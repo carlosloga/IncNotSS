@@ -1,5 +1,4 @@
-﻿
-var globalMarcadorMapa = null;
+﻿var globalMarcadorMapa = null;
 
 var lista_ERROR_SQL = new Array();
 lista_ERROR_SQL[0] = 'ERROR desconegut';
@@ -48,17 +47,26 @@ function cerrarPopUp(pag){
     $("#" + pag).dialog("close");
 }
 
-function nuevoMarcadorSobrePlanoClickInfoWindow(mapa, pos,htmlText, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa){
+function eliminarMarcadorMapa(){
+    if(globalMarcadorMapa != null)
+    {
+        globalMarcadorMapa.setMap(null);
+        globalMarcadorMapa = null;
+    }
+}
+
+function nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, mapa, pos,htmlText, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa, labelMostrarDir){
     if(bSoloUnMarcadorSobreMapa) {
         eliminarMarcadorMapa();
     }
+
+    if(sMODO == 'ALTA')
+        posAlta = pos; //por si es una alta, que envie al WS las coordenadas correctas
 
     var marcador = new google.maps.Marker({
         position: pos,
         map: mapa
     });
-
-    posAlta = pos; //por si es una alta, que envie al WS las coordenadas correctas
     globalMarcadorMapa = marcador;
 
     if(indefinidoOnullToVacio(htmlText) != '' && indefinidoOnullToVacio(nMaxAncho) != '')
@@ -69,13 +77,16 @@ function nuevoMarcadorSobrePlanoClickInfoWindow(mapa, pos,htmlText, nMaxAncho, b
         });
         if(bMostrarBocataDeInicio)bocata.open(mapa,marcador);
     }
+
+    if(sMODO == 'ALTA')
+    {
+        if(indefinidoOnullToVacio(labelMostrarDir) != '') $('#' + labelMostrarDir).text(sDireccionAlta);
+
+        mapa.setCenter(posAlta);
+    }
 }
 
-function eliminarMarcadorMapa(){
-    globalMarcadorMapa.setMap(null);
-}
-
-function crearMarcadorEventoClick(map, bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum){
+function crearMarcadorEventoClick(sMODO, map, bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum){
     google.maps.event.addListener(map, 'click', function(event) {
 
         var bDirEsLatLon = false;
@@ -84,9 +95,10 @@ function crearMarcadorEventoClick(map, bSoloUnMarcadorSobreMapa , labelMostrarDi
             eliminarMarcadorMapa();
         }
 
-        posAlta = event.latLng; //por si es una alta, que envie al WS las coordenadas correctas
+        if(sMODO == 'ALTA')
+            posAlta = event.latLng; //por si es una alta, que envie al WS las coordenadas correctas
 
-        var sDir = cogerDireccion(event.latLng);
+        var sDir = cogerDireccion(event.latLng, true);   //true ==> solo calle y num
         if(sDir == '')
         {
             sDir  = event.latLng.lat() + " , " + event.latLng.lng();
@@ -94,20 +106,21 @@ function crearMarcadorEventoClick(map, bSoloUnMarcadorSobreMapa , labelMostrarDi
         }
         else
         {
-            sDir = cogerCalleNumDeDireccion(sDir);
             bDirEsLatLon = false;
         }
 
-        if(indefinidoOnullToVacio(labelMostrarDir) != '') $('#' + labelMostrarDir).text(sDir);
-        sDireccionAlta = sDir;
+/*        if(sMODO == 'ALTA' && indefinidoOnullToVacio(labelMostrarDir) != '')
+            $('#' + labelMostrarDir).text(sDir);*/
 
-        var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">reportar incidència en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDir + '</td></tr></table></div>';
-        nuevoMarcadorSobrePlanoClickInfoWindow(map, event.latLng, sTxt, 300, true, true);
+        if(sMODO == 'ALTA')
+            sDireccionAlta = sDir;
 
-        if(indefinidoOnullToVacio(bActualizarControlesManualesCalleNum) != '' && !bDirEsLatLon)
-        {
-            if(bActualizarControlesManualesCalleNum) autoRellenoCalleNum();
-        }
+        var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comuinicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDir + '</td></tr></table></div>';
+        nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, map, event.latLng, sTxt, 300, true, true, labelMostrarDir);
+
+        if(sMODO == 'ALTA')
+            if(indefinidoOnullToVacio(bActualizarControlesManualesCalleNum) != '' && !bDirEsLatLon)
+                if(bActualizarControlesManualesCalleNum) autoRellenoCalleNum();
 
     });
 }
@@ -123,17 +136,18 @@ function crearMarcadorDesdeCalleNum(){
     var region = "Catalunya";
     var pais = "Spain";
 
-    showAddress(mapAlta, sTipoVia,sCalle, num , ciudad ,region ,pais);
+    showAddress('ALTA',mapAlta, sTipoVia,sCalle, num , ciudad ,region ,pais);
 }
 
-function showAddress(map, sTipoVia,sCalle,num,ciudad,region,pais) {
+function showAddress(sMODO,map, sTipoVia,sCalle,num,ciudad,region,pais) {
     sDireccionAlta = sTipoVia + " " + sCalle + ", " + num;
     var direccion = sDireccionAlta + ", " + ciudad + ", " + region + ", " + pais;
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': direccion}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
-            nuevoMarcadorSobrePlanoClickInfoWindow(map, results[0].geometry.location , sTipoVia + " " + sCalle + ", " + num  , 300 , true, true);
+            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
+            nuevoMarcadorSobrePlanoClickInfoWindow(sMODO,map, results[0].geometry.location , sTxt , 300 , true, true, 'labelDireccion');
         } else {
             alert('La localització sobre plànol no ha estat posible per : ' + status);
         }

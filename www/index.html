@@ -115,8 +115,17 @@
                         <div id="divMapaAlta" style="height:200px;"></div>
                     </div>
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
-                        <select name="selectCARRER" data-native-menu="false" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
-                        <input type="text" maxlength="9" placeholder="numero" name="inputNUM" id="inputNUM" data-inline="true" data-mini="false" data-theme="c" />
+                        <table style="width: 100%;">
+                            <tr><td colspan="2">
+                        <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                            </td></tr>
+                            <tr><td>
+                        <!--<div data-role="controlgroup" data-type="horizontal">-->
+                        <input type="text" maxlength="9" placeholder="numero" name="inputNUM" data-inline="true" id="inputNUM"  data-mini="false" data-theme="c" />
+                                </td><td>
+                        <a href="#" data-rel="popup" data-role="button" data-transition="pop" data-icon="arrow-u" data-iconpos="notext" data-inline="true" data-mini="true">actualitzar mapa</a>
+                        <!--</div>-->
+                        </td></tr></table>
                     </div>
                 </div>
 
@@ -230,9 +239,9 @@
                         </li>
                         <li data-theme="b">
                             <table style='height:10px; width:100%;'><tr>
-                                <td style='text-align:left; font-size:small; width: 15%;'>id</td>
-                                <td style='text-align:left; font-size:small; width: 55%;'>referència</td>
-                                <td style='text-align:left; font-size:small; width: 30%;'>estat</td>
+                                <td style='text-align:left; font-size:small; width: 15%; color: #000000;'>id</td>
+                                <td style='text-align:left; font-size:small; width: 55%; color: #000000;'>referència</td>
+                                <td style='text-align:left; font-size:small; width: 30%; color: #000000;'>estat</td>
                             </tr></table>
                             <div class="content-primary" id="divLista">
                                 <ul data-role="listview" id="listviewLista" data-filter="false" data-inset="true"  data-theme="d" data-divider-theme="b">
@@ -295,11 +304,12 @@
         //En pageNuevaIncidencia, al cerrarse el aordeón del Comentari, que se ponga el texto en su cabecera ----------------
 
         $("#selectCARRER").bind( "change", function(event, ui) {
-            crearMarcadorDesdeCalleNum();
+            if($("#inputNUM").val() != '') crearMarcadorDesdeCalleNum();
         });
 
         $("#inputNUM").bind( "change", function(event, ui) {
-            crearMarcadorDesdeCalleNum();
+            if($('#selectCARRER').find(":selected").text() != '' && $('#selectCARRER').find(":selected").text() != 'Seleccioni el carrer')
+                crearMarcadorDesdeCalleNum();
         });
 
         $('#collapsibleComentario').bind('expand', function () {

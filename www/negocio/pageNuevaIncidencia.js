@@ -61,23 +61,27 @@ function autoRellenoCalleNum(){
     try{
         var sTipusDetectat = sDireccionAlta.split(" ")[0];
         var sCarrerDetectat = sDireccionAlta.split(",")[0].substr(sTipusDetectat.length);
-        var sIdCarrer = "";
+        var sIdCarrer = '';
 
         for(var x=0 ; x<aGlobalCarrers.length; x++)
         {
             if(aGlobalCarrers[x].CARRER.trim().toUpperCase() == sCarrerDetectat.trim().toUpperCase())
+            {
                 if(aGlobalCarrers[x].TIPUS.trim().toUpperCase() == sTipusDetectat.trim().toUpperCase())
+                {
                     sIdCarrer = aGlobalCarrers[x].ID;
+                    break;
+                }
+            }
         }
-        if(sIdCarrer != "") {
+
+        if(sIdCarrer != '') {
             $('#inputNUM').val(sDireccionAlta.split(",")[1].trim());
-            $('#selectCARRER').text(sCarrerDetectat);
-            $('#selectCARRER').val(sIdCarrer)._refresh();
+            $('#selectCARRER').val(sIdCarrer);
+            $('#selectCARRER').selectmenu('refresh');
         }
     }
     catch(e){}
-
-    //$('option[value=' + sIdCarrer + ']').attr('selected', 'selected');
 }
 
 function cierraMapaAbreComentario(){
@@ -140,25 +144,16 @@ function iniciaMapaAlta(bAbrir) {
     // Try HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-
             //Crear el evento click sobre el mapa
             //si bActualizarControlesManualesCalleNum = true, se llama a autoRellenoCalleNum()
             //crearMarcadorEventoClick(map,     bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum)
-            crearMarcadorEventoClick(mapAlta, true,'labelDireccion', true);
+            crearMarcadorEventoClick('ALTA', mapAlta, true,'labelDireccion', true);
 
             posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-            sDireccionAlta = cogerDireccion(posAlta);
-
-            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">reportar incidència en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
-
-          //nuevoMarcadorSobrePlanoClickInfoWindow(mapa,    pos,    htmlText, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa)
-            nuevoMarcadorSobrePlanoClickInfoWindow(mapAlta, posAlta,sTxt,     300,       true,                   true);
-
-            mapAlta.setCenter(posAlta);
-
-            $('#labelDireccion').text(cogerCalleNumDeDireccion(sDireccionAlta));
-
+            sDireccionAlta = cogerDireccion(posAlta, true);
+            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
+            nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,300,true,true);
+            $('#labelDireccion').text(sDireccionAlta);
             $('#divMapaAlta').gmap('refresh');
 
         }, function () { getCurrentPositionError(true); });
