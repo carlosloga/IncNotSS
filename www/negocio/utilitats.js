@@ -55,7 +55,7 @@ function eliminarMarcadorMapa(){
     }
 }
 
-function nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, mapa, pos,htmlText, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa, labelMostrarDir){
+function nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, mapa, pos,htmlText, nIcono, nMaxAncho, bMostrarBocataDeInicio, bSoloUnMarcadorSobreMapa, labelMostrarDir){
     if(bSoloUnMarcadorSobreMapa) {
         eliminarMarcadorMapa();
     }
@@ -63,8 +63,12 @@ function nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, mapa, pos,htmlText, nMaxA
     if(sMODO == 'ALTA')
         posAlta = pos; //por si es una alta, que envie al WS las coordenadas correctas
 
+    var sIcono = '';
+    if(nIcono != null) sIcono = "images/iconosMapa/number_" + nIcono.toString().trim() + ".png";
+
     var marcador = new google.maps.Marker({
         position: pos,
+        icon: sIcono,
         map: mapa
     });
     globalMarcadorMapa = marcador;
@@ -116,7 +120,7 @@ function crearMarcadorEventoClick(sMODO, map, bSoloUnMarcadorSobreMapa , labelMo
             sDireccionAlta = sDir;
 
         var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comuinicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDir + '</td></tr></table></div>';
-        nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, map, event.latLng, sTxt, 300, true, true, labelMostrarDir);
+        nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, map, event.latLng, sTxt,null, 300, true, true, labelMostrarDir);
 
         if(sMODO == 'ALTA')
             if(indefinidoOnullToVacio(bActualizarControlesManualesCalleNum) != '' && !bDirEsLatLon)
@@ -147,7 +151,7 @@ function showAddress(sMODO,map, sTipoVia,sCalle,num,ciudad,region,pais) {
         if (status == google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
             var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
-            nuevoMarcadorSobrePlanoClickInfoWindow(sMODO,map, results[0].geometry.location , sTxt , 300 , true, true, 'labelDireccion');
+            nuevoMarcadorSobrePlanoClickInfoWindow(sMODO,map, results[0].geometry.location , sTxt ,null, 300 , true, true, 'labelDireccion');
         } else {
             alert('La localització sobre plànol no ha estat posible per : ' + status);
         }

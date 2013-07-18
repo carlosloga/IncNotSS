@@ -163,14 +163,17 @@ function mostrarEnPlano() {
             var sTipoVia = '';
             var sCalle = '';
             for (var x = 0; x < aComs.length; x++) {
-                pos = new google.maps.LatLng(aComs[x].COORD_X, aComs[x].COORD_Y);
                 try
                 {
-                    dir = aComs[x].CARRER + ', ' + aComs[x].NUM;
-                } catch(e) { dir = aComs[x].COORD_X + ' , ' +  aComs[x].COORD_Y; }
-                var sTxt = '<div><table><tr><td style="font-size:xx-small;"><b>comunicat </b>' + aComs[x].REFERENCIA + '</td></tr><tr><td style="font-size:xx-small;"><b>reportat el </b>' + aComs[x].DATA +'</td></tr><tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr></table></div>';
-                nuevoMarcadorSobrePlanoClickInfoWindow('CONSULTA', mapConsulta, pos, sTxt, 300, false, false);
-                aMarcadoresSobrePlano[x] = globalMarcadorMapa;
+                    pos = new google.maps.LatLng(aComs[x].COORD_X, aComs[x].COORD_Y);
+                    try
+                    {
+                        dir = aComs[x].CARRER + ', ' + aComs[x].NUM;
+                    } catch(e) { dir = aComs[x].COORD_X + ' , ' +  aComs[x].COORD_Y; }
+                    var sTxt = '<div><table><tr><td style="font-size:xx-small;"><b>comunicat </b>' + aComs[x].REFERENCIA + '</td></tr><tr><td style="font-size:xx-small;"><b>reportat el </b>' + aComs[x].DATA +'</td></tr><tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr></table></div>';
+                    nuevoMarcadorSobrePlanoClickInfoWindow('CONSULTA', mapConsulta, pos, sTxt, aComs[x].ID, 300, false, false);
+                    aMarcadoresSobrePlano[x] = globalMarcadorMapa;
+                } catch(ex){}
             }
             mapConsulta.setCenter(paramPosInicial);
             $('#divMapaConsulta').gmap('refresh');
@@ -209,9 +212,61 @@ function borrarHistoricoComunicados(){
             }
         }
 
-        //limpiar la lista
+        //limpiar/actualizar la lista
         inicioPaginaConsultaIncidencias();
     }
+}
+
+function enviamentDePendents(){
+    var aComs = new Array();
+    aComs = getComunicats();
+
+    var sParamsUsuari = "sNom=&sCognom1=&sCognom2=&sDni=&sEmail=&sTelefon=";
+    var objUsu = getDatosUsuario();
+    if(objUsu != null)
+    {
+        sParamsUsuari = "sNom=" + objUsu.NOM + '';
+        sParamsUsuari += "&sCognom1=" + objUsu.COGNOM1 + '';
+        sParamsUsuari += "&sCognom2=" + objUsu.COGNOM2 + '';
+        sParamsUsuari += "&sDni=" + objUsu.DNI + '';
+        sParamsUsuari += "&sEmail=" + objUsu.EMAIL + '';
+        sParamsUsuari += "&sTelefon=" + objUsu.TELEFON + '';
+    }
+
+    var sParams = "";
+    var objComunicat = null;
+    var bBorrado = false;
+    for(var x=0 ; x< aComs.length; x++){
+        if(aComs[x].REFERENCIA == 'PENDENT_ENVIAMENT' || aComs[x].REFERENCIA == 'ERROR_ENVIAMENT'){
+            sParams = sParamsUsuari;
+            sParams += "&sObs=" + aComs[x].COMENTARI + '';
+            sParams += "&sCoord=" + aComs[x].COORD_X + ',' + aComs[x].COORD_Y + '';
+            sParams += "&sDir=" + aComs[x].CARRER + ', ' + aComs[x].NUM + '';
+            sSuFoto = leeObjetoLocal('FOTO_' + aComs[x].ID , '');
+            sParams += "&sFoto=" + sSuFoto ;
+            var ref = enviarComunicat_WS(sParams , false);
+            if(ref != null)  //Actualizar el COMUNICAT existent
+            {
+                objComunicat = new comunicat();
+                objComunicat.ID = aComs[x].ID;
+                objComunicat.REFERENCIA = ref;
+                objComunicat.ESTAT = 'NOTIFICAT';
+                objComunicat.DATA = aComs[x].DATA;
+                objComunicat.CARRER = aComs[x].CARRER;
+                objComunicat.NUM = aComs[x].NUM;
+                objComunicat.COORD_X = aComs[x].COORD_X;
+                objComunicat.COORD_Y = aComs[x].COORD_Y;
+                objComunicat.COMENTARI = aComs[x].COMENTARI;
+                //Actualizo con nuevo estado
+                guardaObjetoLocal('COMUNICAT_' + x.toString().trim() , objComunicat);
+
+                //Elimino la foto que había guardado
+                bBorrado = borraObjetoLocal('FOTO_' + aComs[x].ID);
+            }
+        }
+    }
+    //limpiar/actualizar la lista
+    inicioPaginaConsultaIncidencias();
 }
 
 //Prueba llamada al WS ...

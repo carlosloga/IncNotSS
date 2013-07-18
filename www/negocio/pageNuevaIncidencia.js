@@ -152,7 +152,7 @@ function iniciaMapaAlta(bAbrir) {
             posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             sDireccionAlta = cogerDireccion(posAlta, true);
             var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
-            nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,300,true,true);
+            nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
             $('#labelDireccion').text(sDireccionAlta);
             $('#divMapaAlta').gmap('refresh');
 
@@ -176,6 +176,8 @@ function netejarDades(){
 
 // -------- ENVIAR INCIDENCIA -----------------------------------------------------------------
 function enviarIncidencia() {
+    guardaDatosCiudadano();
+
     var sCoord = posAlta.toString().replace(" ", "").replace("(","").replace(")","");
     sComentario = $('#textareaComentari').val();
 
@@ -185,8 +187,6 @@ function enviarIncidencia() {
         sCoord_Y = sCoord.split(",")[1];
     }
 
-    guardaDatosCiudadano();
-
     // La dirección correcta es la que ponga en el combo de calle y el numero de calle
     // ( ya que puede pasar que la que ha detectado google maps no sea correcta)
     if( indefinidoOnullToVacio($('#selectCARRER').val()) != '' && $('#selectCARRER').val() != '-1') //o sea, si han seleccionado una calle en el combo ...
@@ -194,73 +194,139 @@ function enviarIncidencia() {
         sDireccionAlta = $('#selectCARRER').find(":selected").text() + ', ' + $('#inputNUM').val();
     }
 
-
-
     //Controlar datos obligatorios
     if(!datosObligatorios(sComentario, sDireccionAlta)){
         mensaje('Les dades marcades amb (*) són obligatòries','Atenció');
         return;
     }
 
-    var sParam = "";
-    sParam += "sNom=" + $('#inputNOM').val() + '';
-    sParam += "&sCognom1=" + $('#inputCOGNOM1').val() + '';
-    sParam += "&sCognom2=" + $('#inputCOGNOM2').val() + '';
-    sParam += "&sDni=" + $('#inputDNI').val() + '';
-    sParam += "&sEmail=" + $('#inputEMAIL').val() + '';
-    sParam += "&sTelefon=" + $('#inputTELEFON').val() + '';
-    sParam += "&sObs=" + sComentario + '';
-    sParam += "&sCoord=" + sCoord + '';
-    sParam += "&sDir=" + sDireccionAlta + '';
-    sParam += "&sFoto=" + sFoto + '';
+    var sParams = "";
+    sParams += "sNom=" + $('#inputNOM').val() + '';
+    sParams += "&sCognom1=" + $('#inputCOGNOM1').val() + '';
+    sParams += "&sCognom2=" + $('#inputCOGNOM2').val() + '';
+    sParams += "&sDni=" + $('#inputDNI').val() + '';
+    sParams += "&sEmail=" + $('#inputEMAIL').val() + '';
+    sParams += "&sTelefon=" + $('#inputTELEFON').val() + '';
+    sParams += "&sObs=" + sComentario + '';
+    sParams += "&sCoord=" + sCoord + '';
+    sParams += "&sDir=" + sDireccionAlta + '';
+    sParams += "&sFoto=" + sFoto + '';
 
+    var ref = enviarComunicat_WS(sParams , true);
+}
+
+function enviarComunicat_WS(sParams , bNuevoComunicat){
     var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
   //var llamaWS = "http://172.26.0.2:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
     try
     {
-        // function LlamaWebService(sTipoLlamada,sUrl,   sParametros,sContentType,                      bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion,        pasaParam, asincro, bProcesar, tag)
+        var bEnvioCorrecto = true;
+        var sEstado = "";
+        var sMensaje = "";
+        var sTitulo = "";
+        var sReferen = "";
         global_AjaxERROR = '';
-        var datos = LlamaWebService('POST',       llamaWS,sParam,    'application/x-www-form-urlencoded',true,      'xml',     false,     false,  10000,    resultadoEnvio, null,      false,    false,     null);
+        var datos = LlamaWebService('GET',llamaWS,sParams,'application/x-www-form-urlencoded',true,'xml',false,false,10000,null, null,false,false,null);
+        try
+        {
+            if(datos == null)  //==> ha habido error
+            {
+                if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
+                    mensaje(global_AjaxERROR, 'error');
+                    sReferen = "PENDENT_ENVIAMENT";
+                    sMensaje = "Comunicació guardada en el dispositiu";
+                    sTitulo = "no hi ha conexió";
+                    bEnvioCorrecto = false;
+                }
+                else
+                {
+                    mensaje("No s'ha pogut rebre confirmació de l'enviament de la comunicació " ,'error');
+                    sReferen = "ERROR_ENVIAMENT";
+                    sMensaje = "Comunicació guardada en el dispositiu";
+                    sTitulo = "error enviant";
+                    bEnvioCorrecto = false;
+                }
+            }
+            else               //==> ha ido bien
+            {
+                //para pruebas :
+                sReferen = "EUDLC000000000000";
+
+                sMensaje = 'Comunicació notificada\n' + 'Gràcies per la seva col·laboració';
+                sTitulo = "info"
+            }
+
+            if(bNuevoComunicat){
+                if(!bEnvioCorrecto)
+                    sEstado = sReferen;
+                else
+                    sEstado = "NOTIFICAT";
+
+                var nIdCom = guardaIncidencia(sReferen, sEstado);
+
+                if(!bEnvioCorrecto)
+                {
+                    guardaFotoEnLocal(nIdCom, sFoto);
+                }
+                eliminarFoto();
+                limpiaVariables('pageNuevaIncidencia');
+                mensaje(sMensaje, sTitulo);
+                abrirPagina('pageIndex');
+            }
+
+            if(bEnvioCorrecto)
+                return sReferen;
+            else
+                return null;
+
+        }
+        catch(ex){
+            mensaje('ERROR (exception) en resultadoEnvio : \n' + ex.code + '\n' + ex.message , 'error');
+            return null;
+        }
     }
     catch(e)
     {
         mensaje('ERROR (exception) en enviarIncidencia : \n' + e.code + '\n' + e.message);
+        return null;
     }
 }
 
-function resultadoEnvio(resultado, param){
+/*function resultadoEnvio(resultado, param){
     try{
+        var sMensaje = "";
+        var sTitulo = "";
+        var sReferen = "";
+
+        //Si el envio al WS ha dado ERROR  :
         if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
             mensaje(global_AjaxERROR);
-
-            // Descapar para pruebas en PC  -----------------
-            var sReferen = 'EUDLC20130710885H';
-            guardaIncidencia(sReferen);
-
-            eliminarFoto();
-            limpiaVariables('pageNuevaIncidencia');
-            mensaje('Incidència notificada' + '\n' + 'Gràcies per la seva col·laboració');
-            abrirPagina('pageIndex');
+            sReferen = "PENDENT_ENVIAMENT";
+            sMensaje = "Comunicació guardada en el dispositiu";
+            sTitulo = "no hi ha conexió";
         }
-        else
+        else //Si el envio al WS ha ido bien (me ha devuelto la Referencia EUDLC :
         {
             //ATENCIÓN !!!!!!!!!!!!!!!! hay que recoger bien este valor devuelto por el WS  !!!!!!!!!!!!!!!!!!!!!!
-            //var sRef = global_AjaxRESULTADO[0];
-            sRef = "EUDLC000000000000";
+            //sReferen = global_AjaxRESULTADO[0];
 
-            guardaIncidencia(sRef);
+            //para pruebas :
+            sReferen = "EUDLC000000000000";
 
-            eliminarFoto();
-            limpiaVariables('pageNuevaIncidencia');
-            mensaje('Incidència notificada' + '\n' + 'Gràcies per la seva col·laboració');
-            abrirPagina('pageIndex');
+            sMensaje = 'Comunicació notificada\n' + 'Gràcies per la seva col·laboració';
+            sTitulo = "info";
         }
+        guardaIncidencia(sReferen);
+        eliminarFoto();
+        limpiaVariables('pageNuevaIncidencia');
+        mensaje(sMensaje, sTitulo);
+        abrirPagina('pageIndex');
     }
     catch(e)
     {
-        mensaje('ERROR (exception) en resultadoEnvio : \n' + e.code + '\n' + e.message);
+        mensaje('ERROR (exception) en resultadoEnvio : \n' + e.code + '\n' + e.message , 'error');
     }
-}
+}*/
 
 function guardaDatosCiudadano(){
     try
@@ -309,7 +375,7 @@ function datosObligatorios(sObs, sDir){
     return true;
 }
 
-function guardaIncidencia(sReferen){
+function guardaIncidencia(sReferen, sEstado){
     try
     {
         var nId = leeObjetoLocal('COMUNICATS_NEXTVAL' , -1) + 1;
@@ -317,12 +383,13 @@ function guardaIncidencia(sReferen){
         var carrer = sDireccionAlta.split(",")[0];
         var num = sDireccionAlta.split(",")[1];
 
-        // INSERT INTO COMUNICATS (ID, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI) VALUES (?,?,?,?,?,?,?,?,?);
-        var fila = [nId, sReferen, 'PENDENT', fecha,carrer , num, sCoord_X, sCoord_Y, sComentario, null, null, null];
+        //INSERT INTO COMUNICATS (ID, REFERENCIA, ESTAT, DATA, CARRER, NUM, COORD_X, COORD_Y, COMENTARI) VALUES (?,?,?,?,?,?,?,?,?);
+        //var fila = [nId, sReferen, 'PENDENT', fecha,carrer , num, sCoord_X, sCoord_Y, sComentario, null, null, null];
+
         var objComunicat = new comunicat();
         objComunicat.ID = nId;
         objComunicat.REFERENCIA = sReferen;
-        objComunicat.ESTAT = 'PENDENT';
+        objComunicat.ESTAT = sEstado;
         objComunicat.DATA = fecha;
         objComunicat.CARRER = carrer;
         objComunicat.NUM = num;
@@ -332,9 +399,16 @@ function guardaIncidencia(sReferen){
         guardaObjetoLocal('COMUNICAT_' + nId.toString().trim() , objComunicat);
 
         guardaObjetoLocal('COMUNICATS_NEXTVAL', nId);
+
+        return nId;
     }
     catch(e)
     {
         mensaje('ERROR (exception) en guardaIncidencia : \n' + e.code + '\n' + e.message);
+        return -1;
     }
+}
+
+function guardaFotoEnLocal(nId,sFoto){
+      guardaObjetoLocal('FOTO_' + nId.toString().trim() , sFoto);
 }

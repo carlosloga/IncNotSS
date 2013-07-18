@@ -112,7 +112,7 @@
                 <div data-role="collapsible" data-mini="false" id="collapsibleLocalizacion">
                     <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
-                        <div id="divMapaAlta" style="height:200px;"></div>
+                        <div id="divMapaAlta" style="height:300px;"></div>
                     </div>
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
                         <table style="width: 100%;">
@@ -211,6 +211,11 @@
 
 <!-- Página ConsultaIncidencias -->
     <div data-role="page" id="pageConsultaIncidencias">
+        <div data-role="header" data-theme="c">
+            <a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h3>reportats</h3>
+            <a href="#pageInfo2" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
+        </div>
         <div data-role="panel" id="panelDadesComunicat" data-position="right" data-display="reveal" data-animate="true">
             <div data-role="content" data-theme="e" class="ui-corner-all">
                 <table>
@@ -225,11 +230,6 @@
                 </table>
             </div>
             <a href="#" id="buttonCerrarPanel" onclick="$('#panelDadesComunicat').panel('close')" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-l">tornar</a>
-        </div>
-        <div data-role="header" data-theme="c">
-            <a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
-            <h3>reportats</h3>
-            <a href="#pageInfo2" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
         </div>
         <div data-role="content" data-theme="a">
                 <div id="divListaIncidencias" style="margin-top:0; vertical-align:top;">
@@ -248,13 +248,18 @@
                                 </ul>
                             </div>
                         </li>
-                        <li data-role="list-divider" role="footer" id="liPieComunicatsReportats" style="text-align: right;">
-                            <a href="#" id="buttonBorrarHistoricoComunicados" onclick="borrarHistoricoComunicados()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="delete">esborrar comunicats</a>
+                        <li data-role="list-divider" role="footer" id="liPieComunicatsReportats" style="text-align: center;">
+                            <table style="width:100%;"><tr><td style="text-align: left; width: 50%;">
+                                <a href="#" id="buttonBorrarHistoricoComunicados" onclick="borrarHistoricoComunicados()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="delete">esborrar tots</a>
+                            </td><td style="text-align: right; width: 50%;">
+                                <a href="#" id="buttonEnviamentDePendents" onclick="enviamentDePendents()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="refresh">enviar pendents</a>
+                            </td></tr></table>
                         </li>
                     </ul>
-                    <div id="divSobreMapaConsulta" data-theme="e" class="ui-corner-all">
-                        <div id="divMapaConsulta" class="ui-corner-all" style="height:300px;">
-                        </div>
+                    <!-- P L A N O -->
+                    <!--<div id="divSobreMapaConsulta" data-theme="e" class="ui-corner-all">-->
+                    <div id="divSobreMapaConsulta" class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                        <div id="divMapaConsulta" style="height:300px;"></div>
                         <a href="#" id="buttonSubirEnPlano" onclick="estadoDelPlano()" data-mini="true" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-u">pujar</a>
                     </div>
                 </div>
@@ -268,7 +273,6 @@
             <div data-role="header" data-theme="a" class="ui-corner-top">
                 <h1>quant a</h1>
             </div>
-
             <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
                 <p style="text-align: left;">
                     L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
@@ -284,7 +288,6 @@
                 </p>
             </div>
         </div>
-
     </div>
 
 <!-- Página ZOOM foto -->
