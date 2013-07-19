@@ -175,6 +175,9 @@ function netejarDades(){
 }
 
 // -------- ENVIAR INCIDENCIA -----------------------------------------------------------------
+function fail(error) {
+    alert(error);
+}
 function enviarIncidencia() {
     guardaDatosCiudadano();
 
@@ -200,7 +203,7 @@ function enviarIncidencia() {
         return;
     }
 
-    var sParams = "";
+/*  var sParams = "";
     sParams += "sNom=" + $('#inputNOM').val() + '';
     sParams += "&sCognom1=" + $('#inputCOGNOM1').val() + '';
     sParams += "&sCognom2=" + $('#inputCOGNOM2').val() + '';
@@ -210,7 +213,10 @@ function enviarIncidencia() {
     sParams += "&sObs=" + sComentario + '';
     sParams += "&sCoord=" + sCoord + '';
     sParams += "&sDir=" + sDireccionAlta + '';
-    sParams += "&sFoto=" + sFoto + '';
+    sParams += "&sFoto=" + sFoto;  //encodeURIComponent(imagenDePrueba()) + '';
+*/
+
+    var sParams = {sNom:$('#inputNOM').val() + '', sCognom1:$('#inputCOGNOM1').val() + '', sCognom2:$('#inputCOGNOM2').val() + '', sDni:$('#inputDNI').val() + '', sEmail:$('#inputEMAIL').val() + '', sTelefon:$('#inputTELEFON').val() + '', sObs:sComentario + '', sCoord:sCoord + '', sDir:sDireccionAlta + '', sFoto: sFoto};
 
     var ref = enviarComunicat_WS(sParams , true);
 }
@@ -226,7 +232,8 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
         var sTitulo = "";
         var sReferen = "";
         global_AjaxERROR = '';
-        var datos = LlamaWebService('GET',llamaWS,sParams,'application/x-www-form-urlencoded',true,'xml',false,false,10000,null, null,false,false,null);
+        //var datos = LlamaWebService('GET',llamaWS,sParams,'application/x-www-form-urlencoded',true,'xml',false,false,10000,null, null,false,false,null);
+        var datos = envioWSpost(sParams);
         try
         {
             if(datos == null)  //==> ha habido error

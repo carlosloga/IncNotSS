@@ -3,6 +3,19 @@
 var global_AjaxERROR = '';
 var global_AjaxRESULTADO = null;
 
+function envioWSpost(sParams){
+    var sDev = '.';
+//    var imagen = imagenDePrueba();
+    var url = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
+
+    // send the data
+    $.post(url, sParams, function(data) {
+        alert('enviada');
+        sDev = data.d;
+    });
+    return sDev;
+}
+
 function LlamaWebService(sTipoLlamada,sUrl, sParametros,sContentType, bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion, pasaParam, asincro, bProcesar, tag) {
     global_AjaxRESULTADO = null;
     global_AjaxERROR = '';
