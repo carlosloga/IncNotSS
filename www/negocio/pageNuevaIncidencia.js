@@ -15,11 +15,9 @@ function inicioPaginaNuevaIncidencia(){
     cargaCalles();
 
     //iniciar el plano
-    $.doTimeout(300, function() {
-        iniciaMapaAlta(true);
-        $.doTimeout(300, function() {
-            cierraMapaAbreComentario
-        });
+    iniciaMapaAlta(true);
+    $.doTimeout(500, function() {
+            cierraMapaAbreComentario();
     });
 }
 
@@ -181,9 +179,8 @@ function cogerDireccion(pos , bSoloCalleYnum){
     {
         mensaje('ERROR (exception) en cogerDireccion : \n' + e.code + '\n' + e.message);
     }
-    return sDireccion;
+    //return sDireccion;
 }
-
 function direccionObtenida(datos, param){
     if(datos == null ) return;
     var sDireccion = $(datos).find('formatted_address').text();
@@ -277,7 +274,7 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
         var sReferen = "";
         global_AjaxERROR = '';
         //var datos = LlamaWebService('GET',llamaWS,sParams,'application/x-www-form-urlencoded',true,'xml',false,false,10000,null, null,false,false,null);
-        envioWSpost(sParams);
+        envioWSpost(llamaWS,sParams);
         $.doTimeout(500, function() {
             try
             {

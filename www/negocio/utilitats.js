@@ -102,30 +102,33 @@ function crearMarcadorEventoClick(sMODO, map, bSoloUnMarcadorSobreMapa , labelMo
         if(sMODO == 'ALTA')
             posAlta = event.latLng; //por si es una alta, que envie al WS las coordenadas correctas
 
-        var sDir = cogerDireccion(event.latLng, true);   //true ==> solo calle y num
-        if(sDir == '')
-        {
-            sDir  = event.latLng.lat() + " , " + event.latLng.lng();
-            bDirEsLatLon = true;
-        }
-        else
-        {
-            bDirEsLatLon = false;
-        }
+        sDireccionAlta == '';
+        cogerDireccion(event.latLng, true);   //true ==> solo calle y num
+        $.doTimeout(500, function(){
+            if(sDireccionAlta == '')
+            {
+                sDireccionAlta  = event.latLng.lat() + " , " + event.latLng.lng();
+                bDirEsLatLon = true;
+            }
+            else
+            {
+                bDirEsLatLon = false;
+            }
 
-/*        if(sMODO == 'ALTA' && indefinidoOnullToVacio(labelMostrarDir) != '')
-            $('#' + labelMostrarDir).text(sDir);*/
+    /*        if(sMODO == 'ALTA' && indefinidoOnullToVacio(labelMostrarDir) != '')
+                $('#' + labelMostrarDir).text(sDir);*/
 
-        if(sMODO == 'ALTA')
-            sDireccionAlta = sDir;
+/*            if(sMODO == 'ALTA')
+                sDireccionAlta = sDir;*/
 
-        var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comuinicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDir + '</td></tr></table></div>';
-        nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, map, event.latLng, sTxt,null, 300, true, true, labelMostrarDir);
+            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">detectat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
+            nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, map, event.latLng, sTxt,null, 300, true, true, labelMostrarDir);
 
-        if(sMODO == 'ALTA')
-            if(indefinidoOnullToVacio(bActualizarControlesManualesCalleNum) != '' && !bDirEsLatLon)
-                if(bActualizarControlesManualesCalleNum) autoRellenoCalleNum();
+            if(sMODO == 'ALTA')
+                if(indefinidoOnullToVacio(bActualizarControlesManualesCalleNum) != '' && !bDirEsLatLon)
+                    if(bActualizarControlesManualesCalleNum) autoRellenoCalleNum();
 
+        });
     });
 }
 

@@ -3,13 +3,13 @@
 var global_AjaxERROR = '';
 var global_AjaxRESULTADO = null;
 
-function envioWSpost(sParams){
+function envioWSpost(sUrl,sParams){
     var sDev = '.';
 //    var imagen = imagenDePrueba();
     //var url = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
-    var url = "http://172.26.0.2:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
+    //var url = "http://172.26.0.2:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
 
-    $.post(url, sParams).done(function(data) {
+    $.post(sUrl, sParams).done(function(data) {
         global_AjaxRESULTADO = data;
         global_AjaxERROR = '';
     }).fail(function() { global_AjaxERROR = 'Error en post'; global_AjaxRESULTADO = null });
