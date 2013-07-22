@@ -6,11 +6,15 @@ var aMarcadoresSobrePlano = new Array();
 function inicioPaginaConsultaIncidencias(){
     cargaListaComunicats(getComunicats());
 
-    //Ocultar el plano
-    $("#divMapaConsulta").hide();
-    $("#divSobreMapaConsulta").hide();
-    $("#buttonMostrarEnPlano").changeButtonText("mostrar plànol");
-    $("#buttonMostrarEnPlano").button("refresh");
+    // $(document).on('pageinit', '#pageConsultaIncidencias',  function(){
+
+        //Ocultar el plano
+        $("#divMapaConsulta").hide();
+        $("#divSobreMapaConsulta").hide();
+        $("#buttonMostrarEnPlano").changeButtonText("mostrar plànol");
+        //$("#buttonMostrarEnPlano").button('refresh');
+
+    // });
 }
 
 //aComs = array de objetos 'comunicat'
@@ -33,8 +37,8 @@ function cargaListaComunicats(aComs){
         //sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].DATA + "</td><td style='text-align:left; font-size:x-small; width: 20%;'>" + aComs[x].ESTAT + "</td></tr></table>";
         sFila = "<table style='width: 100%;'><tr>";
         sFila += "<td style='text-align:left; font-size:x-small; width: 15%;'>" + aComs[x].ID + "</td>";
-        sFila += "<td style='text-align:left; font-size:x-small; width: 55%;'>" + aComs[x].REFERENCIA + "</td>";
-        sFila += "<td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].ESTAT + "</td>";
+        sFila += "<td style='text-align:left; font-size:x-small; width: 55%;'>" + aComs[x].ESTAT + "</td>";
+        sFila += "<td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].REFERENCIA + "</td>";
         sFila += "</tr></table>";
         $('#listviewLista').append($('<li/>', {
             'id': "fila_" + aComs[x].ID, 'data-icon': "arrow-r"
@@ -111,10 +115,10 @@ function estadoDelPlano(){
         $('#divMapaConsulta').show();
         $("#buttonMostrarEnPlano").changeButtonText("ocultar plànol");
         mostrarEnPlano();
-        $.mobile.silentScroll(1000);
+        $.mobile.silentScroll(1200);
     }
 
-    $("#buttonMostrarEnPlano").button("refresh");
+    //$("#buttonMostrarEnPlano").button("refresh");
 }
 
 function mostrarEnPlano() {
@@ -134,6 +138,7 @@ function mostrarEnPlano() {
         zoom: 17,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
+
     mapConsulta = new google.maps.Map(document.getElementById('divMapaConsulta'), mapOptions);
 
     // Try HTML5 geolocation

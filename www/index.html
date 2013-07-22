@@ -45,8 +45,6 @@
     <!-- Mapa -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
 
-    <script src="negocio/imagenDePrueba.js" type="text/javascript"></script>
-
 </head>
 
 <body>
@@ -59,12 +57,14 @@
             <!-- <a href="" onclick="sincroBD('CARRERS')" id="buttonSINCRO" data-mini="false" data-inline="true" data-role="button" data-theme="c">sincro carrers</a> -->
         </div>
         <div data-role="content" data-theme="c">
-             <p style="text-align: center;"><img src="images/LogoAjParets.jpg" width="80%;" /></p>
-             <div data-role="controlgroup">
-                 <a href="" onclick="abrirPagina('pageNuevaIncidencia')" id="buttonALTA" data-mini="false" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-r">Nou comunicat</a>
-                 <a href="" onclick="abrirPagina('pageConsultaIncidencias')" id="buttonCONSULTA" data-mini="false" data-inline="false" data-role="button" data-theme="c" data-icon="arrow-r">Els meus comunicats</a>
+             <!-- <p style="text-align: center;"><img src="images/LogoAjParets.jpg" width="80%;" /></p> -->
+             <p style="text-align: center;"><img src="images/ciutadans.gif" width="80%;" /></p>
+             <div data-role="controlgroup" data-type="horizontal" style="text-align: center;">
+                 <a href="" onclick="abrirPagina('pageNuevaIncidencia')" id="buttonALTA" data-mini="false" data-inline="false" data-role="button" data-theme="c">Nou <br/>comunicat</a>
+                 <a href="" onclick="abrirPagina('pageConsultaIncidencias')" id="buttonCONSULTA" data-mini="false" data-inline="false" data-role="button" data-theme="c">Els meus <br/>comunicats</a>
             </div>
-            <p><label id="labelInfo"></label></p>
+            <!-- <p><label id="labelInfo"></label></p> -->
+            <p style="text-align: center;"><img src="images/LogoAjParets.jpg" width="80%;" /></p>
         </div>
         <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
             <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label id="labelPieIndex" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
@@ -147,24 +147,27 @@
             </div>
 
             <!-- U S U A R I O -->
-            <div data-role="collapsible" id="collapsibleQuiSoc" data-mini="false" data-theme="d" data-collapsed="true">
-                <h3><table style="width:100%;"><tr><td>qui sóc (opcional)</td><td style="text-align:right;"><label id="labelQUISOC" style="font-size:x-small;"></label></td></tr></table></h3>
-                <div data-role="fieldcontain">
-                    <!-- <label for="inputNOM">nom</label> -->
-                    <input type="text" name="inputNOM" id="inputNOM" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu nom ..." data-clear-btn="true" />
-                    <!-- <label for="inputCOGNOM1">primer cognom</label> -->
-                    <input type="text" name="inputCOGNOM1" id="inputCOGNOM1" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu primer cognom ..." data-clear-btn="true" />
-                    <!-- <label for="inputCOGNOM2">segon cognom</label> -->
-                    <input type="text" name="inputCOGNOM2" id="inputCOGNOM2" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu segon cognom ..." data-clear-btn="true" />
-                    <!-- <label for="inputDNI">dni</label> -->
-                    <input type="text" name="inputDNI" id="inputDNI" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu dni ..." data-clear-btn="true" />
-                    <!-- <label for="inputEMAIL">email</label> -->
-                    <input type="text" name="inputEMAIL" id="inputEMAIL" data-inline="true" data-mini="false" data-theme="d" placeholder="la meva adreça electrónica ..." data-clear-btn="true" />
-                    <!-- <label for="inputTEL">telèfon</label> -->
-                    <input type="text" name="inputTELEFON" id="inputTELEFON" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu telèfon mòbil ..." data-clear-btn="true" />
+            <div id="acordeonUsuario" data-role="collapsible-set" data-mini="false" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-l" data-thene="d" data-content-theme="d">
+                <div data-role="collapsible" id="collapsibleQuiSoc" data-mini="false" data-theme="d" data-collapsed="true">
+                    <h3><table style="width:100%;"><tr><td>qui sóc (opcional)</td><td style="text-align:right;"><label id="labelQUISOC" style="font-size:x-small;"></label></td></tr></table></h3>
+                    <div data-role="fieldcontain">
+                        <!-- <label for="inputNOM">nom</label> -->
+                        <input type="text" name="inputNOM" id="inputNOM" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu nom ..." data-clear-btn="true" />
+                        <!-- <label for="inputCOGNOM1">primer cognom</label> -->
+                        <input type="text" name="inputCOGNOM1" id="inputCOGNOM1" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu primer cognom ..." data-clear-btn="true" />
+                        <!-- <label for="inputCOGNOM2">segon cognom</label> -->
+                        <input type="text" name="inputCOGNOM2" id="inputCOGNOM2" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu segon cognom ..." data-clear-btn="true" />
+                        <!-- <label for="inputDNI">dni</label> -->
+                        <input type="text" name="inputDNI" id="inputDNI" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu dni ..." data-clear-btn="true" />
+                        <!-- <label for="inputEMAIL">email</label> -->
+                        <input type="text" name="inputEMAIL" id="inputEMAIL" data-inline="true" data-mini="false" data-theme="d" placeholder="la meva adreça electrónica ..." data-clear-btn="true" />
+                        <!-- <label for="inputTEL">telèfon</label> -->
+                        <input type="text" name="inputTELEFON" id="inputTELEFON" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu telèfon mòbil ..." data-clear-btn="true" />
+                    </div>
+                    <div style="text-align: right;"><a href="#" id="buttonNetejarDades" onclick="netejarDades()" data-mini="false" data-inline="true" data-role="button" data-theme="d" data-icon="delete">netejar dades personals</a></div>
                 </div>
-                <a href="#" id="buttonNetejarDades" onclick="netejarDades()" data-mini="false" data-inline="true" data-role="button" data-theme="c" data-icon="delete">netejar aquestes dades</a>
             </div>
+
             <!-- Enviar -->
             <div style="text-align:right;">
                 <a href="#" id="buttonEnviar" onclick="enviarIncidencia()" data-mini="false" data-inline="true" data-role="button" data-theme="c" data-icon="grid">ENVIAR COMUNICAT</a>
@@ -242,8 +245,8 @@
                         <li data-theme="b">
                             <table style='height:10px; width:100%;'><tr>
                                 <td style='text-align:left; font-size:small; width: 15%; color: #000000;'>id</td>
-                                <td style='text-align:left; font-size:small; width: 55%; color: #000000;'>referència</td>
-                                <td style='text-align:left; font-size:small; width: 30%; color: #000000;'>estat</td>
+                                <td style='text-align:left; font-size:small; width: 55%; color: #000000;'>estat</td>
+                                <td style='text-align:left; font-size:small; width: 30%; color: #000000;'>referència</td>
                             </tr></table>
                             <div class="content-primary" id="divLista">
                                 <ul data-role="listview" id="listviewLista" data-filter="false" data-inset="true"  data-theme="d" data-divider-theme="b">
@@ -252,7 +255,7 @@
                         </li>
                         <li data-role="list-divider" role="footer" id="liPieComunicatsReportats" style="text-align: center;">
                             <table style="width:100%;"><tr><td style="text-align: left; width: 50%;">
-                                <a href="#" id="buttonBorrarHistoricoComunicados" onclick="borrarHistoricoComunicados()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="delete">esborrar tots</a>
+                                <a href="#pageBorrarHistoricoComunicados" id="buttonBorrarHistoricoComunicados" data-position-to="window" data-mini="true" data-inline="true" data-rel="popup" data-role="button" data-transition="pop" data-theme="c" data-icon="delete">esborrar tots</a>
                             </td><td style="text-align: right; width: 50%;">
                                 <a href="#" id="buttonEnviamentDePendents" onclick="enviamentDePendents()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="refresh">enviar pendents</a>
                             </td></tr></table>
@@ -290,6 +293,21 @@
                 </p>
             </div>
         </div>
+
+        <!-- PopUp ELIMINAR Comunicats -->
+        <div data-role="popup" id="pageBorrarHistoricoComunicados"  data-theme="c" style="max-width:95%;" class="ui-corner-all">
+            <div data-role="header" data-theme="a" class="ui-corner-top">
+                <h1>El·liminar historial</h1>
+            </div>
+            <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+                <h3 class="ui-title">Està segur/a que vol el·liminar ?</h3>
+                <div data-role="controlgroup" data-type="horizontal">
+                    <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-theme="c">cancel·lar</a>
+                    <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" onclick="borrarHistoricoComunicados()">el·liminar</a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 <!-- Página ZOOM foto -->
@@ -336,18 +354,14 @@
             }
         });
 
-/*        $('#collapsibleLocalizacion').bind('expand', function () {
-         $("#selectCARRER").get(0).focus();
-         $("#selectCARRER").blur();
-         });*/
-
         $('#collapsibleQuiSoc').bind('collapse', function () {
             $('#labelQUISOC').text($('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            $.mobile.silentScroll(0);
         });
 
-       /* $('#selectCARRER').click(function() {
-            $(this).blur();
-        });*/
+        $('#collapsibleQuiSoc').bind('expand', function () {
+            $.mobile.silentScroll(1000);
+        });
 
     </script>
 

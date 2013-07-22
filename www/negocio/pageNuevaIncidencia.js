@@ -15,9 +15,12 @@ function inicioPaginaNuevaIncidencia(){
     cargaCalles();
 
     //iniciar el plano
-    iniciaMapaAlta(true);
-
-    setTimeout(cierraMapaAbreComentario,1000);
+    $.doTimeout(300, function() {
+        iniciaMapaAlta(true);
+        $.doTimeout(300, function() {
+            cierraMapaAbreComentario
+        });
+    });
 }
 
 function cargaDatosCiudadano(){
@@ -151,16 +154,57 @@ function iniciaMapaAlta(bAbrir) {
 
             posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             sDireccionAlta = cogerDireccion(posAlta, true);
-            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
+
+/*            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
             nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
             $('#labelDireccion').text(sDireccionAlta);
-            $('#divMapaAlta').gmap('refresh');
+            $('#divMapaAlta').gmap('refresh');*/
 
         }, function () { getCurrentPositionError(true); });
     } else {
         // Browser no soporta Geolocation
         getCurrentPositionError(false);
     }
+}
+
+function cogerDireccion(pos , bSoloCalleYnum){
+    var llamaWS = "http://maps.googleapis.com/maps/api/geocode/xml";
+    var sParam =  "latlng=" + pos.toString().replace(" ", "").replace("(","").replace(")","") + "&sensor=true";
+    var sDireccion = '';
+    //alert(sParam);
+    try
+    {
+        //function LlamaWebService (sTipoLlamada,sUrl,   sParametros,sContentType,                        bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion,           pasaParam,      asincro, bProcesar, tag)
+        var datos = LlamaWebService('GET',      llamaWS,sParam,     'application/x-www-form-urlencoded', true,      'xml',     false,     false,  10000,     direccionObtenida, bSoloCalleYnum, true,    false,     null);
+    }
+    catch (e)
+    {
+        mensaje('ERROR (exception) en cogerDireccion : \n' + e.code + '\n' + e.message);
+    }
+    return sDireccion;
+}
+
+function direccionObtenida(datos, param){
+    if(datos == null ) return;
+    var sDireccion = $(datos).find('formatted_address').text();
+
+    var n = 0;
+    $(datos).find('formatted_address').each(function () {
+        if (n == 0) sDireccion = $(this).text();
+        n++;
+    });
+
+    if(indefinidoOnullToVacio(param) != '')
+        if(param)
+            sDireccion = cogerCalleNumDeDireccion(sDireccion);
+
+    sDireccionAlta = sDireccion;
+
+    var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
+    nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
+    $('#labelDireccion').text(sDireccionAlta);
+    $('#divMapaAlta').gmap('refresh');
+
 }
 
 // -------- NETEJAR CIUTADA -------------------------------------------------------------------
@@ -233,64 +277,65 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
         var sReferen = "";
         global_AjaxERROR = '';
         //var datos = LlamaWebService('GET',llamaWS,sParams,'application/x-www-form-urlencoded',true,'xml',false,false,10000,null, null,false,false,null);
-        var datos = envioWSpost(sParams);
-        try
-        {
-            if(datos == null)  //==> ha habido error
+        envioWSpost(sParams);
+        $.doTimeout(500, function() {
+            try
             {
-                if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
-                    mensaje(global_AjaxERROR, 'error');
-                    sReferen = "PENDENT_ENVIAMENT";
-                    sMensaje = "Comunicació guardada en el dispositiu";
-                    sTitulo = "no hi ha conexió";
-                    bEnvioCorrecto = false;
-                }
-                else
+                var datos = global_AjaxRESULTADO;
+                if(datos == null)  //==> ha habido error
                 {
-                    mensaje("No s'ha pogut rebre confirmació de l'enviament de la comunicació " ,'error');
-                    sReferen = "ERROR_ENVIAMENT";
-                    sMensaje = "Comunicació guardada en el dispositiu";
-                    sTitulo = "error enviant";
-                    bEnvioCorrecto = false;
+                    if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
+                        mensaje(global_AjaxERROR, 'error');
+                        sReferen = "------------";
+                        sMensaje = "Comunicació guardada en el dispositiu";
+                        sTitulo = "no hi ha conexió";
+                        bEnvioCorrecto = false;
+                    }
+                    else
+                    {
+                        mensaje("No s'ha pogut rebre confirmació de l'enviament de la comunicació " ,'error');
+                        sReferen = "------------";
+                        sMensaje = "Comunicació guardada en el dispositiu";
+                        sTitulo = "error enviant";
+                        bEnvioCorrecto = false;
+                    }
                 }
-            }
-            else               //==> ha ido bien
-            {
-                //para pruebas :
-                sReferen = "EUDLC000000000000";
-
-                sMensaje = 'Comunicació notificada\n' + 'Gràcies per la seva col·laboració';
-                sTitulo = "info"
-            }
-
-            if(bNuevoComunicat){
-                if(!bEnvioCorrecto)
-                    sEstado = sReferen;
-                else
-                    sEstado = "NOTIFICAT";
-
-                var nIdCom = guardaIncidencia(sReferen, sEstado);
-
-                if(!bEnvioCorrecto)
+                else               //==> ha ido bien
                 {
-                    guardaFotoEnLocal(nIdCom, sFoto);
+                    sReferen = $(datos).find('resultado').text();
+                    sMensaje = 'Comunicació notificada\n' + 'Gràcies per la seva col·laboració';
+                    sTitulo = "info"
                 }
-                eliminarFoto();
-                limpiaVariables('pageNuevaIncidencia');
-                mensaje(sMensaje, sTitulo);
-                abrirPagina('pageIndex');
-            }
 
-            if(bEnvioCorrecto)
-                return sReferen;
-            else
+                if(bNuevoComunicat){
+                    if(!bEnvioCorrecto)
+                        sEstado = "PENDENT_ENVIAMENT";
+                    else
+                        sEstado = "NOTIFICAT";
+
+                    var nIdCom = guardaIncidencia(sReferen, sEstado);
+
+                    if(!bEnvioCorrecto)
+                    {
+                        guardaFotoEnLocal(nIdCom, sFoto);
+                    }
+                    eliminarFoto();
+                    limpiaVariables('pageNuevaIncidencia');
+                    mensaje(sMensaje, sTitulo);
+                    abrirPagina('pageIndex');
+                }
+
+                if(bEnvioCorrecto)
+                    return sReferen;
+                else
+                    return null;
+
+            }
+            catch(ex){
+                mensaje('ERROR (exception) en resultadoEnvio : \n' + ex.code + '\n' + ex.message , 'error');
                 return null;
-
-        }
-        catch(ex){
-            mensaje('ERROR (exception) en resultadoEnvio : \n' + ex.code + '\n' + ex.message , 'error');
-            return null;
-        }
+            }
+        });
     }
     catch(e)
     {
