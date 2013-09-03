@@ -97,7 +97,7 @@ function verDatosComunicat(sDatos, separador){
     $.mobile.silentScroll(0);
     $("#panelDadesComunicat").panel("open");
 
-    //abrirPagina('pageDatosComunicat');
+    //abrirPagina('pageDatosComunicat', true);
 
 }
 

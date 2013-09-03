@@ -14,6 +14,9 @@ function inicioPaginaNuevaIncidencia(){
     //cargar CARRERS en el combo
     cargaCalles();
 
+    //Por si se había quedado expandido el desplegable de los datos del ciudadano
+    $('#collapsibleQuiSoc').trigger('collapse');
+
     //iniciar el plano
     iniciaMapaAlta(true);
     $.doTimeout(500, function() {
@@ -119,7 +122,7 @@ function zoomFoto(){
     var imagen = document.getElementById('imgZoomFoto');
     imagen.style.display = 'block';
     imagen.src = "data:image/jpeg;base64," + sFoto;
-    abrirPagina('pageZoomFoto');
+    abrirPagina('pageZoomFoto', true);
 }
 
 function eliminarFoto(){
@@ -321,7 +324,7 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
                     eliminarFoto();
                     limpiaVariables('pageNuevaIncidencia');
                     mensaje(sMensaje, sTitulo);
-                    abrirPagina('pageIndex');
+                    abrirPagina('pageIndex', false);
                 }
 
                 if(bEnvioCorrecto)
@@ -371,7 +374,7 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
         eliminarFoto();
         limpiaVariables('pageNuevaIncidencia');
         mensaje(sMensaje, sTitulo);
-        abrirPagina('pageIndex');
+        abrirPagina('pageIndex', false);
     }
     catch(e)
     {

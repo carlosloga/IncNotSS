@@ -98,11 +98,11 @@ function deviceReady() {
 
 // -------- COMUNES -----------------------------------------------------------------------
 
-function abrirPagina(sPag) {
+function abrirPagina(sPag, bBack) {
     $.mobile.changePage('#' + sPag, {
         transition: "flip",
         reverse: false,
-        changeHash: false
+        changeHash: ((bBack) ? true : false)
     });
 
     sCambioPagina = sPag;
