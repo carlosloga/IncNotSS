@@ -167,6 +167,8 @@ function mostrarEnPlano() {
             var dir = '';
             var sTipoVia = '';
             var sCalle = '';
+            var sDatos = '';
+            var separador = '#';
             for (var x = 0; x < aComs.length; x++) {
                 try
                 {
@@ -175,7 +177,21 @@ function mostrarEnPlano() {
                     {
                         dir = aComs[x].CARRER + ', ' + aComs[x].NUM;
                     } catch(e) { dir = aComs[x].COORD_X + ' , ' +  aComs[x].COORD_Y; }
-                    var sTxt = '<div><table><tr><td style="font-size:xx-small;"><b>comunicat </b>' + aComs[x].REFERENCIA + '</td></tr><tr><td style="font-size:xx-small;"><b>reportat el </b>' + aComs[x].DATA +'</td></tr><tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr></table></div>';
+
+                    sDatos = getCadenaComunicat(aComs[x] , separador);
+
+/*
+                    var sTxt =  '<div><table>';
+                    sTxt += '<tr><td style="font-size:xx-small;"><b>comunicat </b>' + aComs[x].REFERENCIA + '</td></tr>';
+                    sTxt += '<tr><td style="font-size:xx-small;"><b>reportat el </b>' + aComs[x].DATA +'</td></tr>';
+                    sTxt += '<tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr>';
+                    sTxt += '<tr><td style="font-size:xx-small;"><a href="" onclick="verDatosComunicat(\'' + sDatos + '\',\'' + separador + '\');">+info</a></td></tr></table></div>';
+*/
+
+                    var sTxt =  '<div><table>';
+                    sTxt += '<tr><td style="font-size:xx-small;"><a href="" onclick="verDatosComunicat(\'' + sDatos + '\',\'' + separador + '\');">info</a></td></tr>';
+                    sTxt += '</table></div>';
+
                     nuevoMarcadorSobrePlanoClickInfoWindow('CONSULTA', mapConsulta, pos, sTxt, aComs[x].ID, 300, false, false);
                     aMarcadoresSobrePlano[x] = globalMarcadorMapa;
                 } catch(ex){}

@@ -212,7 +212,9 @@ function netejarDades(){
     $('#inputDNI').val('');
     $('#inputEMAIL').val('');
     $('#inputTELEFON').val('');
-    $('#collapsibleQuiSoc').trigger('collapse');
+
+    $('#labelQUISOC').text(' ');
+    <!-- $('#collapsibleQuiSoc').trigger('collapse'); -->
 }
 
 // -------- ENVIAR INCIDENCIA -----------------------------------------------------------------

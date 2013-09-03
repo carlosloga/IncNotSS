@@ -110,6 +110,25 @@
                     <input type="text" name="textareaComentari" id="textareaComentari" placeholder="la incidència, el suggeriment, la queixa, ..." data-clear-btn="true" />
                 </div>
 
+                <!-- F O T O -->
+                <div data-role="collapsible" data-mini="false" id="collapsibleFoto">
+                    <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td><td style="text-align:right;"><a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a></td></tr></table></h3>
+                    <div data-role="controlgroup"data-type="horizontal" style="text-align: center;">
+                        <img id="imgFoto" src="" width="150px" border='1' onclick="zoomFoto()" />
+                        <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a>
+                    </div>
+                    <div style="text-align: center; font-size: x-small; color: #970824;"><label>(capturant foto s'actualitza l'adreça)</label></div>
+                    <!--<table style="width:100%;"><tr>
+                        <td style="text-align:left; width:100%;">
+                            <img id="imgFoto" src="" width="200px" border='1' onclick="zoomFoto()" />
+                        </td>
+                        <td style="text-align:right;">
+                            <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="false">el·liminar</a>
+                        </td>
+                    </tr></table>-->
+
+                </div>
+
                 <!-- L O C A L I T Z A C I Ó -->
                 <div data-role="collapsible" data-mini="false" id="collapsibleLocalizacion">
                     <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
@@ -131,24 +150,6 @@
                     </div>
                 </div>
 
-                <!-- F O T O -->
-                <div data-role="collapsible" data-mini="false" id="collapsibleFoto">
-                    <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td><td style="text-align:right;"><a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a></td></tr></table></h3>
-                    <div data-role="controlgroup"data-type="horizontal" style="text-align: center;">
-                        <img id="imgFoto" src="" width="150px" border='1' onclick="zoomFoto()" />
-                        <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a>
-                    </div>
-                    <div style="text-align: center; font-size: x-small; color: #970824;"><label>(capturant foto s'actualitza l'adreça)</label></div>
-                    <!--<table style="width:100%;"><tr>
-                        <td style="text-align:left; width:100%;">
-                            <img id="imgFoto" src="" width="200px" border='1' onclick="zoomFoto()" />
-                        </td>
-                        <td style="text-align:right;">
-                            <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="false">el·liminar</a>
-                        </td>
-                    </tr></table>-->
-
-                </div>
             </div>
 
             <!-- U S U A R I O -->
@@ -169,7 +170,11 @@
                         <!-- <label for="inputTEL">telèfon</label> -->
                         <input type="text" name="inputTELEFON" id="inputTELEFON" data-inline="true" data-mini="false" data-theme="d" placeholder="el meu telèfon mòbil ..." data-clear-btn="true" />
                     </div>
-                    <div style="text-align: right;"><a href="#" id="buttonNetejarDades" onclick="netejarDades()" data-mini="false" data-inline="true" data-role="button" data-theme="d" data-icon="delete">netejar dades personals</a></div>
+                    <!-- <div style="text-align: right;" data-theme="c"> -->
+                        <!-- <a href="#" id="buttonNetejarDades" onclick="netejarDades()" data-mini="false" data-inline="true" data-role="button" data-theme="d" data-icon="delete">comunicació anónima</a> -->
+                            <input id="check_ComAnonima" name="check_ComAnonima" class="custom" type="checkbox" data-mini="true" data-inline="true" style="text-align: right;">
+                            <label for="check_ComAnonima" data-mini="true" data-inline="true" style="text-align: right;">comunicació anónima</label>
+                    <!-- </div> -->
                 </div>
             </div>
 
@@ -226,6 +231,7 @@
             <h3>reportats</h3>
             <a href="#pageInfo2" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
         </div>
+        <!-- Panel lateral -->
         <div data-role="panel" id="panelDadesComunicat" data-position="right" data-display="reveal" data-animate="true">
             <div data-role="content" data-theme="e" class="ui-corner-all">
                 <table>
@@ -367,6 +373,18 @@
         $('#collapsibleQuiSoc').bind('expand', function () {
             $.mobile.silentScroll(1000);
         });
+
+        $("#check_ComAnonima").bind("change" , function() {
+            if($(this).is(':checked')){
+                netejarDades();
+            }
+            else
+            {
+                cargaDatosCiudadano();
+            }
+        } )
+
+
 
     </script>
 
