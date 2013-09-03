@@ -384,8 +384,8 @@
             }
         } )
 
-        // Botón 'atrás' sale de la app si está en la pantalla principal...
-        document.addEventListener("backbutton", function(e){      alert('fin');
+        // Botón 'atrás' sale de la app si está en la pantalla principal y es un Androide ...
+        document.addEventListener("backbutton", function(e){
             if($.mobile.activePage.is('#pageIndex')){
                 e.preventDefault();
                 navigator.app.exitApp();
