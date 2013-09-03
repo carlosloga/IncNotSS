@@ -384,7 +384,16 @@
             }
         } )
 
-
+        // Botón 'atrás' sale de la app si está en la pantalla principal...
+        document.addEventListener("backbutton", function(e){      alert('fin');
+            if($.mobile.activePage.is('#pageIndex')){
+                e.preventDefault();
+                navigator.app.exitApp();
+            }
+            else {
+                navigator.app.backHistory()
+            }
+        }, false);
 
     </script>
 

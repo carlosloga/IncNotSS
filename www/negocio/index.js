@@ -102,7 +102,7 @@ function abrirPagina(sPag) {
     $.mobile.changePage('#' + sPag, {
         transition: "flip",
         reverse: false,
-        changeHash: true
+        changeHash: false
     });
 
     sCambioPagina = sPag;
