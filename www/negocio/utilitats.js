@@ -269,3 +269,28 @@ function indefinidoOnullToVacio(algo){
     if(algo == null) return '';
     return algo;
 }
+
+function ParseEstado(sEstat){
+    switch(sEstat)
+    {
+        case 'D' :
+            return 'DESESTIMAT';
+            break;
+
+        case 'TANC' :
+            return 'TANCAT';
+            break;
+
+        case 'ACEP' :
+            return 'ACCEPTAT';
+            break;
+
+        case 'GES' :
+            return 'GESTIONANT';
+            break;
+
+        default :
+            return sEstat;
+            break;
+    }
+}

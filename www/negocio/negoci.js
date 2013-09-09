@@ -67,6 +67,7 @@ function getArrayComunicat(objComunicat){
     aDatosCom['coord_x'] = objComunicat.COORD_X;
     aDatosCom['coord_y'] = objComunicat.COORD_Y;
     aDatosCom['comentari'] = objComunicat.COMENTARI;
+    aDatosCom['id_msg_mov'] = objComunicat.ID_MSG_MOV;
     return aDatosCom;
 }
 
@@ -83,6 +84,7 @@ function getCadenaComunicat(objComunicat , separador){
         sDev += indefinidoOnullToVacio(objComunicat.COORD_X) + separador;
         sDev += indefinidoOnullToVacio(objComunicat.COORD_Y) + separador;
         sDev += indefinidoOnullToVacio(objComunicat.COMENTARI) + separador;
+        sDev += indefinidoOnullToVacio(objComunicat.ID_MSG_MOV) + separador;
     }
     catch(e){
         mensaje('ERROR (exception) en getCadenaComunicat : : \n' + e.code + '\n' + e.message);

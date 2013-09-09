@@ -220,7 +220,7 @@ function netejarDades(){
     <!-- $('#collapsibleQuiSoc').trigger('collapse'); -->
 }
 
-// -------- ENVIAR INCIDENCIA -----------------------------------------------------------------
+// -------- ENVIAR/GUARDAR COMUNICAT -----------------------------------------------------------
 function fail(error) {
     alert(error);
 }
@@ -262,14 +262,14 @@ function enviarIncidencia() {
     sParams += "&sFoto=" + sFoto;  //encodeURIComponent(imagenDePrueba()) + '';
 */
 
-    var sParams = {sNom:$('#inputNOM').val() + '', sCognom1:$('#inputCOGNOM1').val() + '', sCognom2:$('#inputCOGNOM2').val() + '', sDni:$('#inputDNI').val() + '', sEmail:$('#inputEMAIL').val() + '', sTelefon:$('#inputTELEFON').val() + '', sObs:sComentario + '', sCoord:sCoord + '', sDir:sDireccionAlta + '', sFoto: sFoto};
+    //var sParams = {sNom:$('#inputNOM').val() + '', sCognom1:$('#inputCOGNOM1').val() + '', sCognom2:$('#inputCOGNOM2').val() + '', sDni:$('#inputDNI').val() + '', sEmail:$('#inputEMAIL').val() + '', sTelefon:$('#inputTELEFON').val() + '', sObs:sComentario + '', sCoord:sCoord + '', sDir:sDireccionAlta + '', sFoto: sFoto};
+    var sParams = {sNom:$('#inputNOM').val() + '', sCognom1:$('#inputCOGNOM1').val() + '', sCognom2:$('#inputCOGNOM2').val() + '', sDni:$('#inputDNI').val() + '', sEmail:$('#inputEMAIL').val() + '', sTelefon:$('#inputTELEFON').val() + '', sObs:sComentario + '', sCoord:sCoord + '', sCodCarrer:$('#selectCARRER').val() + '', sCarrer:$('#selectCARRER').find(":selected").text() + '', sNumPortal:$('#inputNUM').val() + '', sFoto: sFoto};
 
     var ref = enviarComunicat_WS(sParams , true);
 }
 
 function enviarComunicat_WS(sParams , bNuevoComunicat){
-    var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
-  //var llamaWS = "http://172.26.0.2:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidencia";
+    var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidenciaBD";
     try
     {
         var bEnvioCorrecto = true;
@@ -277,43 +277,49 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
         var sMensaje = "";
         var sTitulo = "";
         var sReferen = "";
-        global_AjaxERROR = '';
-        //var datos = LlamaWebService('GET',llamaWS,sParams,'application/x-www-form-urlencoded',true,'xml',false,false,10000,null, null,false,false,null);
-        envioWSpost(llamaWS,sParams);
-        $.doTimeout(500, function() {
+
+        $.post(llamaWS, sParams).done(function(datos) {
             try
             {
-                var datos = global_AjaxRESULTADO;
                 if(datos == null)  //==> ha habido error
                 {
-                    if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
-                        mensaje(global_AjaxERROR, 'error');
-                        sReferen = "------------";
-                        sMensaje = "Comunicació guardada en el dispositiu";
-                        sTitulo = "no hi ha conexió";
-                        bEnvioCorrecto = false;
+                    mensaje("No s'ha rebut confirmació de l'enviament de la comunicació " ,'error');
+                    sReferen = "-";
+                    sMensaje = "Comunicació guardada en el dispositiu";
+                    sTitulo = "error enviant";
+                    bEnvioCorrecto = false;
+                }
+                else  //==> el WS ha devuelto algo
+                {
+                    sReferen = $(datos).find('resultado').text().trim();
+                    if(sReferen.indexOf('|') > 0)
+                    {
+                        sMensaje = 'La seva comunicació ha estat rebuda però amb problemes : \n ' + sReferen.substr(sReferen.indexOf('|') + 1);
+                        sTitulo = "atenció";
+                        sReferen = sReferen.substr(0,sReferen.indexOf('|'));
                     }
                     else
                     {
-                        mensaje("No s'ha pogut rebre confirmació de l'enviament de la comunicació " ,'error');
-                        sReferen = "------------";
-                        sMensaje = "Comunicació guardada en el dispositiu";
-                        sTitulo = "error enviant";
-                        bEnvioCorrecto = false;
+                        if(sReferen.indexOf('|') == 0)
+                        {
+                            sMensaje = "La seva comunicació no s'ha processat correctament. [" + sReferen.substr(1) + "]\n";
+                            sTitulo = "error";
+                            sReferen = "ERROR";
+                            bEnvioCorrecto = false;
+                        }
+                        else
+                        {
+                            sMensaje = 'Comunicació notificada [' + sReferen + ']\n' + 'Gràcies per la seva col·laboració';
+                            sTitulo = "info";
+                        }
                     }
-                }
-                else               //==> ha ido bien
-                {
-                    sReferen = $(datos).find('resultado').text();
-                    sMensaje = 'Comunicació notificada\n' + 'Gràcies per la seva col·laboració';
-                    sTitulo = "info"
                 }
 
                 if(bNuevoComunicat){
-                    if(!bEnvioCorrecto)
-                        sEstado = "PENDENT_ENVIAMENT";
-                    else
+                    if(bEnvioCorrecto)
                         sEstado = "NOTIFICAT";
+                    else
+                        sEstado = "PENDENT_ENVIAMENT";
 
                     var nIdCom = guardaIncidencia(sReferen, sEstado);
 
@@ -321,66 +327,36 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
                     {
                         guardaFotoEnLocal(nIdCom, sFoto);
                     }
+
                     eliminarFoto();
                     limpiaVariables('pageNuevaIncidencia');
                     mensaje(sMensaje, sTitulo);
                     abrirPagina('pageIndex', false);
                 }
-
-                if(bEnvioCorrecto)
-                    return sReferen;
                 else
-                    return null;
-
+                {
+                    if(!bEnvioCorrecto)
+                        mensaje(sMensaje, sTitulo);
+                }
             }
             catch(ex){
                 mensaje('ERROR (exception) en resultadoEnvio : \n' + ex.code + '\n' + ex.message , 'error');
                 return null;
             }
+        }).fail(function() {
+                sMensaje = "La seva comunicació no s'ha processat \n ";
+                if(sReferen.trim().length > 0 ) sMensaje += sReferen.substr(1) + '\n';
+                sMensaje += 'error en la crida al WS : NuevaIncidenciaBD';
+                sTitulo = "error";
+                sReferen = "ERROR";
+                mensaje(sMensaje, sTitulo);
         });
     }
     catch(e)
     {
-        mensaje('ERROR (exception) en enviarIncidencia : \n' + e.code + '\n' + e.message);
-        return null;
+        mensaje('ERROR (exception) en enviarComunicat_WS : \n' + e.code + '\n' + e.message);
     }
 }
-
-/*function resultadoEnvio(resultado, param){
-    try{
-        var sMensaje = "";
-        var sTitulo = "";
-        var sReferen = "";
-
-        //Si el envio al WS ha dado ERROR  :
-        if (global_AjaxERROR != '' || global_AjaxRESULTADO == null) {
-            mensaje(global_AjaxERROR);
-            sReferen = "PENDENT_ENVIAMENT";
-            sMensaje = "Comunicació guardada en el dispositiu";
-            sTitulo = "no hi ha conexió";
-        }
-        else //Si el envio al WS ha ido bien (me ha devuelto la Referencia EUDLC :
-        {
-            //ATENCIÓN !!!!!!!!!!!!!!!! hay que recoger bien este valor devuelto por el WS  !!!!!!!!!!!!!!!!!!!!!!
-            //sReferen = global_AjaxRESULTADO[0];
-
-            //para pruebas :
-            sReferen = "EUDLC000000000000";
-
-            sMensaje = 'Comunicació notificada\n' + 'Gràcies per la seva col·laboració';
-            sTitulo = "info";
-        }
-        guardaIncidencia(sReferen);
-        eliminarFoto();
-        limpiaVariables('pageNuevaIncidencia');
-        mensaje(sMensaje, sTitulo);
-        abrirPagina('pageIndex', false);
-    }
-    catch(e)
-    {
-        mensaje('ERROR (exception) en resultadoEnvio : \n' + e.code + '\n' + e.message , 'error');
-    }
-}*/
 
 function guardaDatosCiudadano(){
     try
@@ -442,7 +418,7 @@ function guardaIncidencia(sReferen, sEstado){
 
         var objComunicat = new comunicat();
         objComunicat.ID = nId;
-        objComunicat.REFERENCIA = sReferen;
+        objComunicat.REFERENCIA = sReferen.trim();
         objComunicat.ESTAT = sEstado;
         objComunicat.DATA = fecha;
         objComunicat.CARRER = carrer;
@@ -450,6 +426,7 @@ function guardaIncidencia(sReferen, sEstado){
         objComunicat.COORD_X = sCoord_X;
         objComunicat.COORD_Y = sCoord_Y;
         objComunicat.COMENTARI = sComentario;
+        objComunicat.ID_MSG_MOV = sReferen.trim();
         guardaObjetoLocal('COMUNICAT_' + nId.toString().trim() , objComunicat);
 
         guardaObjetoLocal('COMUNICATS_NEXTVAL', nId);

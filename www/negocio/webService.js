@@ -12,7 +12,9 @@ function envioWSpost(sUrl,sParams){
     $.post(sUrl, sParams).done(function(data) {
         global_AjaxRESULTADO = data;
         global_AjaxERROR = '';
-    }).fail(function() { global_AjaxERROR = 'Error en post'; global_AjaxRESULTADO = null });
+    }).fail(function() {
+                global_AjaxERROR = 'Error en post'; global_AjaxRESULTADO = null
+    });
 }
 
 function LlamaWebService(sTipoLlamada,sUrl, sParametros,sContentType, bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion, pasaParam, asincro, bProcesar, tag) {

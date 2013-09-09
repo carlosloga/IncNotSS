@@ -4,6 +4,8 @@ var destinationType;
 var sCambioPagina = '';
 var aGlobalCarrers = null;
 
+var global_RETORNO = '';
+
 // -------- Al INICIAR -----------------------------------------------------------------------
 window.addEventListener('load', function () {
     if (phoneGapRun()) {

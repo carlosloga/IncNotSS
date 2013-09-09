@@ -1,7 +1,7 @@
 var objComunicat = new Object();
 
 objComunicat.ID = 0;
-objComunicat.REFERENCIA= '';
+objComunicat.REFERENCIA = '';
 objComunicat.ESTAT = '';
 objComunicat.DATA = '';
 objComunicat.CARRER = '';
@@ -9,6 +9,7 @@ objComunicat.NUM = '';
 objComunicat.COORD_X = '';
 objComunicat.COORD_Y = '';
 objComunicat.COMENTARI = '';
+objComunicat.ID_MSG_MOV = '';
 
 function comunicat() {
     return objComunicat;
@@ -29,6 +30,7 @@ function comunicat(aDatos) {
         this.COORD_X = aDatos['coord_x'] + '';
         this.COORD_Y = aDatos['coord_y'] + '';
         this.COMENTARI = aDatos['comentari'] + '';
+        this.ID_MSG_MOV = aDatos['id_msg_mov'] + '';
 
         return this;
     } catch (e) { alert('creant objecte : comunicat  ERROR : ' + e.message); return null; }

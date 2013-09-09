@@ -37,7 +37,7 @@ function cargaListaComunicats(aComs){
         //sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].DATA + "</td><td style='text-align:left; font-size:x-small; width: 20%;'>" + aComs[x].ESTAT + "</td></tr></table>";
         sFila = "<table style='width: 100%;'><tr>";
         sFila += "<td style='text-align:left; font-size:x-small; width: 15%;'>" + aComs[x].ID + "</td>";
-        sFila += "<td style='text-align:left; font-size:x-small; width: 55%;'>" + aComs[x].ESTAT + "</td>";
+        sFila += "<td style='text-align:left; font-size:x-small; width: 55%;'>" + ParseEstado(aComs[x].ESTAT) + "</td>";
         sFila += "<td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].REFERENCIA + "</td>";
         sFila += "</tr></table>";
         $('#listviewLista').append($('<li/>', {
@@ -239,98 +239,200 @@ function borrarHistoricoComunicados(){
 }
 
 function enviamentDePendents(){
+    var sIdsActualizar = "";
+    var nIndexAct = 0;
+
     var aComs = new Array();
     aComs = getComunicats();
 
-    var sParamsUsuari = "sNom=&sCognom1=&sCognom2=&sDni=&sEmail=&sTelefon=";
+    var pNom = "";
+    var pCognom1 = "";
+    var pCognom2 = "";
+    var pDni = "";
+    var pEmail = "";
+    var pTelefon = "";
     var objUsu = getDatosUsuario();
     if(objUsu != null)
     {
-        sParamsUsuari = "sNom=" + objUsu.NOM + '';
-        sParamsUsuari += "&sCognom1=" + objUsu.COGNOM1 + '';
-        sParamsUsuari += "&sCognom2=" + objUsu.COGNOM2 + '';
-        sParamsUsuari += "&sDni=" + objUsu.DNI + '';
-        sParamsUsuari += "&sEmail=" + objUsu.EMAIL + '';
-        sParamsUsuari += "&sTelefon=" + objUsu.TELEFON + '';
+        pNom = objUsu.NOM + '';
+        pCognom1= objUsu.COGNOM1 + '';
+        pCognom2= objUsu.COGNOM2 + '';
+        pDni= objUsu.DNI + '';
+        pEmail= objUsu.EMAIL + '';
+        pTelefon= objUsu.TELEFON + '';
     }
 
-    var sParams = "";
     var objComunicat = null;
     var bBorrado = false;
+    var sParams = {};
     for(var x=0 ; x< aComs.length; x++){
-        if(aComs[x].REFERENCIA == 'PENDENT_ENVIAMENT' || aComs[x].REFERENCIA == 'ERROR_ENVIAMENT'){
-            sParams = sParamsUsuari;
-            sParams += "&sObs=" + aComs[x].COMENTARI + '';
-            sParams += "&sCoord=" + aComs[x].COORD_X + ',' + aComs[x].COORD_Y + '';
-            sParams += "&sDir=" + aComs[x].CARRER + ', ' + aComs[x].NUM + '';
+        if(aComs[x].ESTAT == 'PENDENT_ENVIAMENT' || aComs[x].ESTAT == 'ERROR_ENVIAMENT'){
             sSuFoto = leeObjetoLocal('FOTO_' + aComs[x].ID , '');
-            sParams += "&sFoto=" + sSuFoto ;
-            var ref = enviarComunicat_WS(sParams , false);
-            if(ref != null)  //Actualizar el COMUNICAT existent
-            {
-                objComunicat = new comunicat();
-                objComunicat.ID = aComs[x].ID;
-                objComunicat.REFERENCIA = ref;
-                objComunicat.ESTAT = 'NOTIFICAT';
-                objComunicat.DATA = aComs[x].DATA;
-                objComunicat.CARRER = aComs[x].CARRER;
-                objComunicat.NUM = aComs[x].NUM;
-                objComunicat.COORD_X = aComs[x].COORD_X;
-                objComunicat.COORD_Y = aComs[x].COORD_Y;
-                objComunicat.COMENTARI = aComs[x].COMENTARI;
-                //Actualizo con nuevo estado
-                guardaObjetoLocal('COMUNICAT_' + x.toString().trim() , objComunicat);
+            sParams = {sNom:pNom, sCognom1:pCognom1, sCognom2:pCognom2, sDni:pDni, sEmail:pEmail, sTelefon:pTelefon, sObs:aComs[x].COMENTARI + '', sCoord:aComs[x].COORD_X + ',' + aComs[x].COORD_Y + '', sCodCarrer:'', sCarrer:aComs[x].CARRER + '', sNumPortal:aComs[x].NUM + '', sFoto: sSuFoto};
 
-                //Elimino la foto que había guardado
-                bBorrado = borraObjetoLocal('FOTO_' + aComs[x].ID);
+            global_RETORNO = '';
+            enviarComunicat_WS(sParams , false);
+
+            $.doTimeout(700, function() {
+                if(global_AjaxERROR == '')  //Actualizar el COMUNICAT existent
+                {
+                    objComunicat = new comunicat();
+                    objComunicat.ID = aComs[x].ID;
+                    objComunicat.REFERENCIA = global_RETORNO;
+                    objComunicat.ESTAT = 'NOTIFICAT';
+                    objComunicat.DATA = aComs[x].DATA;
+                    objComunicat.CARRER = aComs[x].CARRER;
+                    objComunicat.NUM = aComs[x].NUM;
+                    objComunicat.COORD_X = aComs[x].COORD_X;
+                    objComunicat.COORD_Y = aComs[x].COORD_Y;
+                    objComunicat.COMENTARI = aComs[x].COMENTARI;
+                    //Actualizo con nuevo estado
+                    guardaObjetoLocal('COMUNICAT_' + x.toString().trim() , objComunicat);
+
+                    //Elimino la foto que había guardado
+                    bBorrado = borraObjetoLocal('FOTO_' + aComs[x].ID);
+                }
+                else
+                    mensaje('Error enviant pendent : ' + global_AjaxERROR);
+            });
+        }
+        else //Actualizar el estado del comunicado (de las que están en cualquier estado excepto TANCADES)
+        {
+            if(aComs[x].ESTAT != 'TANCAT')
+            {
+                sIdsActualizar += aComs[x].ID_MSG_MOV + "|" + aComs[x].ID + ",";
             }
         }
     }
-    //limpiar/actualizar la lista
-    inicioPaginaConsultaIncidencias();
+
+    //Si hay posibles actualizaciones de comunicats
+    if(sIdsActualizar.length > 0)
+    {
+        sIdsActualizar = sIdsActualizar.substr(0,sIdsActualizar.length - 1);
+        ActualitzaComunicats(sIdsActualizar);
+    }
 }
 
-//Prueba llamada al WS ...
-/*
-function resultadoConsultarIncidenciasZona(datos, param){
-    if (global_AjaxERROR != '' || global_AjaxRESULTADO == null)
-    {
-        mensaje(global_AjaxERROR);
-    }
-    else
-    {
-        mapConsulta.setCenter(param);
+function ActualitzaComunicats(sParams){
+    //Llamar al WS 'ConsultaEstadoComunicats' pasandole un string con los id's separados por comas
+    if(sParams.indexOf(',') == 0) sParams = sParams.substr(1);
+    if(sParams.indexOf(',') == sParams.length-1) sParams = sParams.substr(0, sParms.length - 1);
 
-        var sDatos = datos.toString();
-        if (datos != null && datos.length > 0 && sDatos.substr(0, 5) != 'ERROR') {
-            var aTabla = datos;
+//alert('params : ' + sParams);
 
-//mensaje('len tabla en resultadoConsultarIncidenciaZona : ' + aTabla.length.toString());
-            var aRegistro = new Array();
-            var sNomCampo = '';
-            var sValCampo = '';
-            for (var t = 0; t < aTabla.length; t++) {
-                    aRegistro = new Array();
-                    aRegistro = aTabla[t];
-//mensaje('len aRegistro de tabla[' + t.toString() + '] = ' + aRegistro.length);
-                    //Bucle por cada campo del registro actual
-                    for (var r = 0; r < aRegistro.length; r++) {
-                        sNomCampo = aRegistro[r].toString().split(',')[0];
-                        sValCampo = aRegistro[r].toString().substr(sNomCampo.length + 1);
-
-                        posConsulta = new google.maps.LatLng(sValCampo.split(",")[0], sValCampo.split(",")[1]);
-                        sDireccionConsulta = cogerDireccion(posConsulta);
-                        var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">incidencia reportada recientemente en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionConsulta + '</td></tr></table></div>';
-                        nuevaInfoWindowSobrePlano(mapConsulta, posConsulta, sTxt, 100);
-
-                        nuevoMarcadorSobrePlano(mapConsulta , posConsulta, sDireccionConsulta);
-                    }
-            }
-            //$('#divMapaConsulta').gmap('refresh');
-        }
-        else
+    var aParams = {sIds:sParams};
+    var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/ConsultaEstadoComunicats";
+    $.post(llamaWS, aParams).done(function(datos) {
+        try
         {
-            mensaje('Error en WebService');
+            if(datos == null)  //==> ha habido error
+            {
+                mensaje("L'actualització no ha estat posible\n" ,"pot ser no hi ha conexió");
+                return;
+            }
+            else     //==> el WS ha devuelto algo
+            {
+                var aResultados = new Array();
+                var r = 0;
+                var c = 0;
+
+                //el XML que devuelve tiene uno o varios :
+                //<resultado>
+                //  <id></id>
+                //  <estado></estado>
+                //  <refUlls></refUlls>
+                //  <idLocal></idLocal>
+                //</resultado>
+
+                $(datos).find("resultado").each(function () {
+//alert('resultado encontrado');
+                    c = 0;
+                    aRegistro = new Array();
+                    $(this).children().each(function () {
+//alert('children');
+                        var aCampo = new Array(2);
+                        aCampo[0] = this.tagName;
+                        aCampo[1] = $(this).text();
+//alert('en ProcesaResultado(). extrayendo del xml recibido : ' + this.tagName + ' : ' +  $(this).text() );
+                        aRegistro[c++] = aCampo;
+
+                    });
+//alert(aRegistro[0][0] + ' = ' + aRegistro[0][1] + '\n' + aRegistro[1][0] + ' = ' + aRegistro[1][1] + '\n' +aRegistro[2][0] + ' = ' + aRegistro[2][1] + '\n' + aRegistro[3][0] + ' = ' + aRegistro[3][1]);
+                    aResultados[r++] = aRegistro;
+//alert('en ProcesaResultado(). aResultados[' + (r-1).toString() + '] = ' + aResultados[r-1]);
+                });
+            }
+            if(aResultados.length > 0)
+            {
+                //actualizo en BD local
+                GuardaActualizacionComunicats(aResultados);
+
+                //y recargo la lista
+                inicioPaginaConsultaIncidencias();
+            }
+        }
+        catch(e)
+        {
+            mensaje("ERROR (exception) en 'actualitzaComunicats' : \n" + e.code + "\n" + e.message);
+        }
+    }).fail(function() {
+            mensaje("ERROR en la crida al WS, en 'actualitzaComunicats'");
+        });
+}
+
+function GuardaActualizacionComunicats(aResultados){
+    var aRegistro = new Array();
+    var aDatos = new Array();
+
+    try{
+
+        //  <id></id>
+        //  <estado></estado>
+        //  <refUlls></refUlls>
+        //  <idLocal></idLocal>
+        var nPosId = 0;
+        var nPosEstado = 1;
+        var nPosRefUlls = 2;
+        var nPosIdLocal = 3;
+
+        for(x=0; x<aResultados.length; x++)
+        {
+            aRegistro = aResultados[x];
+
+            aDatos = new Array();
+
+            //recupero los datos que ya tenia guardados pq los machacará al guardar ....
+            var objComunicatEXISTENTE = null;
+            objComunicatEXISTENTE = leeObjetoLocal('COMUNICAT_' + aRegistro[nPosIdLocal][1].toString().trim(),'');
+
+            aDatos['id'] = aRegistro[nPosIdLocal][1].toString().trim();
+            aDatos['referencia'] = aRegistro[nPosRefUlls][1] + '';
+            aDatos['estat'] = aRegistro[nPosEstado][1] + '';
+            aDatos['data'] + objComunicatEXISTENTE.DATA + '';
+            aDatos['carrer'] = objComunicatEXISTENTE.CARRER + '';
+            aDatos['num'] = objComunicatEXISTENTE.NUM + '';
+            aDatos['coord_x'] = objComunicatEXISTENTE.COORD_X + '';
+            aDatos['coord_y'] = objComunicatEXISTENTE.COORD_Y + '';
+            aDatos['comentari'] = objComunicatEXISTENTE.COMENTARI + '';
+            aDatos['id_msg_mov'] = aRegistro[nPosId][1] + '';
+
+            var objComunicatACTUALIZADO = new comunicat(aDatos);
+
+ //alert('guardo COMUNICAT_' + aRegistro[nPosIdLocal][1].toString().trim() + '  con  ' + objComunicatACTUALIZADO.REFERENCIA +  '  (para el id_msg_mov = ' + objComunicatACTUALIZADO.ID_MSG_MOV + ')');
+
+            //y actualizo (machaco) con la nueva info
+            guardaObjetoLocal('COMUNICAT_' + aRegistro[nPosIdLocal][1].toString().trim() , objComunicatACTUALIZADO);
         }
     }
-}*/
+    catch(e)
+    {
+         mensaje('ERROR (exception) en GuardaActualizacionComunicats : \n' + e.code + '\n' + e.message);
+    }
+}
+
+
+
+
+
+
+
