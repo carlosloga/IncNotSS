@@ -377,7 +377,7 @@ function ActualitzaComunicats(sParams){
         }
     }).fail(function() {
             mensaje("ERROR en la crida al WS, en 'actualitzaComunicats'");
-        });
+    });
 }
 
 function GuardaActualizacionComunicats(aResultados){

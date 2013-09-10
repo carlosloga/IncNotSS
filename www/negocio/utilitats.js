@@ -294,3 +294,88 @@ function ParseEstado(sEstat){
             break;
     }
 }
+
+function esEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function esTelefono(telefono){
+    if(indefinidoOnullToVacio(telefono) != '')
+    {
+        if(telefono.length != 9 ) return false;
+        if(Number(telefono)!= telefono) return false;
+        return true;
+    }
+    else
+        return false;
+}
+
+function esDni(dni){
+        var numero;
+        var le;
+        var letra;
+        var expresion_regular_dni = /^[XYZ]?\d{5,8}[A-Z]$/;
+
+        dni = dni.toUpperCase();
+
+        if(expresion_regular_dni.test(dni) === true){
+            numero = dni.substr(0,dni.length-1);
+            numero = numero.replace('X', 0);
+            numero = numero.replace('Y', 1);
+            numero = numero.replace('Z', 2);
+            le = dni.substr(dni.length-1, 1);
+            numero = numero % 23;
+            letra = 'TRWAGMYFPDXBNJZSQVHLCKET';
+            letra = letra.substring(numero, numero+1);
+            if (letra != le) {
+                //alert('Dni erroneo, la letra del NIF no se corresponde');
+                return false;
+            }else{
+                //alert('Dni correcto');
+                return true;
+            }
+        }else{
+            return false;
+        }
+}
+
+function cargaCarrers(){
+    var devuelve = null;
+    var aCarrers = new Array();
+    var aRegistro = new Array();
+    var r = 0;
+    var c = 0;
+
+    $.ajax({
+        cache: "false",
+        type: "GET",
+        url: "tablas/carrers.xml",
+        dataType: "xml",
+        success: function(datos) {  alert('ok');
+            $(datos).find("carrer").each(function () {
+//alert('resultado encontrado');
+                c = 0;
+                aRegistro = new Array();
+                $(this).children().each(function () {
+//alert('children');
+                    var aCampo = new Array(2);
+                    aCampo[0] = this.tagName;
+                    aCampo[1] = $(this).text();
+//alert('en ProcesaResultado(). extrayendo del xml recibido : ' + this.tagName + ' : ' +  $(this).text() );
+                    aRegistro[c++] = aCampo;
+                });
+//alert(aRegistro[0][0] + ' = ' + aRegistro[0][1] + '\n' + aRegistro[1][0] + ' = ' + aRegistro[1][1] + '\n' +aRegistro[2][0] + ' = ' + aRegistro[2][1] + '\n' + aRegistro[3][0] + ' = ' + aRegistro[3][1]);
+                aCarrers[r++] = aRegistro;
+                devuelve = aCarrers;
+//alert('en ProcesaResultado(). aResultados[' + (r-1).toString() + '] = ' + aResultados[r-1]);
+            });
+        },
+        error: function(xhr, ajaxOptions, thrownError){  alert('error');
+            mensaje("ERROR : " + xhr.status + '\n' + thrownError + '\n' + xhr.responseText , "error");
+        },
+        async: false
+    });
+
+    return devuelve;
+}

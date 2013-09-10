@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<carrers>
+    <carrer>
+        <id>1</id>
+        <tipus>carrer</tipus>
+        <nom>Tuset</nom>
+        <nomGoogle>de Tuset</nomGoogle>
+    </carrer>
+    <carrer>
+        <id>2</id>
+        <tipus>carrer</tipus>
+        <nom>Moià</nom>
+        <nomGoogle>de Moià</nomGoogle>
+    </carrer>
+    <carrer>
+        <id>3</id>
+        <tipus>carrer</tipus>
+        <nom>Granada del Penedès</nom>
+        <nomGoogle>de la Granada del Penedès</nomGoogle>
+    </carrer>
+</carrers>

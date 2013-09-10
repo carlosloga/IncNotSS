@@ -36,7 +36,16 @@ function deviceReady() {
     else
     {
         try{
-                //Para PROBAR las calles (en real deberian bajar de un WS)
+                var aCarrers = cargaCarrers();
+                if(aCarrers != null )
+                {
+                    for(x=0; x<aCarrers.length; x++)
+                    {
+                        mensaje(aCarrers[x][0] + ' / ' + aCarrers[x][1] + ' / ' + aCarrers[x][2] + ' / ' + aCarrers[x][3] , 'un carrer');
+                    }
+                }
+
+                //Para PROBAR las calles :
                 var aObjCarrers = new Array();
 
                 var objCarrer = new carrer();
@@ -103,8 +112,8 @@ function deviceReady() {
 function abrirPagina(sPag, bBack) {
     $.mobile.changePage('#' + sPag, {
         transition: "flip",
-        reverse: false,
-        changeHash: ((bBack) ? true : false)
+        reverse: true,
+        changeHash: bBack
     });
 
     sCambioPagina = sPag;
@@ -113,15 +122,23 @@ function abrirPagina(sPag, bBack) {
         case 'pageNuevaIncidencia' :
             //Abrir el acordeón para actualizar el plano
             $("#collapsibleLocalizacion").trigger("expand");
+            //espero a que esté cargado el div para que se renderice bien el plano ...
+            setTimeout(inicializa,1000);
             break;
 
         case 'pageConsultaIncidencias' :
             inicioPaginaConsultaIncidencias();
+            //espero a que esté cargado el div para que se renderice bien el plano ...
+            setTimeout(inicializa,1000);
+            break;
+
+        case 'pageZoomFoto' :
+            var imagen = document.getElementById('imgZoomFoto');
+            imagen.style.display = 'block';
+            imagen.src = "data:image/jpeg;base64," + sFoto;
+            sCambioPagina = '';
             break;
     }
-
-    //espero a que esté cargado el div para que se renderice bien el plano ...
-    setTimeout(inicializa,1000);
 }
 
 function inicializa(){

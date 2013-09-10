@@ -114,18 +114,10 @@
                 <div data-role="collapsible" data-mini="false" id="collapsibleFoto">
                     <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td><td style="text-align:right;"><a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a></td></tr></table></h3>
                     <div data-role="controlgroup"data-type="horizontal" style="text-align: center;">
-                        <img id="imgFoto" src="" width="150px" border='1' onclick="zoomFoto()" />
+                        <img id="imgFoto" src="" width="150px" border='1' onclick="abrirPagina('pageZoomFoto', false);" />
                         <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a>
                     </div>
                     <div style="text-align: center; font-size: x-small; color: #970824;"><label>(capturant foto s'actualitza l'adreça)</label></div>
-                    <!--<table style="width:100%;"><tr>
-                        <td style="text-align:left; width:100%;">
-                            <img id="imgFoto" src="" width="200px" border='1' onclick="zoomFoto()" />
-                        </td>
-                        <td style="text-align:right;">
-                            <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="false">el·liminar</a>
-                        </td>
-                    </tr></table>-->
 
                 </div>
 
@@ -322,11 +314,15 @@
     </div>
 
 <!-- Página ZOOM foto -->
-    <div data-role="popup" id="pageZoomFoto"  data-theme="c" style="max-width:95%;" class="ui-corner-all" data-add-back-btn="true" data-back-btn-text="Back">
+    <div data-role="popup" id="pageZoomFoto"  data-theme="c" style="max-width:95%;" class="ui-corner-all">
+        <div data-role="header" data-theme="c">
+            <a href="#pageNuevaIncidencia" data-icon="back" data-iconpos="notext" data-direction="reverse"></a>
+            <h3>Imatge</h3>
+        </div>
+
     <div data-role="content" data-theme="b">
         <p>
             <img id="imgZoomFoto" src="" border='1' width="100%" />
-            <a href="#pageNuevaIncidencia" data-rel="back" data-role="button" data-mini="false" >tornar</a>
         </p>
     </div>
 </div>
@@ -366,7 +362,9 @@
         });
 
         $('#collapsibleQuiSoc').bind('collapse', function () {
-            $('#labelQUISOC').text($('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            var sUsu =  $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val();
+            if(sUsu.trim() == "") sUsu = "[ANÒNIM]";
+            $('#labelQUISOC').text(sUsu);
             $.mobile.silentScroll(0);
         });
 
@@ -391,7 +389,7 @@
                 navigator.app.exitApp();
             }
             else {
-                navigator.app.backHistory()
+                navigator.app.backHistory();
             }
         }, false);
 

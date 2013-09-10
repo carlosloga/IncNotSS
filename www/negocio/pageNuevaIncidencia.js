@@ -118,12 +118,14 @@ function hacerFotoERROR(errorOcancel) {
     }
 }
 
+/*
 function zoomFoto(){
     var imagen = document.getElementById('imgZoomFoto');
     imagen.style.display = 'block';
     imagen.src = "data:image/jpeg;base64," + sFoto;
     abrirPagina('pageZoomFoto', true);
 }
+*/
 
 function eliminarFoto(){
     sFoto = '';
@@ -216,7 +218,7 @@ function netejarDades(){
     $('#inputEMAIL').val('');
     $('#inputTELEFON').val('');
 
-    $('#labelQUISOC').text(' ');
+    $('#labelQUISOC').text('[ANÒNIM]');
     <!-- $('#collapsibleQuiSoc').trigger('collapse'); -->
 }
 
@@ -244,8 +246,9 @@ function enviarIncidencia() {
     }
 
     //Controlar datos obligatorios
-    if(!datosObligatorios(sComentario, sDireccionAlta)){
-        mensaje('Les dades marcades amb (*) són obligatòries','Atenció');
+    var sMsg =  datosObligatorios(sComentario, sDireccionAlta, $('#inputDNI').val(), $('#inputEMAIL').val() ,$('#inputTELEFON').val() );
+    if(sMsg != ""){
+        mensaje(sMsg,'Atenció');
         return;
     }
 
@@ -399,10 +402,39 @@ function guardaDatosCiudadano(){
     }
 }
 
-function datosObligatorios(sObs, sDir){
-    if(sObs == null || sObs.trim() == '') return false;
-    if(sDir == null || sDir.trim() == '') return false;
-    return true;
+function datosObligatorios(sObs, sDir, sDni , sEmail, sTelefon){
+    if(sObs == null || sObs.trim() == '') return "Les dades marcades amb (*) són obligatòries\nFalta 'què està passant'" ;
+    if(sDir == null || sDir.trim() == '') return "Les dades marcades amb (*) són obligatòries\nFalta 'on està passant'";
+
+    if($(check_ComAnonima).is(':checked')){
+        return "";
+    }
+    else
+    {
+        var sPosibleFalloMail = "";
+        var sPosibleFalloTelefono = "";
+        if(sDni == null || sDni.trim() == '')
+        {
+            return "Si la comunicació no és anònima, és obligatori el DNI/NIF i també el telèfon o l'adreça electrònica";
+        }
+        else
+        {
+            if(!esDni(sDni)) return "El DNI/NIF no és vàlid";
+            if( (sEmail == null || sEmail.trim() == '') && (sTelefon == null || sTelefon.trim() == '') )
+            {
+                return "Si la comunicació no és anònima, és obligatori : el DNI/NIF i el telèfon o l'adreça electrònica";
+            }
+            else
+            {
+                if(sEmail != null && sEmail.trim() != '') if(!esEmail(sEmail)) sPosibleFalloMail = "L'adreça electrònica introduida no és correcta";
+                if(sTelefon != null && sTelefon.trim() != '') if(!esTelefono(sTelefon)) sPosibleFalloTelefono = "El telèfon introduit no és correcte";
+
+                if( (sEmail == null || sEmail.trim() == '' || sPosibleFalloTelefono != "") && sPosibleFalloTelefono != "" ) return sPosibleFalloTelefono;
+                if( (sTelefon == null || sTelefon.trim() == '' || sPosibleFalloMail != "") && sPosibleFalloMail != "" ) return sPosibleFalloMail;
+            }
+        }
+    }
+    return "";
 }
 
 function guardaIncidencia(sReferen, sEstado){
