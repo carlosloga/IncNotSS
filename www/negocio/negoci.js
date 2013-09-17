@@ -14,7 +14,7 @@ function getDatosUsuario(){
     }
 }
 
-function getCarrers(){
+/*function getCarrers(){
     aGlobalCarrers = new Array();
 
     var objCarrer = null;
@@ -31,7 +31,7 @@ function getCarrers(){
         mensaje('Error obtenint el carrers : ' + e);
         return null;
     }
-}
+}*/
 
 function getComunicats(){
     var aComunicats = new Array();
@@ -92,3 +92,37 @@ function getCadenaComunicat(objComunicat , separador){
     return sDev;
 }
 
+function cargaCarrers(){
+    var devuelve = null;
+    var aCalles = new Array();
+    var aRegistro = new Array();
+    var r = 0;
+    var c = 0;
+
+    $.ajax({
+        cache: "false",
+        type: "GET",
+        url: "tablas/carrers.xml",
+        dataType: "xml",
+        success: function(datos) {
+            $(datos).find("carrer").each(function () {
+                c = 0;
+                aRegistro = new Array();
+                $(this).children().each(function () {
+                    var aCampo = new Array(2);
+                    aCampo[0] = this.tagName;
+                    aCampo[1] = $(this).text();
+                    aRegistro[c++] = aCampo;
+                });
+                aCalles[r++] = aRegistro;
+                devuelve = aCalles;
+            });
+        },
+        error: function(xhr, ajaxOptions, thrownError){
+            mensaje("ERROR : " + xhr.status + '\n' + thrownError + '\n' + xhr.responseText , "error");
+        },
+        async: false
+    });
+
+    return devuelve;
+}

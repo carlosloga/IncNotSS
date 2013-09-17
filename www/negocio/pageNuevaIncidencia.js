@@ -40,8 +40,7 @@ function cargaDatosCiudadano(){
 }
 
 function cargaCalles(){
-    var aCalles = getCarrers();
-    if(aCalles == null)
+    if(aCarrers == null)
         mensaje("No s'han trobat carrers","informació");
     else
     {
@@ -51,9 +50,9 @@ function cargaCalles(){
 
         var calles = [];
         calles.push("<option value='-1' data-placeholder='true'>Seleccioni el carrer</option>");
-        for (var x = 0; x < aCalles.length; x++)
+        for (var x = 0; x < aCarrers.length; x++)
         {
-            calles.push("<option value='" + aCalles[x].ID + "'>" + aCalles[x].CARRER + " (" +  aCalles[x].TIPUS + ")</option>");
+            calles.push("<option value='" + aCarrers[x][0][1] + "'>" + aCarrers[x][2][1] + " (" +  aCarrers[x][1][1] + ") [" + aCarrers[x][3][1] + "]</option>");
         }
         $('#selectCARRER').append(calles.join('')).selectmenu('refresh');
     }

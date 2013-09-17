@@ -136,8 +136,15 @@ function crearMarcadorDesdeCalleNum(){
     if($('#selectCARRER').find(":selected").text().trim() == '' || $('#inputNUM').val().trim() == '' ) return;
 
     var calle = $('#selectCARRER').find(":selected").text().trim();
-    var sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1)).trim();
-    var sCalle = calle.split("(")[0].trim();
+
+/*    var sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1)).trim();
+    var sCalle = calle.split("(")[1].trim();
+*/
+
+    var sTipoVia = calle.split("(")[1].substr(0,calle.split("(")[1].indexOf(")")).trim();
+
+    var sCalle = calle.split("[")[1].trim().substr(0, calle.split("[")[1].trim().length - 1);
+
     var num = $('#inputNUM').val().trim();
     var ciudad = "Barcelona";
     var region = "Catalunya";
@@ -340,42 +347,3 @@ function esDni(dni){
         }
 }
 
-function cargaCarrers(){
-    var devuelve = null;
-    var aCarrers = new Array();
-    var aRegistro = new Array();
-    var r = 0;
-    var c = 0;
-
-    $.ajax({
-        cache: "false",
-        type: "GET",
-        url: "tablas/carrers.xml",
-        dataType: "xml",
-        success: function(datos) {  alert('ok');
-            $(datos).find("carrer").each(function () {
-//alert('resultado encontrado');
-                c = 0;
-                aRegistro = new Array();
-                $(this).children().each(function () {
-//alert('children');
-                    var aCampo = new Array(2);
-                    aCampo[0] = this.tagName;
-                    aCampo[1] = $(this).text();
-//alert('en ProcesaResultado(). extrayendo del xml recibido : ' + this.tagName + ' : ' +  $(this).text() );
-                    aRegistro[c++] = aCampo;
-                });
-//alert(aRegistro[0][0] + ' = ' + aRegistro[0][1] + '\n' + aRegistro[1][0] + ' = ' + aRegistro[1][1] + '\n' +aRegistro[2][0] + ' = ' + aRegistro[2][1] + '\n' + aRegistro[3][0] + ' = ' + aRegistro[3][1]);
-                aCarrers[r++] = aRegistro;
-                devuelve = aCarrers;
-//alert('en ProcesaResultado(). aResultados[' + (r-1).toString() + '] = ' + aResultados[r-1]);
-            });
-        },
-        error: function(xhr, ajaxOptions, thrownError){  alert('error');
-            mensaje("ERROR : " + xhr.status + '\n' + thrownError + '\n' + xhr.responseText , "error");
-        },
-        async: false
-    });
-
-    return devuelve;
-}

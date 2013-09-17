@@ -3,6 +3,7 @@ var pictureSource;
 var destinationType;
 var sCambioPagina = '';
 var aGlobalCarrers = null;
+var aCarrers = null;
 
 var global_RETORNO = '';
 
@@ -36,17 +37,10 @@ function deviceReady() {
     else
     {
         try{
-                var aCarrers = cargaCarrers();
-                if(aCarrers != null )
-                {
-                    for(x=0; x<aCarrers.length; x++)
-                    {
-                        mensaje(aCarrers[x][0] + ' / ' + aCarrers[x][1] + ' / ' + aCarrers[x][2] + ' / ' + aCarrers[x][3] , 'un carrer');
-                    }
-                }
+                aCarrers = cargaCarrers();
 
                 //Para PROBAR las calles :
-                var aObjCarrers = new Array();
+                /*var aObjCarrers = new Array();
 
                 var objCarrer = new carrer();
                 objCarrer.ID = 0;
@@ -100,9 +94,10 @@ function deviceReady() {
                 objCarrer.ID = 8;
                 objCarrer.TIPUS = 'Avinguda';
                 objCarrer.CARRER = 'Diagonal';
-                guardaObjetoLocal('CARRER_8', objCarrer);
+                guardaObjetoLocal('CARRER_8', objCarrer);*/
+
             }
-            catch(e){ mensaje('exception creant carrers : ' + e.message,'error'); }
+            catch(e){ mensaje('exception carregant llista de carrers : ' + e.message,'error'); }
 
         }
 }
