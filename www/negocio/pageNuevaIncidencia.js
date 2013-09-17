@@ -12,7 +12,9 @@ function inicioPaginaNuevaIncidencia(){
     cargaDatosCiudadano();
 
     //cargar CARRERS en el combo
-    cargaCalles();
+    var combo = $('#selectLletraIniCARRER');
+    cargaLetrasAbcdario(combo, 'lletra inicial');
+    //cargaCalles();
 
     //Por si se había quedado expandido el desplegable de los datos del ciudadano
     $('#collapsibleQuiSoc').trigger('collapse');

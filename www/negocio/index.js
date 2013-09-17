@@ -37,64 +37,8 @@ function deviceReady() {
     else
     {
         try{
-                aCarrers = cargaCarrers();
-
-                //Para PROBAR las calles :
-                /*var aObjCarrers = new Array();
-
-                var objCarrer = new carrer();
-                objCarrer.ID = 0;
-                objCarrer.TIPUS = 'Carrer';
-                objCarrer.CARRER = 'Logistica';
-                guardaObjetoLocal('CARRER_0', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 1;
-                objCarrer.TIPUS = 'Carrer';
-                objCarrer.CARRER = 'Ramón i Cajal';
-                guardaObjetoLocal('CARRER_1', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 2;
-                objCarrer.TIPUS = 'Avinguda';
-                objCarrer.CARRER = 'Lluis Companys';
-                guardaObjetoLocal('CARRER_2', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 3;
-                objCarrer.TIPUS = 'Camí';
-                objCarrer.CARRER = 'Riera';
-                guardaObjetoLocal('CARRER_3', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 4;
-                objCarrer.TIPUS = 'Carrer';
-                objCarrer.CARRER = 'de Tuset';
-                guardaObjetoLocal('CARRER_4', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 5;
-                objCarrer.TIPUS = 'Passeig';
-                objCarrer.CARRER = 'Fluvial';
-                guardaObjetoLocal('CARRER_5', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 6;
-                objCarrer.TIPUS = 'Carrer';
-                objCarrer.CARRER = 'de la Granada del Penedès';
-                guardaObjetoLocal('CARRER_6', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 7;
-                objCarrer.TIPUS = 'Carrer';
-                objCarrer.CARRER = 'de Moià';
-                guardaObjetoLocal('CARRER_7', objCarrer);
-
-                objCarrer = new carrer();
-                objCarrer.ID = 8;
-                objCarrer.TIPUS = 'Avinguda';
-                objCarrer.CARRER = 'Diagonal';
-                guardaObjetoLocal('CARRER_8', objCarrer);*/
+//                var combo = $('#selectLletraIniCARRER');
+//                cargaLetrasAbcdario(combo, 'lletra inicial');
 
             }
             catch(e){ mensaje('exception carregant llista de carrers : ' + e.message,'error'); }

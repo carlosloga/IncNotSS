@@ -347,3 +347,30 @@ function esDni(dni){
         }
 }
 
+function cargaLetrasAbcdario(combo, sTitulo){
+
+//    combo.children().remove('li');
+//    combo.empty();
+//    combo.remove();
+
+    var h=0;
+    var aLetras = new Array();
+    for(n=65; n<91; n++)
+    {
+        aLetras[h++] = String.fromCharCode(n);
+    }
+    h--;
+    for(i=0; i<10; i++)
+        aLetras[h++] = (i).toString();
+
+    var letras = [];
+    letras.push("<option value='-1' data-placeholder='true'>" + sTitulo + "</option>");
+    for (var x = 0; x < aLetras.length; x++)
+    {
+        letras.push("<option value='" + aLetras[x] + "'>" + aLetras[x] + "</option>");
+    }
+    $('#selectLletraIniCARRER').append(letras.join('')).selectmenu('refresh');
+
+//        combo.append(letras.join('')).selectmenu('refresh');
+
+}

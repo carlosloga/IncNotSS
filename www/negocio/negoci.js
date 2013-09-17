@@ -93,29 +93,33 @@ function getCadenaComunicat(objComunicat , separador){
 }
 
 function cargaCarrers(){
-    var devuelve = null;
-    var aCalles = new Array();
-    var aRegistro = new Array();
+    if($('#selectLletraIniCARRER').find(":selected").text().trim() == '') return;
+
+    var letraIniCalle = $('#selectLletraIniCARRER').find(":selected").text().trim();
+
+    aCarrers = new Array();
+
+    var aRegistro = null;
+    var aCampos = null;
     var r = 0;
     var c = 0;
 
     $.ajax({
-        cache: "false",
+        cache: "true",
         type: "GET",
         url: "tablas/carrers.xml",
         dataType: "xml",
         success: function(datos) {
-            $(datos).find("carrer").each(function () {
+            $(datos).find("carrer_" + letraIniCalle).each(function () {
                 c = 0;
                 aRegistro = new Array();
                 $(this).children().each(function () {
-                    var aCampo = new Array(2);
+                    aCampo = new Array(2);
                     aCampo[0] = this.tagName;
                     aCampo[1] = $(this).text();
                     aRegistro[c++] = aCampo;
                 });
-                aCalles[r++] = aRegistro;
-                devuelve = aCalles;
+                aCarrers[r++] = aRegistro;
             });
         },
         error: function(xhr, ajaxOptions, thrownError){
@@ -123,6 +127,4 @@ function cargaCarrers(){
         },
         async: false
     });
-
-    return devuelve;
 }
