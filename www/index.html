@@ -130,7 +130,10 @@
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
                         <table style="width: 100%;">
                             <tr><td colspan="2">
-                        <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                                <select name="selectLletraIniCARRER" data-native-menu="true" id="selectLletraIniCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                            </td></tr>
+                            <tr><td colspan="2">
+                            <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
                             </td></tr>
                             <tr><td>
                         <!--<div data-role="controlgroup" data-type="horizontal">-->
@@ -332,6 +335,11 @@
 
         // EVENTOS ----------------------------------------------------------------------------------------------------------
         //En pageNuevaIncidencia, al cerrarse el aordeón del Comentari, que se ponga el texto en su cabecera ----------------
+
+        $("#selectLletraIniCARRER").bind( "change", function(event, ui) {
+            cargaCarrers(); //rellena el array de calles que empiezan por esa letra desde el fic XML
+            cargaCalles();  //rellenae el combo desde el array de Carrers
+        });
 
         $("#selectCARRER").bind( "change", function(event, ui) {
             if($("#inputNUM").val() != '') crearMarcadorDesdeCalleNum();
