@@ -146,7 +146,7 @@ function crearMarcadorDesdeCalleNum(){
     var sCalle = calle.split("[")[1].trim().substr(0, calle.split("[")[1].trim().length - 1);
 
     var num = $('#inputNUM').val().trim();
-    var ciudad = "Barcelona";
+    var ciudad = "Vilafranca del Penedes";
     var region = "Catalunya";
     var pais = "Spain";
 
@@ -347,12 +347,8 @@ function esDni(dni){
         }
 }
 
-function cargaLetrasAbcdario(combo, sTitulo){
-
-//    combo.children().remove('li');
-//    combo.empty();
-//    combo.remove();
-
+function cargaLetrasAbcdario(combo, sTitulo, nLetraSel){
+    combo.empty();
     var h=0;
     var aLetras = new Array();
     for(n=65; n<91; n++)
@@ -367,10 +363,18 @@ function cargaLetrasAbcdario(combo, sTitulo){
     letras.push("<option value='-1' data-placeholder='true'>" + sTitulo + "</option>");
     for (var x = 0; x < aLetras.length; x++)
     {
-        letras.push("<option value='" + aLetras[x] + "'>" + aLetras[x] + "</option>");
+        letras.push("<option value='" + x + "'>" + aLetras[x] + "</option>");
     }
-    $('#selectLletraIniCARRER').append(letras.join('')).selectmenu('refresh');
+    //$('#selectLletraIniCARRER').append(letras.join('')).selectmenu('refresh');
+    combo.append(letras.join('')).selectmenu('refresh');
 
-//        combo.append(letras.join('')).selectmenu('refresh');
+    if(indefinidoOnullToVacio(nLetraSel) != '')
+    {
+        //Preseleccionar nLetraSel
+        combo[0].selectedIndex = nLetraSel - 64;
+        combo.selectmenu("refresh");
 
+        cargaCarrers(); //rellena el array de calles que empiezan por esa letra desde el fic XML
+        cargaCalles();  //rellenae el combo desde el array de Carrers
+    }
 }

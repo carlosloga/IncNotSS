@@ -11,18 +11,21 @@ function inicioPaginaNuevaIncidencia(){
     //cargar los datos del usuario (tabla CIUTADA si tiene datos)
     cargaDatosCiudadano();
 
-    //cargar CARRERS en el combo
-    var combo = $('#selectLletraIniCARRER');
-    cargaLetrasAbcdario(combo, 'lletra inicial');
-    //cargaCalles();
-
     //Por si se había quedado expandido el desplegable de los datos del ciudadano
     $('#collapsibleQuiSoc').trigger('collapse');
 
     //iniciar el plano
     iniciaMapaAlta(true);
     $.doTimeout(500, function() {
-            cierraMapaAbreComentario();
+        var nLetra = 65;
+//        no consigo obtener el nombre de la calle desde google maps, ya que devuelve 'carrer de tal ... '
+//        preseleccionar la inicial, cargar CARRERS de esa inicial en el combo de iniciales y preseleccionar la calle
+//        var sC = cogerCalleNumDeDireccion(sDireccionAlta);
+//        nLetra = sC.substr(0,1).toUpperCase().charCodeAt(0);
+        var combo = $('#selectLletraIniCARRER');
+        cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
+
+        cierraMapaAbreComentario();
     });
 }
 
@@ -179,7 +182,7 @@ function cogerDireccion(pos , bSoloCalleYnum){
     try
     {
         //function LlamaWebService (sTipoLlamada,sUrl,   sParametros,sContentType,                        bCrossDom, sDataType, bProcData, bCache, nTimeOut, funcion,           pasaParam,      asincro, bProcesar, tag)
-        var datos = LlamaWebService('GET',      llamaWS,sParam,     'application/x-www-form-urlencoded', true,      'xml',     false,     false,  10000,     direccionObtenida, bSoloCalleYnum, true,    false,     null);
+        var datos = LlamaWebService('GET',llamaWS,sParam, 'application/x-www-form-urlencoded', true,      'xml',     false,     false,  10000, direccionObtenida, bSoloCalleYnum, true,    false,     null);
     }
     catch (e)
     {
@@ -189,6 +192,7 @@ function cogerDireccion(pos , bSoloCalleYnum){
 }
 function direccionObtenida(datos, param){
     if(datos == null ) return;
+
     var sDireccion = $(datos).find('formatted_address').text();
 
     var n = 0;
