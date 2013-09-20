@@ -98,7 +98,7 @@
             <a href="#pageInfo3" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
         </div>
         <div data-role="content" data-theme="c" data-mini="false">
-            <div id="acordeon" data-role="collapsible-set" data-mini="false" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-l" data-thene="b" data-content-theme="b">
+            <div id="acordeon" data-role="collapsible-set" data-mini="false" data-collased-icon="arrow-r" data-expanded-icon="arrow-l" data-thene="b" data-content-theme="b">
 
                 <!-- I N C I D E N C I A  -->
                 <div data-role="collapsible" data-mini="false" id="collapsibleComentario" data-collapsed="true">
@@ -109,36 +109,55 @@
 
                 <!-- F O T O -->
                 <div data-role="collapsible" data-mini="false" id="collapsibleFoto">
-                    <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td><td style="text-align:right;"><a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a></td></tr></table></h3>
-                    <div data-role="controlgroup"data-type="horizontal" style="text-align: center;">
-                        <img id="imgFoto" src="" width="150px" border='1' onclick="abrirPagina('pageZoomFoto', false);" />
-                        <a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a>
-                    </div>
-                    <div style="text-align: center; font-size: x-small; color: #970824;"><label>(capturant foto s'actualitza l'adreça)</label></div>
+                    <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td>
+                        <td style="text-align:right;">
+                            <!-- <a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a> -->
+                            <img id="imgCamara" src="images/ico_camara.png" onclick="hacerFoto();" />
+                        </td>
+                        <td style="text-align:right;">
+                            <img id="imgCarpeta" src="images/ico_carpeta.png" onclick="leerFoto();" />
+                        </td>
+                        </tr></table>
+                    </h3>
 
+                    <div>
+                          <table style="width: 100%;">
+                              <tr>
+                                   <td rowspan='2' style="text-align: right;"><img id="imgFoto" src="" width="150px" border='1' onclick="abrirPagina('pageZoomFoto', false);" /></td>
+                                   <td style="text-align: left; vertical-align: top"><a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a></td>
+                              </tr>
+                              <tr>
+                                    <td style="text-align: left; vertical-align: bottom;"><label>(capturant foto s'actualitza l'adreça)</label></td>
+                              </tr>
+                          </table>
+                    </div>
                 </div>
 
                 <!-- L O C A L I T Z A C I Ó -->
                 <div data-role="collapsible" data-mini="false" id="collapsibleLocalizacion">
                     <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
-                    <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                    <div id='divMensajeMapa'><label>la localització sobre plànol no ha estat possible</label></div>
+                    <div id="divContieneMapa" class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
                         <div id="divMapaAlta" style="height:300px;"></div>
                     </div>
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
                         <table style="width: 100%;">
-                            <tr><td colspan="2">
-                                <select name="selectLletraIniCARRER" data-native-menu="true" id="selectLletraIniCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
-                            </td></tr>
-                            <tr><td colspan="2">
-                            <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
-                            </td></tr>
                             <tr><td>
-                        <!--<div data-role="controlgroup" data-type="horizontal">-->
-                        <input type="text" maxlength="9" placeholder="numero" name="inputNUM" data-inline="true" id="inputNUM"  data-mini="false" data-theme="c" />
-                                </td><td>
-                        <a href="#" data-rel="popup" data-role="button" data-transition="pop" data-icon="arrow-u" data-iconpos="notext" data-inline="true" data-mini="true">actualitzar mapa</a>
-                        <!--</div>-->
-                        </td></tr></table>
+                                <select name="selectLletraIniCARRER" data-native-menu="true" id="selectLletraIniCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                            </td><td>
+                                <label for="inputNUM">en el num.</label> </td><td>
+                                <input type="text" maxlength="9" placeholder="numero" name="inputNUM" data-inline="true" id="inputNUM"  data-mini="false" data-theme="c" />
+                            </td>
+                            <td>
+                                <a href="#" data-rel="popup" data-role="button" data-transition="pop" data-icon="arrow-u" data-iconpos="notext" data-inline="true" data-mini="true">actualitzar mapa</a>
+                            </td>
+                            </tr>
+                            <tr><td>
+                                <label for="selectCARRER">del carrer</label></td>
+                                <td colspan="3">
+                                <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                            </td></tr>
+                            </table>
                     </div>
                 </div>
 
@@ -329,22 +348,35 @@
 
 <!-- JAVASCRIPT -->
     <script type="text/javascript">
+         function muestraDireccion(){
+             var sSelComboCarrer =  indefinidoOnullToVacio($('#selectCARRER').find(":selected").text());
+             if(sSelComboCarrer != '' && sSelComboCarrer != 'Seleccioni el carrer')
+             {
+                 var sTipoVia = sSelComboCarrer.split("(")[1].substr(0, (sSelComboCarrer.split("(")[1].length -1));
+                 var sCalle = sSelComboCarrer.split("(")[0];
+                 $('#labelDireccion').text( sTipoVia + ' ' + sCalle + ', ' + $('#inputNUM').val() );
+                 return sTipoVia + ' ' + sCalle + ', ' + $('#inputNUM').val();
+             }
+             else
+                 return '';
+         }
 
         // EVENTOS ----------------------------------------------------------------------------------------------------------
         //En pageNuevaIncidencia, al cerrarse el aordeón del Comentari, que se ponga el texto en su cabecera ----------------
 
         $("#selectLletraIniCARRER").bind( "change", function(event, ui) {
-            cargaCarrers(); //rellena el array de calles que empiezan por esa letra desde el fic XML
-            cargaCalles();  //rellenae el combo desde el array de Carrers
+            cargaCarrersEnArray(); //rellena el array de calles que empiezan por esa letra desde el fic XML
+            cargaCalles();  //rellena el combo desde el array de Carrers
         });
 
         $("#selectCARRER").bind( "change", function(event, ui) {
-            if($("#inputNUM").val() != '') crearMarcadorDesdeCalleNum();
+            if( muestraDireccion() == '') return;
+            crearMarcadorDesdeCalleNum();
         });
 
         $("#inputNUM").bind( "change", function(event, ui) {
-            if($('#selectCARRER').find(":selected").text() != '' && $('#selectCARRER').find(":selected").text() != 'Seleccioni el carrer')
-                crearMarcadorDesdeCalleNum();
+            if( muestraDireccion() == '') return;
+            crearMarcadorDesdeCalleNum();
         });
 
         $('#collapsibleComentario').bind('expand', function () {
@@ -356,14 +388,7 @@
         });
 
         $('#collapsibleLocalizacion').bind('collapse', function () {
-            var sSelComboCarrer =  $('#selectCARRER').find(":selected").text();
-
-            if(sSelComboCarrer != null && sSelComboCarrer.trim() != '' && sSelComboCarrer.substr(0,10).toUpperCase() != "SELECCIONI")
-            {
-                var sTipoVia = sSelComboCarrer.split("(")[1].substr(0, (sSelComboCarrer.split("(")[1].length -1));
-                var sCalle = sSelComboCarrer.split("(")[0];
-                $('#labelDireccion').text( sTipoVia + ' ' + sCalle + ', ' + $('#inputNUM').val() );
-            }
+            if( muestraDireccion() == '') return;
         });
 
         $('#collapsibleQuiSoc').bind('collapse', function () {
@@ -374,6 +399,7 @@
         });
 
         $('#collapsibleQuiSoc').bind('expand', function () {
+            $('#collapsibleLocalizacion').trigger('collapse');
             $.mobile.silentScroll(1000);
         });
 
@@ -383,9 +409,16 @@
             }
             else
             {
-                cargaDatosCiudadano();
+                var ciu = cargaDatosCiudadano();
+                if(ciu=='') $('#inputNOM').focus();
             }
         } )
+
+        $('#inputCOGNOM1').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
+        $('#inputCOGNOM2').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
+        $('#inputDNI').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
+        $('#inputEMAIL').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
+        $('#inputTELEFON').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
 
         // Botón 'atrás' sale de la app si está en la pantalla principal y es un Androide ...
         document.addEventListener("backbutton", function(e){

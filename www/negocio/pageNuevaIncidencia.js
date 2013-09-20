@@ -9,24 +9,38 @@ var sComentario = '';
 // -------- INICIALIZAR PÁGINA -----------------------------------------------------------
 function inicioPaginaNuevaIncidencia(){
     //cargar los datos del usuario (tabla CIUTADA si tiene datos)
-    cargaDatosCiudadano();
+    var ciu = cargaDatosCiudadano();
+    //Si los datos del ciudadano están guardados, se arranca la página como comunicació NO anónima y el acordeón 'qui soc' cerrado
+    //y si no existen datos del ciudadano, se arranca la página como comunicació anónima y el acordeón 'qui soc' abierto
+    if(ciu=='')
+    {
+        $('#collapsibleQuiSoc').trigger('expand');
+        $('#check_ComAnonima').attr("checked",true).checkboxradio("refresh");
+        $('#labelQUISOC').text("[ANÒNIM]");
+    }
+    else
+    {
+        $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh");
+        $('#collapsibleQuiSoc').trigger('collapse');
+    }
 
-    //Por si se había quedado expandido el desplegable de los datos del ciudadano
-    $('#collapsibleQuiSoc').trigger('collapse');
+    var nLetra = 65;
+    var combo = $('#selectLletraIniCARRER');
+    cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
 
     //iniciar el plano
     iniciaMapaAlta(true);
     $.doTimeout(500, function() {
-        var nLetra = 65;
 //        no consigo obtener el nombre de la calle desde google maps, ya que devuelve 'carrer de tal ... '
 //        preseleccionar la inicial, cargar CARRERS de esa inicial en el combo de iniciales y preseleccionar la calle
 //        var sC = cogerCalleNumDeDireccion(sDireccionAlta);
 //        nLetra = sC.substr(0,1).toUpperCase().charCodeAt(0);
+
         var combo = $('#selectLletraIniCARRER');
         cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
-
         cierraMapaAbreComentario();
     });
+
 }
 
 function cargaDatosCiudadano(){
@@ -41,7 +55,13 @@ function cargaDatosCiudadano(){
         $('#inputTELEFON').val(objUsu.TELEFON);
 
         $('#labelQUISOC').text(objUsu.NOM + ' ' + objUsu.COGNOM1 + ' ' + objUsu.COGNOM2 );
+        if((objUsu.NOM + ' ' + objUsu.COGNOM1 + ' ' + objUsu.COGNOM2).trim() == '')
+            return '';
+        else
+            return (objUsu.NOM + ' ' + objUsu.COGNOM1 + ' ' + objUsu.COGNOM2).trim();
     }
+    else
+        return '';
 }
 
 function cargaCalles(){
@@ -57,7 +77,7 @@ function cargaCalles(){
         calles.push("<option value='-1' data-placeholder='true'>Seleccioni el carrer</option>");
         for (var x = 0; x < aCarrers.length; x++)
         {
-            calles.push("<option value='" + aCarrers[x][0][1] + "'>" + aCarrers[x][2][1] + " (" +  aCarrers[x][1][1] + ") [" + aCarrers[x][3][1] + "]</option>");
+            calles.push("<option value='" + aCarrers[x][0][1] + "'>" + aCarrers[x][2][1] + " (" +  aCarrers[x][1][1] + ")</option>"); // [" + aCarrers[x][3][1] + "]</option>");
         }
         $('#selectCARRER').append(calles.join('')).selectmenu('refresh');
     }
@@ -98,6 +118,15 @@ function cierraMapaAbreComentario(){
 }
 
 // -------- FOTO -------------------------------------------------------------------------
+function leerFoto() {
+    try {
+        navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 20, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
+    }
+    catch (e) {
+        mensaje('Exception : ' + e.message);
+    }
+}
+
 function hacerFoto() {
     iniciaMapaAlta(false);
     try {
@@ -118,7 +147,7 @@ function hacerfotoOK(imageData) {
 function hacerFotoERROR(errorOcancel) {
     sFoto = '';
     if(errorOcancel != null && (errorOcancel.indexOf('cancelled') < 0 && errorOcancel.indexOf('selected') < 0)){
-        mensaje('Cap foto caprutada : ' + errorOcancel.code);
+        mensaje('Cap foto caprturada : ' + errorOcancel.code);
     }
 }
 
@@ -145,18 +174,22 @@ function eliminarFoto(){
 
 // -------- LOCALIZACIÓN -----------------------------------------------------------------------
 function iniciaMapaAlta(bAbrir) {
+    try{
+    $('#divContieneMapa').show();
+    //$('#divMapaAlta').show();
     var mapOptions = {
         zoom: 14,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     mapAlta = new google.maps.Map(document.getElementById('divMapaAlta'), mapOptions);
-
+    $('#divMensajeMapa').hide();
     // Try HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             //Crear el evento click sobre el mapa
             //si bActualizarControlesManualesCalleNum = true, se llama a autoRellenoCalleNum()
             //crearMarcadorEventoClick(map,     bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum)
+
             crearMarcadorEventoClick('ALTA', mapAlta, true,'labelDireccion', true);
 
             posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -167,10 +200,28 @@ function iniciaMapaAlta(bAbrir) {
             $('#labelDireccion').text(sDireccionAlta);
             $('#divMapaAlta').gmap('refresh');*/
 
-        }, function () { getCurrentPositionError(true); });
-    } else {
+        }, function () {
+            $('#divContieneMapa').hide();
+            $('#divMensajeMapa').show();
+            //$('#divMapaAlta').hide();
+            cierraMapaAbreComentario();
+            getCurrentPositionError(true);
+        });
+    } else {  alert('error mapa');
         // Browser no soporta Geolocation
+        $('#divContieneMapa').hide();
+        $('#divMensajeMapa').show();
+        //$('#divMapaAlta').hide();
+        cierraMapaAbreComentario();
         getCurrentPositionError(false);
+    }
+    }
+    catch(e)
+    {
+        $('#divContieneMapa').hide();
+        $('#divMensajeMapa').show();
+        //$('#divMapaAlta').hide();
+        cierraMapaAbreComentario();
     }
 }
 
@@ -208,7 +259,7 @@ function direccionObtenida(datos, param){
     sDireccionAlta = sDireccion;
 
     var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
-    nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
+    nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true,'labelDireccion');
     $('#labelDireccion').text(sDireccionAlta);
     $('#divMapaAlta').gmap('refresh');
 
@@ -276,6 +327,48 @@ function enviarIncidencia() {
     var ref = enviarComunicat_WS(sParams , true);
 }
 
+function enviarComunicatPendiente_WS(sParams, bNuevoComunicat ){
+    var sDev = '';
+    var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidenciaBD";
+    var sMensaje = "";
+    var sTitulo = "";
+
+    $.ajax({
+        type: 'POST',
+        url: llamaWS,
+        data: sParams,
+        success: function(datos) {
+            var sReferen = $(datos).find('resultado').text().trim();
+            if(sReferen.indexOf('|') > 0)
+            {
+                sMensaje = 'La seva comunicació ha estat rebuda però amb problemes : \n ' + sReferen.substr(sReferen.indexOf('|') + 1);
+                sTitulo = "atenció";
+                sReferen = sReferen.substr(0,sReferen.indexOf('|'));
+                sDev = "ERROR";
+            }
+            else
+            {
+                if(sReferen.indexOf('|') == 0)
+                {
+                    sMensaje = "La seva comunicació no s'ha processat correctament. [" + sReferen.substr(1) + "]\n";
+                    sTitulo = "error";
+                    sReferen = "ERROR";
+                    sDev = "ERROR";
+                }
+                else
+                {
+                    sMensaje = 'Comunicació notificada [' + sReferen + ']\n' + 'Gràcies per la seva col·laboració';
+                    sTitulo = "info";
+                    sDev = sReferen;
+                }
+            }
+            mensaje(sMensaje, sTitulo);
+        },
+        error: function(error) { sDev = "ERROR"; } ,
+        async:false
+    });
+    return sDev;
+}
 function enviarComunicat_WS(sParams , bNuevoComunicat){
     var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidenciaBD";
     try
@@ -352,12 +445,19 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
                 return null;
             }
         }).fail(function() {
-                sMensaje = "La seva comunicació no s'ha processat \n ";
+                if( bNuevoComunicat){
+                    var nIdCom = guardaIncidencia("-","PENDENT_ENVIAMENT");
+                    guardaFotoEnLocal(nIdCom, sFoto);
+                    limpiaVariables('pageNuevaIncidencia');
+                }
+                sMensaje = "La seva comunicació no s'ha pogut enviar \n ";
                 if(sReferen.trim().length > 0 ) sMensaje += sReferen.substr(1) + '\n';
-                sMensaje += 'error en la crida al WS : NuevaIncidenciaBD';
-                sTitulo = "error";
+                sMensaje += "Quan tingui connexió pot enviar-la des de 'Els meus comunicats'" ;
+                sTitulo = "atenció";
                 sReferen = "ERROR";
                 mensaje(sMensaje, sTitulo);
+
+                abrirPagina('pageIndex', false);
         });
     }
     catch(e)
@@ -427,7 +527,7 @@ function datosObligatorios(sObs, sDir, sDni , sEmail, sTelefon){
             if(!esDni(sDni)) return "El DNI/NIF no és vàlid";
             if( (sEmail == null || sEmail.trim() == '') && (sTelefon == null || sTelefon.trim() == '') )
             {
-                return "Si la comunicació no és anònima, és obligatori : el DNI/NIF i el telèfon o l'adreça electrònica";
+                return "Si la comunicació no és anònima, és obligatori : el DNI/NIF  i també el telèfon o l'adreça electrònica";
             }
             else
             {
@@ -460,8 +560,8 @@ function guardaIncidencia(sReferen, sEstado){
         objComunicat.DATA = fecha;
         objComunicat.CARRER = carrer;
         objComunicat.NUM = num;
-        objComunicat.COORD_X = sCoord_X;
-        objComunicat.COORD_Y = sCoord_Y;
+        objComunicat.COORD_X = sCoord_X + '';
+        objComunicat.COORD_Y = sCoord_Y + '';
         objComunicat.COMENTARI = sComentario;
         objComunicat.ID_MSG_MOV = sReferen.trim();
         guardaObjetoLocal('COMUNICAT_' + nId.toString().trim() , objComunicat);

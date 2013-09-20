@@ -85,7 +85,6 @@ function nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, mapa, pos,htmlText, nIcon
     if(sMODO == 'ALTA')
     {
         if(indefinidoOnullToVacio(labelMostrarDir) != '') $('#' + labelMostrarDir).text(sDireccionAlta);
-
         mapa.setCenter(posAlta);
     }
 }
@@ -134,7 +133,6 @@ function crearMarcadorEventoClick(sMODO, map, bSoloUnMarcadorSobreMapa , labelMo
 
 function crearMarcadorDesdeCalleNum(){
     if($('#selectCARRER').find(":selected").text().trim() == '' || $('#inputNUM').val().trim() == '' ) return;
-
     var calle = $('#selectCARRER').find(":selected").text().trim();
 
 /*    var sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1)).trim();
@@ -143,12 +141,14 @@ function crearMarcadorDesdeCalleNum(){
 
     var sTipoVia = calle.split("(")[1].substr(0,calle.split("(")[1].indexOf(")")).trim();
 
-    var sCalle = calle.split("[")[1].trim().substr(0, calle.split("[")[1].trim().length - 1);
+    //var sCalle = calle.split("[")[1].trim().substr(0, calle.split("[")[1].trim().length - 1);
+    var sCalle = calle.split("(")[0].trim();
 
     var num = $('#inputNUM').val().trim();
-    var ciudad = "Vilafranca del Penedes";
-    var region = "Catalunya";
-    var pais = "Spain";
+
+    var ciudad = getConfigKey('ciudad');
+    var region = getConfigKey('region');
+    var pais = getConfigKey('pais');
 
     showAddress('ALTA',mapAlta, sTipoVia,sCalle, num , ciudad ,region ,pais);
 }
@@ -163,7 +163,9 @@ function showAddress(sMODO,map, sTipoVia,sCalle,num,ciudad,region,pais) {
             var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
             nuevoMarcadorSobrePlanoClickInfoWindow(sMODO,map, results[0].geometry.location , sTxt ,null, 300 , true, true, 'labelDireccion');
         } else {
-            alert('La localització sobre plànol no ha estat posible per : ' + status);
+            //alert('La localització sobre plànol no ha estat posible per : ' + status);
+            $('#divMensajeMapa').show();
+            $('#divContieneMapa').hide();
         }
     });
 }
@@ -175,7 +177,8 @@ function getCurrentPositionError(errorFlag) {
     } else {
         content = 'Error: el seu navegador no soporta geolocalització';
     }
-    mensaje(content);
+    //mensaje(content);
+    //$('#labelMensajeMapsa').show();
 }
 
 function cogerCalleNumDeDireccion(sDireccion){
@@ -374,7 +377,7 @@ function cargaLetrasAbcdario(combo, sTitulo, nLetraSel){
         combo[0].selectedIndex = nLetraSel - 64;
         combo.selectmenu("refresh");
 
-        cargaCarrers(); //rellena el array de calles que empiezan por esa letra desde el fic XML
+        cargaCarrersEnArray(); //rellena el array de calles que empiezan por esa letra desde el fic XML
         cargaCalles();  //rellenae el combo desde el array de Carrers
     }
 }

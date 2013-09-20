@@ -4,6 +4,7 @@ var destinationType;
 var sCambioPagina = '';
 var aGlobalCarrers = null;
 var aCarrers = null;
+var aConfig = null;
 
 var global_RETORNO = '';
 
@@ -37,12 +38,9 @@ function deviceReady() {
     else
     {
         try{
-//                var combo = $('#selectLletraIniCARRER');
-//                cargaLetrasAbcdario(combo, 'lletra inicial');
-
+                cargaConfigEnArray();
             }
             catch(e){ mensaje('exception carregant llista de carrers : ' + e.message,'error'); }
-
         }
 }
 

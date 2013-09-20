@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<carrers>
-  <carrer_A>
+      <carrers>
+          <carrer_A>
     <id>5</id>
     <tipus>Carrer</tipus>
     <nom>ABAT BLANCH</nom>

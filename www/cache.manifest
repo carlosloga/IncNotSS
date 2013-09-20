@@ -1,4 +1,5 @@
-CACHE MANIFEST 
+CACHE MANIFEST
+/tablas/config.xml
 /tablas/carrers.xml 
 /objetos/carrer.js
 /objetos/comunicat.js
@@ -15,7 +16,10 @@ CACHE MANIFEST
 /js/jquery.mobile.datebox-1.0.1.min.js
 /js/jquery.json-2.2.min.js
 /js/jquery.ba-dotimeout.min.js
-/images/LogoAjParets.jpg
+/images/ciutadans.gif
+/images/Ajuntament.jpg
+/images/ico_carpeta.png
+/images/ico_camara.png
 /css/themes/AjParets/Tema_AjParets.min.css
 /css/index.css
 /css/jquery.mobile.datebox-1.0.1.min.css

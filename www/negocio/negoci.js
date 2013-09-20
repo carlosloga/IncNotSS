@@ -92,7 +92,7 @@ function getCadenaComunicat(objComunicat , separador){
     return sDev;
 }
 
-function cargaCarrers(){
+function cargaCarrersEnArray(){
     if($('#selectLletraIniCARRER').find(":selected").text().trim() == '') return;
 
     var letraIniCalle = $('#selectLletraIniCARRER').find(":selected").text().trim();
@@ -127,4 +127,50 @@ function cargaCarrers(){
         },
         async: false
     });
+}
+
+function cargaConfigEnArray(){
+    aConfig = new Array();
+
+    var aRegistro = null;
+    var aCampos = null;
+    var r = 0;
+    var c = 0;
+
+    $.ajax({
+        cache: "true",
+        type: "GET",
+        url: "tablas/config.xml",
+        dataType: "xml",
+        success: function(datos) {
+            $(datos).find("config").each(function () {
+                c = 0;
+                aRegistro = new Array();
+                $(this).children().each(function () {
+                    aCampo = new Array(2);
+                    aCampo[0] = this.tagName;
+                    aCampo[1] = $(this).text();
+                    aRegistro[c++] = aCampo;
+                });
+                aConfig[r++] = aRegistro;
+            });
+        },
+        error: function(xhr, ajaxOptions, thrownError){
+            mensaje("ERROR : " + xhr.status + '\n' + thrownError + '\n' + xhr.responseText , "error");
+        },
+        async: false
+    });
+}
+
+function getConfigKey(sKey){
+    var sDev = '';
+    for(var x=0; x<aConfig[0].length; x++)
+    {
+        if(aConfig[0][x][0] == sKey)
+        {
+            sDev = aConfig[0][x][1];
+            break;
+        }
+    }
+    return sDev;
 }

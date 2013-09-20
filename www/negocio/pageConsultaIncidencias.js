@@ -135,7 +135,7 @@ function mostrarEnPlano() {
     aMarcadoresSobrePlano = new Array();
 
     var mapOptions = {
-        zoom: 17,
+        zoom: 13,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
@@ -173,6 +173,10 @@ function mostrarEnPlano() {
                 try
                 {
                     pos = new google.maps.LatLng(aComs[x].COORD_X, aComs[x].COORD_Y);
+
+                    //centrar el mapa en el comunicado más reciente.
+                    if(x==0) paramPosInicial = pos;
+
                     try
                     {
                         dir = aComs[x].CARRER + ', ' + aComs[x].NUM;
@@ -270,31 +274,33 @@ function enviamentDePendents(){
             sSuFoto = leeObjetoLocal('FOTO_' + aComs[x].ID , '');
             sParams = {sNom:pNom, sCognom1:pCognom1, sCognom2:pCognom2, sDni:pDni, sEmail:pEmail, sTelefon:pTelefon, sObs:aComs[x].COMENTARI + '', sCoord:aComs[x].COORD_X + ',' + aComs[x].COORD_Y + '', sCodCarrer:'', sCarrer:aComs[x].CARRER + '', sNumPortal:aComs[x].NUM + '', sFoto: sSuFoto};
 
-            global_RETORNO = '';
-            enviarComunicat_WS(sParams , false);
+            var sRet = enviarComunicatPendiente_WS(sParams , false);
 
-            $.doTimeout(700, function() {
-                if(global_AjaxERROR == '')  //Actualizar el COMUNICAT existent
-                {
-                    objComunicat = new comunicat();
-                    objComunicat.ID = aComs[x].ID;
-                    objComunicat.REFERENCIA = global_RETORNO;
-                    objComunicat.ESTAT = 'NOTIFICAT';
-                    objComunicat.DATA = aComs[x].DATA;
-                    objComunicat.CARRER = aComs[x].CARRER;
-                    objComunicat.NUM = aComs[x].NUM;
-                    objComunicat.COORD_X = aComs[x].COORD_X;
-                    objComunicat.COORD_Y = aComs[x].COORD_Y;
-                    objComunicat.COMENTARI = aComs[x].COMENTARI;
-                    //Actualizo con nuevo estado
-                    guardaObjetoLocal('COMUNICAT_' + x.toString().trim() , objComunicat);
+            if(sRet.length == 5)
+                if(sRet == "ERROR")
+                    break;
 
-                    //Elimino la foto que había guardado
-                    bBorrado = borraObjetoLocal('FOTO_' + aComs[x].ID);
-                }
-                else
-                    mensaje('Error enviant pendent : ' + global_AjaxERROR);
-            });
+            //si ha retornado un codigo ...
+            objComunicat = new comunicat();
+            objComunicat.ID = aComs[x].ID;
+            objComunicat.REFERENCIA = sRet;
+            objComunicat.ESTAT = 'NOTIFICAT';
+            objComunicat.DATA = aComs[x].DATA;
+            objComunicat.CARRER = aComs[x].CARRER;
+            objComunicat.NUM = aComs[x].NUM;
+            objComunicat.COORD_X = aComs[x].COORD_X;
+            objComunicat.COORD_Y = aComs[x].COORD_Y;
+            objComunicat.COMENTARI = aComs[x].COMENTARI;
+            objComunicat.ID_MSG_MOV = sRet;
+            //Actualizo con nuevo estado
+
+            bBorrado = borraObjetoLocal('COMUNICAT_' + aComs[x].ID);
+
+            guardaObjetoLocal('COMUNICAT_' + aComs[x].ID, objComunicat);
+
+            //Elimino la foto que había guardado
+            bBorrado = borraObjetoLocal('FOTO_' + aComs[x].ID);
+
         }
         else //Actualizar el estado del comunicado (de las que están en cualquier estado excepto TANCADES)
         {
@@ -317,8 +323,6 @@ function ActualitzaComunicats(sParams){
     //Llamar al WS 'ConsultaEstadoComunicats' pasandole un string con los id's separados por comas
     if(sParams.indexOf(',') == 0) sParams = sParams.substr(1);
     if(sParams.indexOf(',') == sParams.length-1) sParams = sParams.substr(0, sParms.length - 1);
-
-//alert('params : ' + sParams);
 
     var aParams = {sIds:sParams};
     var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/ConsultaEstadoComunicats";
@@ -376,7 +380,7 @@ function ActualitzaComunicats(sParams){
             mensaje("ERROR (exception) en 'actualitzaComunicats' : \n" + e.code + "\n" + e.message);
         }
     }).fail(function() {
-            mensaje("ERROR en la crida al WS, en 'actualitzaComunicats'");
+            mensaje("ERROR actualitzant en 'actualitzaComunicats'");
     });
 }
 
