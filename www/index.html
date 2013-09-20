@@ -74,7 +74,7 @@
             </div>
             <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
                 <p style="text-align: left;">
-                    L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+                    L'aplicació <b>comunica't</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
                 </p>
                 <p style="text-align: center">
                     Gràcies per fer-la servir.
@@ -112,10 +112,11 @@
                     <h3><table style="width:100%;"><tr><td style="text-align:left; width:100%;">prova fotogràfica</td>
                         <td style="text-align:right;">
                             <!-- <a href="#" id="buttonCamara" onclick="hacerFoto()"  data-mini="false" data-inline="true" data-role="button" data-theme="b" data-icon="false">càmara</a> -->
-                            <img id="imgCamara" src="images/ico_camara.png" onclick="hacerFoto();" />
+                            <img id="imgCamara" src="images/ico_camara.png" onclick="hacerFoto('CAMARA');" />
                         </td>
+                        <td></td><td></td>
                         <td style="text-align:right;">
-                            <img id="imgCarpeta" src="images/ico_carpeta.png" onclick="leerFoto();" />
+                            <img id="imgCarpeta" src="images/ico_carpeta.png" onclick="hacerFoto('GALERIA');" />
                         </td>
                         </tr></table>
                     </h3>
@@ -124,7 +125,7 @@
                           <table style="width: 100%;">
                               <tr>
                                    <td rowspan='2' style="text-align: right;"><img id="imgFoto" src="" width="150px" border='1' onclick="abrirPagina('pageZoomFoto', false);" /></td>
-                                   <td style="text-align: left; vertical-align: top"><a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">el·liminar</a></td>
+                                   <td style="text-align: left; vertical-align: top"><a href="#pageEliminarFoto" id="buttonEliminarFoto" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-theme="c" data-mini="true">no adjuntar</a></td>
                               </tr>
                               <tr>
                                     <td style="text-align: left; vertical-align: bottom;"><label>(capturant foto s'actualitza l'adreça)</label></td>
@@ -201,16 +202,16 @@
         <!-- PopUp ELIMINAR foto -->
         <div data-role="popup" id="pageEliminarFoto"  data-theme="c" style="max-width:95%;" class="ui-corner-all">
             <div data-role="header" data-theme="a" class="ui-corner-top">
-                <h1>El·liminar foto</h1>
+                <h1>Descartar foto</h1>
             </div>
             <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
-                <h3 class="ui-title">Està segur/a que vol el·liminar ?</h3>
-                <div data-role="controlgroup" data-type="horizontal">
-                    <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-theme="c">cancel·lar</a>
-                    <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" onclick="eliminarFoto()">el·liminar</a>
-                </div>
-            </div>
+                <h3 class="ui-title">Està segur/a que vol descartar?</h3>
+        <div data-role="controlgroup" data-type="horizontal">
+            <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-theme="c">cancel·lar</a>
+            <a href="#" data-role="button" data-mini="false" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" onclick="eliminarFoto()">si</a>
         </div>
+    </div>
+    </div>
 
         <!-- PopUp INFO3 -->
         <div data-role="popup" id="pageInfo3" data-theme="c" data-overlay-theme="a" style="max-width:95%;" class="ui-corner-all">
@@ -219,7 +220,7 @@
             </div>
             <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
                 <p style="text-align: left;">
-                    L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+                    L'aplicació <b>comunica't</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
                 </p>
                 <p style="text-align: center">
                     Gràcies per fer-la servir.
@@ -302,7 +303,7 @@
             </div>
             <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
                 <p style="text-align: left;">
-                    L'aplicació <b>'comunicats'</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+                    L'aplicació <b>comunica't</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
                 </p>
                 <p style="text-align: center">
                     Gràcies per fer-la servir.
@@ -347,7 +348,7 @@
 </div>
 
 <!-- JAVASCRIPT -->
-    <script type="text/javascript">
+        <script type="text/javascript">
          function muestraDireccion(){
              var sSelComboCarrer =  indefinidoOnullToVacio($('#selectCARRER').find(":selected").text());
              if(sSelComboCarrer != '' && sSelComboCarrer != 'Seleccioni el carrer')
@@ -414,11 +415,28 @@
             }
         } )
 
-        $('#inputCOGNOM1').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
-        $('#inputCOGNOM2').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
-        $('#inputDNI').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
-        $('#inputEMAIL').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
-        $('#inputTELEFON').focus(function() { $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() ); });
+        $('#inputNOM').focus(function() { $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh"); });
+
+        $('#inputCOGNOM1').focus(function() {
+            $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh");
+        });
+        $('#inputCOGNOM2').focus(function() {
+            $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh");
+        });
+        $('#inputDNI').focus(function() {
+            $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh");
+        });
+        $('#inputEMAIL').focus(function() {
+            $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh");
+        });
+        $('#inputTELEFON').focus(function() {
+            $('#labelQUISOC').text( $('#inputNOM').val() + ' ' + $('#inputCOGNOM1').val() + ' ' + $('#inputCOGNOM2').val() );
+            $('#check_ComAnonima').attr("checked",false).checkboxradio("refresh");
+        });
 
         // Botón 'atrás' sale de la app si está en la pantalla principal y es un Androide ...
         document.addEventListener("backbutton", function(e){

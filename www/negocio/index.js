@@ -6,8 +6,6 @@ var aGlobalCarrers = null;
 var aCarrers = null;
 var aConfig = null;
 
-var global_RETORNO = '';
-
 // -------- Al INICIAR -----------------------------------------------------------------------
 window.addEventListener('load', function () {
     if (phoneGapRun()) {
@@ -59,14 +57,16 @@ function abrirPagina(sPag, bBack) {
         case 'pageNuevaIncidencia' :
             //Abrir el acordeón para actualizar el plano
             $("#collapsibleLocalizacion").trigger("expand");
+            $('#divContieneMapa').show();
+            $('#divMapaAlta').show();
             //espero a que esté cargado el div para que se renderice bien el plano ...
-            setTimeout(inicializa,1000);
+            setTimeout(inicializarPagina,1000);
             break;
 
         case 'pageConsultaIncidencias' :
             inicioPaginaConsultaIncidencias();
             //espero a que esté cargado el div para que se renderice bien el plano ...
-            setTimeout(inicializa,1000);
+            setTimeout(inicializarPagina,1000);
             break;
 
         case 'pageZoomFoto' :
@@ -78,7 +78,7 @@ function abrirPagina(sPag, bBack) {
     }
 }
 
-function inicializa(){
+function inicializarPagina(){
     switch(sCambioPagina)
     {
         case 'pageNuevaIncidencia' :

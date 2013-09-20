@@ -30,19 +30,17 @@ function inicioPaginaNuevaIncidencia(){
 
     //iniciar el plano
     iniciaMapaAlta(true);
-    $.doTimeout(500, function() {
-//        no consigo obtener el nombre de la calle desde google maps, ya que devuelve 'carrer de tal ... '
+    $.doTimeout(800, function() {
 //        preseleccionar la inicial, cargar CARRERS de esa inicial en el combo de iniciales y preseleccionar la calle
 //        var sC = cogerCalleNumDeDireccion(sDireccionAlta);
 //        nLetra = sC.substr(0,1).toUpperCase().charCodeAt(0);
+//        !!!!!!!!!!!!!! no consigo obtener el nombre de la calle desde google maps, ya que devuelve 'carrer de tal ... '
 
         var combo = $('#selectLletraIniCARRER');
         cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
         cierraMapaAbreComentario();
     });
-
 }
-
 function cargaDatosCiudadano(){
     var objUsu = getDatosUsuario();
     if(objUsu != null)
@@ -63,7 +61,6 @@ function cargaDatosCiudadano(){
     else
         return '';
 }
-
 function cargaCalles(){
     if(aCarrers == null)
         mensaje("No s'han trobat carrers","informació");
@@ -82,7 +79,6 @@ function cargaCalles(){
         $('#selectCARRER').append(calles.join('')).selectmenu('refresh');
     }
 }
-
 function autoRellenoCalleNum(){
     if(sDireccionAlta == '' || aGlobalCarrers == null || aGlobalCarrers.length < 1) return;
 
@@ -111,55 +107,41 @@ function autoRellenoCalleNum(){
     }
     catch(e){}
 }
-
 function cierraMapaAbreComentario(){
     $('#collapsibleLocalizacion').trigger('collapse');
     $('#collapsibleComentario').trigger('expand');
 }
 
 // -------- FOTO -------------------------------------------------------------------------
-function leerFoto() {
+//abre la cámara para hacer foto o la voge de la galeria
+function hacerFoto(origen) {
     try {
-        navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 20, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
+        if(origen=='CAMARA')
+        {
+            iniciaMapaAlta(false);
+            navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 20, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.CAMERA, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
+        }
+        else  // coger de GALERIA
+        {
+            navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 20, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.PHOTOLIBRARY, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
+        }
     }
     catch (e) {
         mensaje('Exception : ' + e.message);
     }
 }
-
-function hacerFoto() {
-    iniciaMapaAlta(false);
-    try {
-        navigator.camera.getPicture(hacerfotoOK, hacerFotoERROR, { quality: 20, destinationType: Camera.DestinationType.DATA_URL, sourceType: Camera.PictureSourceType.CAMERA, encodingType: Camera.EncodingType.JPEG, saveToPhotoAlbum: false });
-    }
-    catch (e) {
-        mensaje('Exception : ' + e.message);
-    }
-}
-
 function hacerfotoOK(imageData) {
     var imagen = document.getElementById('imgFoto');
     imagen.style.display = 'block';
     sFoto = imageData;
     imagen.src = "data:image/jpeg;base64," + sFoto;
 }
-
 function hacerFotoERROR(errorOcancel) {
     sFoto = '';
     if(errorOcancel != null && (errorOcancel.indexOf('cancelled') < 0 && errorOcancel.indexOf('selected') < 0)){
         mensaje('Cap foto caprturada : ' + errorOcancel.code);
     }
 }
-
-/*
-function zoomFoto(){
-    var imagen = document.getElementById('imgZoomFoto');
-    imagen.style.display = 'block';
-    imagen.src = "data:image/jpeg;base64," + sFoto;
-    abrirPagina('pageZoomFoto', true);
-}
-*/
-
 function eliminarFoto(){
     sFoto = '';
 
@@ -175,46 +157,44 @@ function eliminarFoto(){
 // -------- LOCALIZACIÓN -----------------------------------------------------------------------
 function iniciaMapaAlta(bAbrir) {
     try{
-    $('#divContieneMapa').show();
-    //$('#divMapaAlta').show();
-    var mapOptions = {
-        zoom: 14,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    mapAlta = new google.maps.Map(document.getElementById('divMapaAlta'), mapOptions);
-    $('#divMensajeMapa').hide();
-    // Try HTML5 geolocation
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            //Crear el evento click sobre el mapa
-            //si bActualizarControlesManualesCalleNum = true, se llama a autoRellenoCalleNum()
-            //crearMarcadorEventoClick(map,     bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum)
+        var mapOptions = {
+            zoom: 14,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        mapAlta = new google.maps.Map(document.getElementById('divMapaAlta'), mapOptions);
+        $('#divMensajeMapa').hide();
+        // Try HTML5 geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                //Crear el evento click sobre el mapa
+                //si bActualizarControlesManualesCalleNum = true, se llama a autoRellenoCalleNum()
+                //crearMarcadorEventoClick(map,     bSoloUnMarcadorSobreMapa , labelMostrarDir, bActualizarControlesManualesCalleNum)
 
-            crearMarcadorEventoClick('ALTA', mapAlta, true,'labelDireccion', true);
+                crearMarcadorEventoClick('ALTA', mapAlta, true,'labelDireccion', true);
 
-            posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            sDireccionAlta = cogerDireccion(posAlta, true);
+                posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                sDireccionAlta = cogerDireccion(posAlta, true);
 
-/*            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
-            nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
-            $('#labelDireccion').text(sDireccionAlta);
-            $('#divMapaAlta').gmap('refresh');*/
+    /*            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
+                nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
+                $('#labelDireccion').text(sDireccionAlta);
+                $('#divMapaAlta').gmap('refresh');*/
 
-        }, function () {
+            }, function () {
+                $('#divContieneMapa').hide();
+                $('#divMensajeMapa').show();
+                //$('#divMapaAlta').hide();
+                cierraMapaAbreComentario();
+                getCurrentPositionError(true);
+            });
+        } else {  alert('error mapa');
+            // Browser no soporta Geolocation
             $('#divContieneMapa').hide();
             $('#divMensajeMapa').show();
             //$('#divMapaAlta').hide();
             cierraMapaAbreComentario();
-            getCurrentPositionError(true);
-        });
-    } else {  alert('error mapa');
-        // Browser no soporta Geolocation
-        $('#divContieneMapa').hide();
-        $('#divMensajeMapa').show();
-        //$('#divMapaAlta').hide();
-        cierraMapaAbreComentario();
-        getCurrentPositionError(false);
-    }
+            getCurrentPositionError(false);
+        }
     }
     catch(e)
     {
@@ -224,7 +204,6 @@ function iniciaMapaAlta(bAbrir) {
         cierraMapaAbreComentario();
     }
 }
-
 function cogerDireccion(pos , bSoloCalleYnum){
     var llamaWS = "http://maps.googleapis.com/maps/api/geocode/xml";
     var sParam =  "latlng=" + pos.toString().replace(" ", "").replace("(","").replace(")","") + "&sensor=true";
@@ -263,19 +242,6 @@ function direccionObtenida(datos, param){
     $('#labelDireccion').text(sDireccionAlta);
     $('#divMapaAlta').gmap('refresh');
 
-}
-
-// -------- NETEJAR CIUTADA -------------------------------------------------------------------
-function netejarDades(){
-    $('#inputNOM').val('');
-    $('#inputCOGNOM1').val('');
-    $('#inputCOGNOM2').val('');
-    $('#inputDNI').val('');
-    $('#inputEMAIL').val('');
-    $('#inputTELEFON').val('');
-
-    $('#labelQUISOC').text('[ANÒNIM]');
-    <!-- $('#collapsibleQuiSoc').trigger('collapse'); -->
 }
 
 // -------- ENVIAR/GUARDAR COMUNICAT -----------------------------------------------------------
@@ -326,7 +292,6 @@ function enviarIncidencia() {
 
     var ref = enviarComunicat_WS(sParams , true);
 }
-
 function enviarComunicatPendiente_WS(sParams, bNuevoComunicat ){
     var sDev = '';
     var llamaWS = "http://213.27.242.251:8000/wsIncidentNotifier/wsIncidentNotifier.asmx/NuevaIncidenciaBD";
@@ -465,7 +430,6 @@ function enviarComunicat_WS(sParams , bNuevoComunicat){
         mensaje('ERROR (exception) en enviarComunicat_WS : \n' + e.code + '\n' + e.message);
     }
 }
-
 function guardaDatosCiudadano(){
     try
     {
@@ -506,7 +470,6 @@ function guardaDatosCiudadano(){
         mensaje(e.message , 'error');
     }
 }
-
 function datosObligatorios(sObs, sDir, sDni , sEmail, sTelefon){
     if(sObs == null || sObs.trim() == '') return "Les dades marcades amb (*) són obligatòries\nFalta 'què està passant'" ;
     if(sDir == null || sDir.trim() == '') return "Les dades marcades amb (*) són obligatòries\nFalta 'on està passant'";
@@ -541,7 +504,6 @@ function datosObligatorios(sObs, sDir, sDni , sEmail, sTelefon){
     }
     return "";
 }
-
 function guardaIncidencia(sReferen, sEstado){
     try
     {
@@ -576,7 +538,16 @@ function guardaIncidencia(sReferen, sEstado){
         return -1;
     }
 }
-
 function guardaFotoEnLocal(nId,sFoto){
       guardaObjetoLocal('FOTO_' + nId.toString().trim() , sFoto);
+}
+
+// -------- NETEJAR CIUTADA -------------------------------------------------------------------
+function netejarDades(){
+    $('#inputNOM').val('');
+    $('#inputCOGNOM1').val('');
+    $('#inputCOGNOM2').val('');
+    $('#inputDNI').val('');
+    $('#inputEMAIL').val('');
+    $('#inputTELEFON').val('');
 }
