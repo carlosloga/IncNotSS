@@ -1,7 +1,7 @@
 // funciones COMUNES -----------------------------------------------------------------------
 var pictureSource;
 var destinationType;
-var sCambioPagina = '';
+var bAbroPagina = true;
 var aGlobalCarrers = null;
 var aCarrers = null;
 var aConfig = null;
@@ -51,45 +51,32 @@ function abrirPagina(sPag, bBack) {
         changeHash: bBack
     });
 
-    sCambioPagina = sPag;
-    switch(sCambioPagina)
+    switch(sPag)
     {
         case 'pageNuevaIncidencia' :
             //Abrir el acordeón para actualizar el plano
-            $("#collapsibleLocalizacion").trigger("expand");
-            $('#divContieneMapa').show();
-            $('#divMapaAlta').show();
+/*            $("#collapsibleLocalizacion").trigger("expand");
+            $('#divMapaAlta').show();*/
             //espero a que esté cargado el div para que se renderice bien el plano ...
-            setTimeout(inicializarPagina,1000);
+
+            $.doTimeout(1000, inicioPaginaNuevaIncidencia() );
+            //setTimeout(inicializarPagina,1000);
             break;
 
         case 'pageConsultaIncidencias' :
             inicioPaginaConsultaIncidencias();
             //espero a que esté cargado el div para que se renderice bien el plano ...
-            setTimeout(inicializarPagina,1000);
+            //setTimeout(inicializarPagina,1000);
+            $.doTimeout(1000, mostrarEnPlano() );
             break;
 
         case 'pageZoomFoto' :
             var imagen = document.getElementById('imgZoomFoto');
             imagen.style.display = 'block';
             imagen.src = "data:image/jpeg;base64," + sFoto;
-            sCambioPagina = '';
             break;
     }
-}
 
-function inicializarPagina(){
-    switch(sCambioPagina)
-    {
-        case 'pageNuevaIncidencia' :
-            inicioPaginaNuevaIncidencia();
-            break;
-
-        case 'pageConsultaIncidencias' :
-            mostrarEnPlano();
-            break;
-    }
-    sCambioPagina = '';
 }
 
 function limpiaVariables(sPag){

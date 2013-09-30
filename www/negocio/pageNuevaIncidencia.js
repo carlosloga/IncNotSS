@@ -30,16 +30,16 @@ function inicioPaginaNuevaIncidencia(){
 
     //iniciar el plano
     iniciaMapaAlta(true);
-    $.doTimeout(800, function() {
 //        preseleccionar la inicial, cargar CARRERS de esa inicial en el combo de iniciales y preseleccionar la calle
 //        var sC = cogerCalleNumDeDireccion(sDireccionAlta);
 //        nLetra = sC.substr(0,1).toUpperCase().charCodeAt(0);
 //        !!!!!!!!!!!!!! no consigo obtener el nombre de la calle desde google maps, ya que devuelve 'carrer de tal ... '
+    var combo = $('#selectLletraIniCARRER');
+    cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
 
-        var combo = $('#selectLletraIniCARRER');
-        cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
-        cierraMapaAbreComentario();
-    });
+    bAbroPagina = false;
+
+    $.doTimeout(600,cierraMapaAbreComentario());
 }
 function cargaDatosCiudadano(){
     var objUsu = getDatosUsuario();
@@ -166,7 +166,7 @@ function iniciaMapaAlta(bAbrir) {
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         mapAlta = new google.maps.Map(document.getElementById('divMapaAlta'), mapOptions);
-        $('#divMensajeMapa').hide();
+
         // Try HTML5 geolocation
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -179,32 +179,33 @@ function iniciaMapaAlta(bAbrir) {
                 posAlta = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 sDireccionAlta = cogerDireccion(posAlta, true);
 
+                $('#divMensajeMapa').hide();
     /*            var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
                 nuevoMarcadorSobrePlanoClickInfoWindow('ALTA', mapAlta, posAlta,sTxt,null,300,true,true);
                 $('#labelDireccion').text(sDireccionAlta);
                 $('#divMapaAlta').gmap('refresh');*/
 
             }, function () {
-                $('#divContieneMapa').hide();
+                //$('#divContieneMapa').hide();
                 $('#divMensajeMapa').show();
-                //$('#divMapaAlta').hide();
+                $('#divMapaAlta').hide();
                 cierraMapaAbreComentario();
                 getCurrentPositionError(true);
             });
-        } else {  alert('error mapa');
+        } else {
             // Browser no soporta Geolocation
-            $('#divContieneMapa').hide();
+           // $('#divContieneMapa').hide();
             $('#divMensajeMapa').show();
-            //$('#divMapaAlta').hide();
+            $('#divMapaAlta').hide();
             cierraMapaAbreComentario();
             getCurrentPositionError(false);
         }
     }
     catch(e)
     {
-        $('#divContieneMapa').hide();
+        //$('#divContieneMapa').hide();
         $('#divMensajeMapa').show();
-        //$('#divMapaAlta').hide();
+        $('#divMapaAlta').hide();
         cierraMapaAbreComentario();
     }
 }

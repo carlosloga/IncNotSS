@@ -10,6 +10,9 @@ lista_ERROR_SQL[5] = 'ERROR de sintaxi';
 lista_ERROR_SQL[6] = 'ERROR en constraint';
 lista_ERROR_SQL[7] = 'ERROR timeout';
 
+
+String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
+
 function localStorageRun() {
     try {
         return 'localStorage' in window && window['localStorage'] !== null;
@@ -85,6 +88,7 @@ function nuevoMarcadorSobrePlanoClickInfoWindow(sMODO, mapa, pos,htmlText, nIcon
     if(sMODO == 'ALTA')
     {
         if(indefinidoOnullToVacio(labelMostrarDir) != '') $('#' + labelMostrarDir).text(sDireccionAlta);
+
         mapa.setCenter(posAlta);
     }
 }
@@ -133,16 +137,23 @@ function crearMarcadorEventoClick(sMODO, map, bSoloUnMarcadorSobreMapa , labelMo
 
 function crearMarcadorDesdeCalleNum(){
     if($('#selectCARRER').find(":selected").text().trim() == '' || $('#inputNUM').val().trim() == '' ) return;
-    var calle = $('#selectCARRER').find(":selected").text().trim();
 
-/*    var sTipoVia = calle.split("(")[1].substr(0, (calle.split("(")[1].length -1)).trim();
-    var sCalle = calle.split("(")[1].trim();
-*/
+    var sTipoVia =  "";
+    var sCalle =  "";
 
-    var sTipoVia = calle.split("(")[1].substr(0,calle.split("(")[1].indexOf(")")).trim();
-
-    //var sCalle = calle.split("[")[1].trim().substr(0, calle.split("[")[1].trim().length - 1);
-    var sCalle = calle.split("(")[0].trim();
+    var sCodCalle = $('#selectCARRER').find(":selected").val();
+    var sCalleGoogle = NomCalleGoogle(sCodCalle);
+    if(sCalleGoogle != "")
+    {
+        sTipoVia = "";
+        sCalle = sCalleGoogle;
+    }
+    else
+    {
+        var calle = $('#selectCARRER').find(":selected").text().trim();
+        sTipoVia = calle.split("(")[1].substr(0,calle.split("(")[1].indexOf(")")).trim();
+        sCalle = calle.split("(")[0].trim();
+    }
 
     var num = $('#inputNUM').val().trim();
 
@@ -153,20 +164,35 @@ function crearMarcadorDesdeCalleNum(){
     showAddress('ALTA',mapAlta, sTipoVia,sCalle, num , ciudad ,region ,pais);
 }
 
+function NomCalleGoogle(sCodCalle){
+    var sDev = "";
+    for(var x=0; x<aCarrers.length ; x++)
+    {
+        if(aCarrers[x][0][1] == sCodCalle)
+        {
+            sDev =  aCarrers[x][3][1];
+            break;
+        }
+    }
+    return sDev ;
+}
+
 function showAddress(sMODO,map, sTipoVia,sCalle,num,ciudad,region,pais) {
     sDireccionAlta = sTipoVia + " " + sCalle + ", " + num;
-    var direccion = sDireccionAlta + ", " + ciudad + ", " + region + ", " + pais;
-alert('aGOO:' + direccion);
+    var direccion = sDireccionAlta.trim() + ", " + ciudad + ", " + region + ", " + pais;
+
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': direccion}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
             var sTxt = '<div><table><tr><td style="font-size:x-small; font-weight:bold;">comunicat en </td></tr><tr><td style="font-size:x-small; font-weight:normal;">' + sDireccionAlta + '</td></tr></table></div>';
             nuevoMarcadorSobrePlanoClickInfoWindow(sMODO,map, results[0].geometry.location , sTxt ,null, 300 , true, true, 'labelDireccion');
+            mapa.setCenter(results[0].geometry.location);
         } else {
             //alert('La localització sobre plànol no ha estat posible per : ' + status);
             $('#divMensajeMapa').show();
-            $('#divContieneMapa').hide();
+            $('#divMapaAlta').hide();
+           // $('#divContieneMapa').hide();
         }
     });
 }
