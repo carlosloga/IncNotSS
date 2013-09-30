@@ -156,6 +156,10 @@ function eliminarFoto(){
 
 // -------- LOCALIZACIÓN -----------------------------------------------------------------------
 function iniciaMapaAlta(bAbrir) {
+    //que no vuelva a coger la dirección actual si hay ya una en esta variable
+    //(para que al igual que el resto de datos se conserve esta dirección en el form)
+    if(sDireccionAlta.trim() != '') return;
+
     try{
         var mapOptions = {
             zoom: 14,

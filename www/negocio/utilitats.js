@@ -156,6 +156,7 @@ function crearMarcadorDesdeCalleNum(){
 function showAddress(sMODO,map, sTipoVia,sCalle,num,ciudad,region,pais) {
     sDireccionAlta = sTipoVia + " " + sCalle + ", " + num;
     var direccion = sDireccionAlta + ", " + ciudad + ", " + region + ", " + pais;
+alert('aGOO:' + direccion);
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': direccion}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {

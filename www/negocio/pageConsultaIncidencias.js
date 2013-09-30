@@ -34,12 +34,16 @@ function cargaListaComunicats(aComs){
     {
         sDatos = getCadenaComunicat(aComs[x] , separador);
 
+        //sDatos = sDatos.replace("'","''","g");
+        sDatos = sDatos.replace(/'/g, "´");
+
         //sFila = "<table style='width: 100%;'><tr><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].REFERENCIA + "</td><td style='text-align:left; font-size:x-small; width: 40%;'>" + aComs[x].DATA + "</td><td style='text-align:left; font-size:x-small; width: 20%;'>" + aComs[x].ESTAT + "</td></tr></table>";
         sFila = "<table style='width: 100%;'><tr>";
         sFila += "<td style='text-align:left; font-size:x-small; width: 15%;'>" + aComs[x].ID + "</td>";
         sFila += "<td style='text-align:left; font-size:x-small; width: 55%;'>" + ParseEstado(aComs[x].ESTAT) + "</td>";
         sFila += "<td style='text-align:left; font-size:x-small; width: 30%;'>" + aComs[x].REFERENCIA + "</td>";
         sFila += "</tr></table>";
+
         $('#listviewLista').append($('<li/>', {
             'id': "fila_" + aComs[x].ID, 'data-icon': "arrow-r"
         }).append($('<a/>', {
@@ -54,7 +58,6 @@ function cargaListaComunicats(aComs){
 }
 
 function verDatosComunicat(sDatos, separador){
-
     $('#labelCOMUNICAT_ID').text('');
     $('#labelCOMUNICAT_CARRER').text('');
     $('#labelCOMUNICAT_NUM').text('');
@@ -64,10 +67,9 @@ function verDatosComunicat(sDatos, separador){
     $('#labelCOMUNICAT_ESTAT').text('');
 
     var aDatos = new Array();
-    aDatos = sDatos.split(separador);
-
     try
     {
+        aDatos = sDatos.split(separador);
         $('#labelCOMUNICAT_ID').text(aDatos[0]);
         $('#labelCOMUNICAT_REFERENCIA').text(aDatos[1]);
         $('#labelCOMUNICAT_ESTAT').text(aDatos[2]);
@@ -191,6 +193,9 @@ function mostrarEnPlano() {
                     sTxt += '<tr><td style="font-size:xx-small;"><b>en </b>' + dir + '</td></tr>';
                     sTxt += '<tr><td style="font-size:xx-small;"><a href="" onclick="verDatosComunicat(\'' + sDatos + '\',\'' + separador + '\');">+info</a></td></tr></table></div>';
 */
+
+                    //sDatos = sDatos.replace("'","''","g");
+                    sDatos = sDatos.replace(/'/g, "´");
 
                     var sTxt =  '<div><table>';
                     sTxt += '<tr><td style="font-size:xx-small;"><a href="" onclick="verDatosComunicat(\'' + sDatos + '\',\'' + separador + '\');">info</a></td></tr>';

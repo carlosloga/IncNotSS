@@ -49,46 +49,46 @@
 
 <body>
 <!-- Página Principal  -->
-    <div data-role="page" id="pageIndex" >
-        <div data-role="header" data-theme="c">
-            <a href="http://www.settingConsultoria.cat" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
-            <h3>comunica't v0.1</h3>
-            <a href="#pageInfo" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
-        </div>
-        <div data-role="content" data-theme="c">
-             <!-- <p style="text-align: center;"><img src="images/LogoAjParets.jpg" width="80%;" /></p> -->
-             <p style="text-align: center;"><img src="images/ciutadans.gif" width="80%;" /></p>
-             <div data-role="controlgroup" data-type="horizontal" style="text-align: center;">
-                 <a href="" onclick="abrirPagina('pageNuevaIncidencia',false)" id="buttonALTA" data-mini="false" data-inline="false" data-role="button" data-theme="c">Nou <br/>comunicat</a>
-                 <a href="" onclick="abrirPagina('pageConsultaIncidencias', false)" id="buttonCONSULTA" data-mini="false" data-inline="false" data-role="button" data-theme="c">Els meus <br/>comunicats</a>
-            </div>
-        </div>
-        <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
-            <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label id="labelPieIndex" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
-        </div>
-
-        <!-- PopUp INFO -->
-        <div data-role="popup" id="pageInfo" data-theme="c" data-overlay-theme="a" style="max-width:95%;" class="ui-corner-all">
-            <div data-role="header" data-theme="a" class="ui-corner-top">
-                <h1>quant a</h1>
-            </div>
-            <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
-                <p style="text-align: left;">
-                    L'aplicació <b>comunica't</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
-                </p>
-                <p style="text-align: center">
-                    Gràcies per fer-la servir.
-                </p>
-                <p style="text-align: center">
-                    <img src="images/Ajuntament.jpg" width="50%;" /><br/>
-                </p>
-                <p style="text-align: center">
-                    <i>Fem entre tots una ciutat més neta, sostenible i cívica.</i>
-                </p>
-            </div>
-        </div>
-
+<div data-role="page" id="pageIndex" >
+    <div data-role="header" data-theme="c">
+        <a href="http://www.settingConsultoria.cat" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+        <h3>comunica't v0.1</h3>
+        <a href="#pageInfo" data-rel="popup" data-role="button" data-transition="pop" data-icon="info" data-iconpos="notext">Info</a>
     </div>
+    <div data-role="content" data-theme="c">
+        <!-- <p style="text-align: center;"><img src="images/LogoAjParets.jpg" width="80%;" /></p> -->
+        <p style="text-align: center;"><img src="images/ciutadans.gif" width="80%;" /></p>
+        <div data-role="controlgroup" data-type="horizontal" style="text-align: center;">
+            <a href="" onclick="abrirPagina('pageNuevaIncidencia',false)" id="buttonALTA" data-mini="false" data-inline="false" data-role="button" data-theme="c">Nou <br/>comunicat</a>
+            <a href="" onclick="abrirPagina('pageConsultaIncidencias', false)" id="buttonCONSULTA" data-mini="false" data-inline="false" data-role="button" data-theme="c">Els meus <br/>comunicats</a>
+        </div>
+    </div>
+    <div data-role="footer" data-theme="f" data-position="fixed" style="text-align: center;">
+        <table style="width:100%;"><tr><td style="background-color:LightGrey; width:100%;"><label id="labelPieIndex" style="color:Gray; font-size:small; font-weight:normal; background-color:LightGrey;">&#169;2013 SETTING Consultoria en T.I., S.L.</label></td></tr></table>
+    </div>
+
+    <!-- PopUp INFO -->
+    <div data-role="popup" id="pageInfo" data-theme="c" data-overlay-theme="a" style="max-width:95%;" class="ui-corner-all">
+        <div data-role="header" data-theme="a" class="ui-corner-top">
+            <h1>quant a</h1>
+        </div>
+        <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
+            <p style="text-align: left;">
+                L'aplicació <b>comunica't</b> és una eina que permet notificar a l'Ajuntament les incidències, suggeriments o queixes referents a la vía pública que la ciutadanía consideri oportù.
+            </p>
+            <p style="text-align: center">
+                Gràcies per fer-la servir.
+            </p>
+            <p style="text-align: center">
+                <img src="images/Ajuntament.jpg" width="50%;" /><br/>
+            </p>
+            <p style="text-align: center">
+                <i>Fem entre tots una ciutat més neta, sostenible i cívica.</i>
+            </p>
+        </div>
+    </div>
+
+</div>
 
 <!-- Página NuevaIncidencia -->
     <div data-role="page" id="pageNuevaIncidencia">
@@ -137,10 +137,6 @@
                 <!-- L O C A L I T Z A C I Ó -->
                 <div data-role="collapsible" data-mini="false" id="collapsibleLocalizacion">
                     <h3><table style="width:100%;"><tr><td>on està passant (*)</td><td style="text-align:right;"><label id="labelDireccion" style="font-size:x-small;"></label></td></tr></table></h3>
-                    <div id='divMensajeMapa'><label>la localització sobre plànol no ha estat possible</label></div>
-                    <div id="divContieneMapa" class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
-                        <div id="divMapaAlta" style="height:300px;"></div>
-                    </div>
                     <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
                         <table style="width: 100%;">
                             <tr><td>
@@ -149,16 +145,20 @@
                                 <label for="inputNUM">en el num.</label> </td><td>
                                 <input type="text" maxlength="9" placeholder="numero" name="inputNUM" data-inline="true" id="inputNUM"  data-mini="false" data-theme="c" />
                             </td>
-                            <td>
-                                <a href="#" data-rel="popup" data-role="button" data-transition="pop" data-icon="arrow-u" data-iconpos="notext" data-inline="true" data-mini="true">actualitzar mapa</a>
-                            </td>
+                                <td>
+                                    <a href="#" data-rel="popup" data-role="button" data-transition="pop" data-icon="arrow-d" data-iconpos="notext" data-inline="true" data-mini="true">actualitzar mapa</a>
+                                </td>
                             </tr>
                             <tr><td>
                                 <label for="selectCARRER">del carrer</label></td>
                                 <td colspan="3">
-                                <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
-                            </td></tr>
-                            </table>
+                                    <select name="selectCARRER" data-native-menu="true" id="selectCARRER" data-inline="true" data-mini="false" data-theme="c"></select>
+                                </td></tr>
+                        </table>
+                    </div>
+                    <div id='divMensajeMapa'><label>la localització sobre plànol no ha estat possible</label></div>
+                    <div id="divContieneMapa" class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                        <div id="divMapaAlta" style="height:300px;"></div>
                     </div>
                 </div>
 
@@ -280,7 +280,7 @@
                             <table style="width:100%;"><tr><td style="text-align: left; width: 50%;">
                                 <a href="#pageBorrarHistoricoComunicados" id="buttonBorrarHistoricoComunicados" data-position-to="window" data-mini="true" data-inline="true" data-rel="popup" data-role="button" data-transition="pop" data-theme="c" data-icon="delete">esborrar tots</a>
                             </td><td style="text-align: right; width: 50%;">
-                                <a href="#" id="buttonEnviamentDePendents" onclick="enviamentDePendents()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="refresh">enviar pendents</a>
+                                <a href="#" id="buttonEnviamentDePendents" onclick="enviamentDePendents()" data-mini="true" data-inline="true" data-role="button" data-theme="c" data-icon="refresh">actualitzar</a>
                             </td></tr></table>
                         </li>
                     </ul>
