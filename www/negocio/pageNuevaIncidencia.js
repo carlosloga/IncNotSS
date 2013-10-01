@@ -39,7 +39,7 @@ function inicioPaginaNuevaIncidencia(){
 
     bAbroPagina = false;
 
-    $.doTimeout(600,cierraMapaAbreComentario());
+    $.doTimeout(1000,cierraMapaAbreComentario());
 }
 function cargaDatosCiudadano(){
     var objUsu = getDatosUsuario();
@@ -186,27 +186,21 @@ function iniciaMapaAlta(bAbrir) {
                 $('#divMapaAlta').gmap('refresh');*/
 
             }, function () {
-                //$('#divContieneMapa').hide();
+                ('#divMapaAlta').hide();
                 $('#divMensajeMapa').show();
-                $('#divMapaAlta').hide();
-                cierraMapaAbreComentario();
                 getCurrentPositionError(true);
             });
         } else {
             // Browser no soporta Geolocation
-           // $('#divContieneMapa').hide();
-            $('#divMensajeMapa').show();
             $('#divMapaAlta').hide();
-            cierraMapaAbreComentario();
+            $('#divMensajeMapa').show();
             getCurrentPositionError(false);
         }
     }
     catch(e)
     {
-        //$('#divContieneMapa').hide();
-        $('#divMensajeMapa').show();
         $('#divMapaAlta').hide();
-        cierraMapaAbreComentario();
+        $('#divMensajeMapa').show();
     }
 }
 function cogerDireccion(pos , bSoloCalleYnum){
