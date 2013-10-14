@@ -46,7 +46,7 @@ function inicioPaginaNuevaIncidencia(){
     bAbroPagina = false;
 
     //Esperar a que se haya cargado el plano y cerrar su contenedor
-    $.doTimeout(2000,cierraMapaAbreComentario());
+    //$.doTimeout(2000,cierraMapaAbreComentario());
 }
 function cargaDatosCiudadano(){
     var objUsu = getDatosUsuario();

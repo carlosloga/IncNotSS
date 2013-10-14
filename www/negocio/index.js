@@ -62,6 +62,10 @@ function abrirPagina(sPag, bBack) {
             //$.doTimeout(1000, inicioPaginaNuevaIncidencia() );
             inicioPaginaNuevaIncidencia();
 
+            $.doTimeout(2000,function(){
+                $('#collapsibleLocalizacion').trigger('collapse');
+                $('#collapsibleComentario').trigger('expand');
+            })
             //setTimeout(inicializarPagina,1000);
             break;
 
