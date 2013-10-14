@@ -1,6 +1,6 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
-    <ciudad>Sant Cugat del Valles</ciudad>
-    <region>Catalunya</region>
-    <pais>Spain</pais>
+  <ciudad>Vilafranca del Penedes</ciudad>
+  <region>Catalunya</region>
+  <pais>Spain</pais>
 </config>

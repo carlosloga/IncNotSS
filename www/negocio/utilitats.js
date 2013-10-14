@@ -381,7 +381,7 @@ function cargaLetrasAbcdario(combo, sTitulo, nLetraSel){
     combo.empty();
     var h=0;
     var aLetras = new Array();
-    for(n=65; n<91; n++)
+    for(n=65; n<92; n++)
     {
         aLetras[h++] = String.fromCharCode(n);
     }
