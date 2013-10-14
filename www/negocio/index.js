@@ -59,7 +59,9 @@ function abrirPagina(sPag, bBack) {
             $('#divMapaAlta').show();*/
             //espero a que esté cargado el div para que se renderice bien el plano ...
 
-            $.doTimeout(1000, inicioPaginaNuevaIncidencia() );
+            //$.doTimeout(1000, inicioPaginaNuevaIncidencia() );
+            inicioPaginaNuevaIncidencia();
+
             //setTimeout(inicializarPagina,1000);
             break;
 

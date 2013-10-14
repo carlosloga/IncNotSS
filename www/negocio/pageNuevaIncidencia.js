@@ -12,6 +12,7 @@ function inicioPaginaNuevaIncidencia(){
     var ciu = cargaDatosCiudadano();
     //Si los datos del ciudadano están guardados, se arranca la página como comunicació NO anónima y el acordeón 'qui soc' cerrado
     //y si no existen datos del ciudadano, se arranca la página como comunicació anónima y el acordeón 'qui soc' abierto
+
     if(ciu=='')
     {
         $('#collapsibleQuiSoc').trigger('expand');
@@ -28,8 +29,13 @@ function inicioPaginaNuevaIncidencia(){
     var combo = $('#selectLletraIniCARRER');
     cargaLetrasAbcdario(combo, 'lletra inicial' , nLetra );
 
-    //iniciar el plano
-    iniciaMapaAlta(true);
+    //abrir contenedor del plano y esperar a que se cargue
+    $("#collapsibleLocalizacion").trigger("expand");
+    $('#divMapaAlta').show();
+    $.doTimeout(2000,function(){
+        //iniciar el plano
+        iniciaMapaAlta(true);
+    })
 //        preseleccionar la inicial, cargar CARRERS de esa inicial en el combo de iniciales y preseleccionar la calle
 //        var sC = cogerCalleNumDeDireccion(sDireccionAlta);
 //        nLetra = sC.substr(0,1).toUpperCase().charCodeAt(0);
@@ -39,7 +45,8 @@ function inicioPaginaNuevaIncidencia(){
 
     bAbroPagina = false;
 
-    $.doTimeout(1000,cierraMapaAbreComentario());
+    //Esperar a que se haya cargado el plano y cerrar su contenedor
+    $.doTimeout(2000,cierraMapaAbreComentario());
 }
 function cargaDatosCiudadano(){
     var objUsu = getDatosUsuario();
